@@ -1,11 +1,6 @@
 package pacman.game.util;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 
 /**
  * This class handles the I/O for the controllers. It has two static methods that allow
@@ -29,6 +24,7 @@ public class IO {
      *
      * @param fileName the name of the file (including extension)
      * @param data     the data to be saved
+     * @param append   Should we append to the file or write to it
      * @return whether the data was saved successfully
      */
     public static boolean saveFile(String fileName, String data, boolean append) {

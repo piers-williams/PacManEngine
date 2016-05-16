@@ -32,7 +32,6 @@ import static pacman.game.Constants.*;
  * a low error rate. The latter takes a bit longer but is absolutely accurate. We use the pre-computed shortest
  * path distances as admissable heuristic so it is very efficient.
  * <p>
- * <p>
  * Cloning
  * <p>
  * The game can be cloned to produce a CO Forward Model
@@ -336,6 +335,8 @@ public final class Game {
      * <p>
      * Need to dissallow the forwarding of games that have PO enabled.
      * Then allow a copy of the game to be made with some information provided.
+     *
+     * @param copyMessenger should the messenger be deep copied or not
      *
      * @return the game
      */
@@ -790,6 +791,8 @@ public final class Game {
     /**
      * Returns whether a ghost was eaten in the last time step
      *
+     * @param ghost the ghost to check
+     *
      * @return whether a ghost was eaten.
      */
     public boolean wasGhostEaten(GHOST ghost) {
@@ -1237,8 +1240,8 @@ public final class Game {
         return indices;
     }
 
-    /**
-     * If in lair (getLairTime(-)>0) or if not at junction.
+    /**s
+     * If in lair (getLairTime(-) &gt; 0) or if not at junction.
      *
      * @param ghostType the ghost type
      * @return true, if successful
@@ -1735,7 +1738,7 @@ public final class Game {
     /**
      * Gets the messenger or null if it either doesn't exist or you don't have access to it
      *
-     * @return
+     * @return The messenger
      */
     public Messenger getMessenger() {
         return (hasMessaging() ? messenger : null);

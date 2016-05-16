@@ -52,18 +52,11 @@ public class Executor {
         }
     }
 
-    public void setMessenger(Messenger messenger){
-        if(this.ghostsMessage) {
-            if (messenger != null) {
-                this.messenger = messenger;
-            }
-        }
-    }
-
     /**
      * The main method. Several options are listed - simply remove comments to use the option you want.
      *
      * @param args the command line arguments
+     * @throws IOException It just does
      */
     public static void main(String[] args) throws IOException {
         Executor exec = new Executor();
@@ -150,19 +143,19 @@ public class Executor {
 //		boolean visual=true;
 //		exec.runGameTimed(new NearestPillPacMan(),new AggressiveGhosts(),visual);
 //		exec.runGameTimed(new StarterPacMan(),new StarterGhosts(),visual);
-//		exec.runGameTimed(new HumanController(new KeyBoardInput()),new StarterGhosts(),visual);	
+//		exec.runGameTimed(new HumanController(new KeyBoardInput()),new StarterGhosts(),visual);
         //*/
 
 		/*
-		//run the game in asynchronous mode but advance as soon as both controllers are ready  - this is the mode of the competition.
+        //run the game in asynchronous mode but advance as soon as both controllers are ready  - this is the mode of the competition.
 		//time limit of DELAY ms still applies.
 		boolean visual=true;
 		boolean fixedTime=false;
 		exec.runGameTimedSpeedOptimised(new RandomPacMan(),new RandomGhosts(),fixedTime,visual);
 		*/
-		
+
 		/*
-		//run game in asynchronous mode and record it to file for replay at a later stage.
+        //run game in asynchronous mode and record it to file for replay at a later stage.
 		boolean visual=true;
 		String fileName="replay.txt";
 		exec.runGameTimedRecorded(new HumanController(new KeyBoardInput()),new RandomGhosts(),visual,fileName);
@@ -171,7 +164,7 @@ public class Executor {
     }
 
     private static void writeStat(FileWriter writer, Stats stat, int i) throws IOException {
-        writer.write( String.format("%s, %d, %f, %f, %f, %f, %d, %f, %f, %f, %d\n",
+        writer.write(String.format("%s, %d, %f, %f, %f, %f, %d, %f, %f, %f, %d\n",
                 stat.getDescription(),
                 i,
                 stat.getAverage(),
@@ -221,6 +214,14 @@ public class Executor {
         return replay;
     }
 
+    public void setMessenger(Messenger messenger) {
+        if (this.ghostsMessage) {
+            if (messenger != null) {
+                this.messenger = messenger;
+            }
+        }
+    }
+
     /**
      * For running multiple games without visuals. This is useful to get a good idea of how well a controller plays
      * against a chosen opponent: the random nature of the game means that performance can vary from game to game.
@@ -230,6 +231,9 @@ public class Executor {
      * @param pacManController The Pac-Man controller
      * @param ghostController  The Ghosts controller
      * @param trials           The number of trials to be executed
+     * @param description      Description for the stats
+     * @param tickLimit        Tick limit for the games in the experiment
+     * @return Stats[] containing the scores in index 0 and the ticks in position 1
      */
     public Stats[] runExperiment(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, int trials, String description, int tickLimit) {
         Stats stats = new Stats(description);
@@ -242,7 +246,7 @@ public class Executor {
             game = (this.ghostsMessage) ? new Game(rnd.nextLong(), messenger.copy()) : new Game(rnd.nextLong());
 
             while (!game.gameOver()) {
-                if(tickLimit != -1 && tickLimit < game.getCurrentLevelTime()) break;
+                if (tickLimit != -1 && tickLimit < game.getCurrentLevelTime()) break;
                 game.advanceGame(
                         pacManController.getMove(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY),
                         ghostController.getMove(game.copy(), System.currentTimeMillis() + DELAY));
@@ -258,11 +262,11 @@ public class Executor {
         return new Stats[]{stats, ticks};
     }
 
-    public Stats[] runExperiment(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, int trials, String description){
+    public Stats[] runExperiment(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, int trials, String description) {
         return runExperiment(pacManController, ghostController, trials, description, -1);
     }
 
-    public Stats[] runExperimentTicks(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, int trials, String description){
+    public Stats[] runExperimentTicks(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, int trials, String description) {
         Stats stats = new Stats(description);
         Stats ticks = new Stats(description);
 
@@ -298,7 +302,7 @@ public class Executor {
      * @param delay            The delay between time-steps
      */
     public void runGame(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean visual, int delay) {
-        Game game = (this.ghostsMessage)? new Game(0, messenger.copy()) : new Game(0);
+        Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
         GameView gv = null;
 
@@ -327,7 +331,7 @@ public class Executor {
      * @param visual           Indicates whether or not to use visuals
      */
     public void runGameTimed(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean visual) {
-        Game game = (this.ghostsMessage)? new Game(0, messenger.copy()) : new Game(0);
+        Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
         GameView gv = null;
 
@@ -368,9 +372,10 @@ public class Executor {
      * @param ghostController  The Ghosts controller
      * @param fixedTime        Whether or not to wait until 40ms are up even if both controllers already responded
      * @param visual           Indicates whether or not to use visuals
+     * @return int score achieved by Ms. Pac-Man
      */
     public int runGameTimedSpeedOptimised(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean fixedTime, boolean visual) {
-        Game game = (this.ghostsMessage)? new Game(0, messenger.copy()) : new Game(0);
+        Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
         GameView gv = null;
 
@@ -423,12 +428,13 @@ public class Executor {
      * @param ghostController  The Ghosts controller
      * @param visual           Whether to run the game with visuals
      * @param fileName         The file name of the file that saves the replay
+     * @return Stats the statistics for the run
      */
     public Stats runGameTimedRecorded(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean visual, String fileName) {
         Stats stats = new Stats("");
         StringBuilder replay = new StringBuilder();
 
-        Game game = (this.ghostsMessage)? new Game(0, messenger.copy()) : new Game(0);
+        Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
         GameView gv = null;
 
@@ -477,7 +483,7 @@ public class Executor {
     public void replayGame(String fileName, boolean visual) {
         ArrayList<String> timeSteps = loadReplay(fileName);
 
-        Game game = (this.ghostsMessage)? new Game(0, messenger.copy()) : new Game(0);
+        Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
         GameView gv = null;
 

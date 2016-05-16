@@ -51,3 +51,6 @@ fabric.properties
 
 *.iml
 .idea/
+
+*.bat
+*.log
