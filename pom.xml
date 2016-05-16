@@ -8,11 +8,35 @@
     <groupId>uk.co.pacmanvghosts</groupId>
     <artifactId>pacman-main</artifactId>
     <version>1.0</version>
+    <name>PacMan Vs Ghosts</name>
+    <description>The main code for Ms. Pac-Man Vs Ghosts</description>
+    <url>http://www.pacmanvghosts.co.uk</url>
+
+    <licenses>
+        <license>
+            <name>GNU GPL V3+</name>
+            <url>https://www.gnu.org/licenses/gpl.html</url>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git@github.com:solar-1992/PacManEngine</connection>
+        <developerConnection>scm:git:git@github.com:solar-1992/PacManEngine</developerConnection>
+        <url>git@github.com:solar-1992/PacManEngine</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Piers R. Williams</name>
+            <email>pwillic@essex.ac.uk</email>
+            <organization>University of Essex</organization>
+            <organizationUrl>www.essex.ac.uk</organizationUrl>
+        </developer>
+    </developers>
 
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </snapshotRepository>
     </distributionManagement>
 
