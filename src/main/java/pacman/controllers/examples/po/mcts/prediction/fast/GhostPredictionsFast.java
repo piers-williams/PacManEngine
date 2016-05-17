@@ -56,20 +56,22 @@ public class GhostPredictionsFast {
     }
 
     public void update() {
-        for (int i = 0; i < probabilities.length; i++) {
-            if (probabilities[i] > 0) {
-                Node currentNode = maze.graph[i % mazeSize];
-                int numberNodes = currentNode.numNeighbouringNodes;
-                double probability = probabilities[i] / (numberNodes - 1);
-                MOVE back = moves[i].opposite();
-                for (MOVE move : MOVE.values()) {
-                    if (move == back) continue;
-                    if (currentNode.neighbourhood.containsKey(move)) {
-                        int index = currentNode.neighbourhood.get(move);
-                        // If we haven't already written to there or what we wrote was less probable
-                        if (backProbabilities[index] <= probabilities[i]) {
-                            backProbabilities[index] = probability;
-                            backMoves[index] = move;
+        for(int ghost = 0; ghost < numGhosts; ghost++) {
+            for (int i = (mazeSize * ghost); i < (mazeSize * (ghost + 1)); i++) {
+                if (probabilities[i] > 0) {
+                    Node currentNode = maze.graph[i % mazeSize];
+                    int numberNodes = currentNode.numNeighbouringNodes;
+                    double probability = probabilities[i] / (numberNodes - 1);
+                    MOVE back = moves[i].opposite();
+                    for (MOVE move : MOVE.values()) {
+                        if (move == back) continue;
+                        if (currentNode.neighbourhood.containsKey(move)) {
+                            int index = currentNode.neighbourhood.get(move);
+                            // If we haven't already written to there or what we wrote was less probable
+                            if (backProbabilities[(mazeSize * ghost) + index] <= probabilities[(mazeSize * ghost) + index]) {
+                                backProbabilities[(mazeSize * ghost) + index] = probability;
+                                backMoves[(mazeSize * ghost) + index] = move;
+                            }
                         }
                     }
                 }

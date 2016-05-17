@@ -86,7 +86,14 @@ public class IndividualLocationsFast {
         System.arraycopy(this.backMoves, 0, other.backMoves, 0, backMoves.length);
         return other;
     }
-
+    @Override
+    public String toString() {
+        List<GhostLocation> ghostLocations = getGhostLocations();
+        return "IndividualLocations{" +
+                "length: " + ghostLocations.size() +
+                "ghostLocations=" + ghostLocations +
+                '}';
+    }
     public GhostLocation sample() {
         double x = Math.random();
         double sum = 0.0d;
