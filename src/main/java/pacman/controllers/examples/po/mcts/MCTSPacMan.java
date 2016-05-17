@@ -3,6 +3,7 @@ package pacman.controllers.examples.po.mcts;
 import pacman.controllers.Controller;
 import pacman.controllers.examples.po.mcts.prediction.GhostLocation;
 import pacman.controllers.examples.po.mcts.prediction.GhostPredictions;
+import pacman.controllers.examples.po.mcts.prediction.fast.GhostPredictionsFast;
 import pacman.game.Game;
 import pacman.game.internal.Maze;
 
@@ -25,7 +26,7 @@ public class MCTSPacMan extends Controller<MOVE> {
     private Maze maze;
     private static int DEATH_PENALTY = 100;
 
-    private List<GhostPredictions> ghostPredictions = new ArrayList<>();
+    private List<GhostPredictionsFast> ghostPredictions = new ArrayList<>();
 
     public MCTSPacMan(int maxDepth, int treeLimit) {
         this.maxDepth = maxDepth;
@@ -44,7 +45,7 @@ public class MCTSPacMan extends Controller<MOVE> {
         Node root = new Node(this, game.getPacmanCurrentNodeIndex(), game.getPacmanLastMoveMade());
 
         ghostPredictions.clear();
-        ghostPredictions.add(new GhostPredictions(game.getCurrentMaze()));
+        ghostPredictions.add(new GhostPredictionsFast(game.getCurrentMaze()));
 
         // Update the predictions
         for (GHOST ghost : GHOST.values()) {
@@ -62,7 +63,7 @@ public class MCTSPacMan extends Controller<MOVE> {
         }
 
         for (int i = 1; i < maxDepth; i++) {
-            GhostPredictions temp = ghostPredictions.get(i - 1).copy();
+            GhostPredictionsFast temp = ghostPredictions.get(i - 1).copy();
             temp.update();
             ghostPredictions.add(temp);
         }
@@ -81,7 +82,7 @@ public class MCTSPacMan extends Controller<MOVE> {
             iterations++;
         }
 
-//        System.out.println("MCTS Took: " + (System.currentTimeMillis() - timeStart) + " Completed: " + iterations);
+        System.out.println("MCTS Took: " + (System.currentTimeMillis() - timeStart) + " Completed: " + iterations);
         return getBestMove(root);
     }
 
