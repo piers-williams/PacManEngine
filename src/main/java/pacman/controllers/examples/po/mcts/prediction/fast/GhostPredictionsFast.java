@@ -86,9 +86,10 @@ public class GhostPredictionsFast {
     }
 
     public final double calculate(int index) {
+        if(index >= mazeSize) System.out.println("Index was too large: " + index);
         double sum = 0.0d;
-        for(int i = 0; i < numGhosts; i++){
-            sum += probabilities[(mazeSize * i) + index];
+        for(int ghost = 0; ghost < numGhosts; ghost++){
+            sum += probabilities[(mazeSize * ghost) + index];
         }
         return sum;
     }

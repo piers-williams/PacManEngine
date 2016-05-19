@@ -1191,7 +1191,7 @@ public final class Game {
     }
 
     /**
-     * returns the indices of all active pills in the mazes[gs.curMaze]
+     * Returns the indices of all active pills in the mazes[gs.curMaze]
      *
      * @return the active pills indices
      */
@@ -1216,7 +1216,7 @@ public final class Game {
     }
 
     /**
-     * returns the indices of all active power pills in the mazes[gs.curMaze]
+     * Returns the indices of all active power pills in the mazes[gs.curMaze]
      *
      * @return the active power pills indices
      */
@@ -1744,12 +1744,20 @@ public final class Game {
         return (hasMessaging() ? messenger : null);
     }
 
+    /**
+     * Gets a data structure that can be modified and then used to construct a forward model
+     * @return The GameInfo object for use in making the
+     */
     public GameInfo getBlankGameInfo() {
         return new GameInfo(pills.length());
     }
 
 
-    // Do they get communication in the forward model? Would be rather hard
+    /**
+     * Gets a copy of the game that is populated with the data contained within info
+     * @param info The data you wish the game to be supplied with
+     * @return The resultant game
+     */
     public Game getGameFromInfo(GameInfo info) {
         Game game = copy(false);
         // Destroy the messenger reference - can't allow communication in the playouts
@@ -1768,6 +1776,10 @@ public final class Game {
         return game;
     }
 
+    /**
+     * Is this game Partially Observable?
+     * @return The boolean answer to the question
+     */
     public boolean isGamePo(){
         return po;
     }

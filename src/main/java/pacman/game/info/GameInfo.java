@@ -35,34 +35,69 @@ public class GameInfo {
         powerPills = new BitSet(4);
     }
 
+    /**
+     * Sets whether there is a pill at the index provided
+     * @param index The index in the maze node graph
+     * @param value The value about the presence of a pill
+     */
     public void setPillAtIndex(int index, boolean value){
         pills.set(index, value);
     }
 
+    /**
+     * Sets whether there is a power pill at the index provided
+     * @param index The index in the maze node graph
+     * @param value The value about the presence of a pill
+     */
     public void setPowerPillAtIndex(int index, boolean value){
         powerPills.set(index, value);
     }
 
+    /**
+     * Sets the data about a ghost
+     * @param ghost The GHOST that is being set (key)
+     * @param data The Ghost that is being set (value)
+     */
     public void setGhostIndex(Constants.GHOST ghost, Ghost data){
         ghosts.put(ghost, data);
     }
 
+    /**
+     * Gets the pills data stored in this info
+     * @return The BitSet for the pills
+     */
     public BitSet getPills() {
         return pills;
     }
 
+    /**
+     * Gets the powerpills data stored in this info
+     * @return The BitSet for the pills
+     */
     public BitSet getPowerPills() {
         return powerPills;
     }
 
+    /**
+     * Gets the ghost data stored in this info
+     * @return The Ghost data
+     */
     public EnumMap<Constants.GHOST, Ghost> getGhosts() {
         return ghosts;
     }
 
+    /**
+     * Gets the pacman data stored in this info
+     * @return The pacman data
+     */
     public PacMan getPacman() {
         return pacman;
     }
 
+    /**
+     * Sets the pacman data stored in this info
+     * @param pacman The input data
+     */
     public void setPacman(PacMan pacman) {
         this.pacman = pacman;
     }

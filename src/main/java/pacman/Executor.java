@@ -66,7 +66,7 @@ public class Executor {
 
 //        exec.runGameTimed(new POPacMan(), new StarterGhosts(), true);
 
-        poExec.runGame(new MCTSPacMan(), new POGhosts(), true, 40);
+//        poExec.runGame(new MCTSPacMan(), new POGhosts(), true, 40);
         int n = 10;
 //
 //        Stats[] data = poExec.runExperimentTicks(new POPacMan(), new POCommGhosts(50), n, "POP Vs POGC");
@@ -76,23 +76,23 @@ public class Executor {
 
         int ticks = 4000;
 
-//        Stats[][] results = new Stats[8][2];
-//        results[0] = poExec.runExperiment(new POPacMan(), new POGhosts(), n, "POP Vs POG", ticks);
-//        results[1] = exec.runExperiment(new StarterPacMan(), new POGhosts(), n, "COP Vs POG", ticks);
-//        results[2] = poExec.runExperiment(new POPacMan(), new StarterGhosts(), n, "POP Vs COG", ticks);
-//        results[3] = exec.runExperiment(new StarterPacMan(), new StarterGhosts(), n, "COP Vs COG", ticks);
-//        results[4] = nonPOCommExec.runExperiment(new StarterPacMan(), new POCommGhosts(50), n, "COP Vs POGC", ticks);
-//        results[5] = poExec.runExperiment(new POPacMan(), new POCommGhosts(50), n, "POP Vs POGC", ticks);
-//        results[6] = poExec.runExperiment(new MCTSPacMan(), new StarterGhosts(), n, "MCTS  Vs COG", ticks);
-//        results[7] = poExec.runExperiment(new MCTSPacMan(), new POCommGhosts(50), n, "MCTS Vs POGC", ticks);
+        Stats[][] results = new Stats[8][2];
+        results[0] = poExec.runExperiment(new POPacMan(), new POGhosts(), n, "POP Vs POG", ticks);
+        results[1] = exec.runExperiment(new StarterPacMan(), new POGhosts(), n, "COP Vs POG", ticks);
+        results[2] = poExec.runExperiment(new POPacMan(), new StarterGhosts(), n, "POP Vs COG", ticks);
+        results[3] = exec.runExperiment(new StarterPacMan(), new StarterGhosts(), n, "COP Vs COG", ticks);
+        results[4] = nonPOCommExec.runExperiment(new StarterPacMan(), new POCommGhosts(50), n, "COP Vs POGC", ticks);
+        results[5] = poExec.runExperiment(new POPacMan(), new POCommGhosts(50), n, "POP Vs POGC", ticks);
+        results[7] = poExec.runExperiment(new MCTSPacMan(), new POCommGhosts(50), n, "MCTS Vs POGC", ticks);
+        results[6] = poExec.runExperiment(new MCTSPacMan(), new StarterGhosts(), n, "MCTS  Vs COG", ticks);
 //
 //
 ////
-//        System.out.println("\n");
-//        for (int i = 0; i < results.length; i++) {
-//            System.out.println("\t" + results[i][0]);
-//            System.out.println("\t" + results[i][1]);
-//        }
+        System.out.println("\n");
+        for (int i = 0; i < results.length; i++) {
+            System.out.println("\t" + results[i][0]);
+            System.out.println("\t" + results[i][1]);
+        }
 
 //        File file = new File("results/thresholdCOP.csv");
 //        file.createNewFile();
@@ -242,18 +242,23 @@ public class Executor {
         Game game;
 
         Long startTime = System.currentTimeMillis();
-        for (int i = 0; i < trials; i++) {
-            game = (this.ghostsMessage) ? new Game(rnd.nextLong(), messenger.copy()) : new Game(rnd.nextLong());
+        for (int i = 0; i < trials; ) {
+            try {
+                game = (this.ghostsMessage) ? new Game(rnd.nextLong(), messenger.copy()) : new Game(rnd.nextLong());
 
-            while (!game.gameOver()) {
-                if (tickLimit != -1 && tickLimit < game.getCurrentLevelTime()) break;
-                game.advanceGame(
-                        pacManController.getMove(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY),
-                        ghostController.getMove(game.copy(), System.currentTimeMillis() + DELAY));
+                while (!game.gameOver()) {
+                    if (tickLimit != -1 && tickLimit < game.getCurrentLevelTime()) break;
+                    game.advanceGame(
+                            pacManController.getMove(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY),
+                            ghostController.getMove(game.copy(), System.currentTimeMillis() + DELAY));
+                }
+                stats.add(game.getScore());
+                ticks.add(game.getCurrentLevelTime());
+                i++;
+                System.out.println("Game finished: " + i + "   " + description);
+            }catch (Exception e){
+                e.printStackTrace();
             }
-            stats.add(game.getScore());
-            ticks.add(game.getCurrentLevelTime());
-            System.out.println("Game finished: " + i);
         }
         long timeTaken = System.currentTimeMillis() - startTime;
         stats.setMsTaken(timeTaken);

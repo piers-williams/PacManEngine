@@ -9,13 +9,7 @@ import java.util.TreeMap;
 /**
  * Created by pwillic on 20/11/2015.
  * <p>
- * Allows for the creation of messages that will be pollable by other agents when they are ready
- * <p>
- * Messages are delivered in Ticks T where m = message delay
- * <p>
- * T = delayConstant + (delayMultiplier * m)
- * <p>
- * After receiving it
+ * Allows for the creation of messages that will be pollable by other agents when the messages are ready
  */
 public class BasicMessenger implements Messenger {
     private Map<Integer, ArrayList<Message>> messages;
@@ -53,7 +47,6 @@ public class BasicMessenger implements Messenger {
         currentTick++;
 //        System.out.println("Messenger updated");
     }
-
     @Override
     public void addMessage(BasicMessage message) {
         int tickToDeliver = currentTick + delayConstant + (delayMultiplier * message.getType().getDelay());
@@ -63,7 +56,6 @@ public class BasicMessenger implements Messenger {
         }
         messages.get(tickToDeliver).add(message);
     }
-
     @Override
     public ArrayList<Message> getMessages(Constants.GHOST querier) {
         ArrayList<Message> results = new ArrayList<>();
