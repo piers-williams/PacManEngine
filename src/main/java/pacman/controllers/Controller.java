@@ -16,6 +16,7 @@ public abstract class Controller<T> implements Runnable {
     private long timeDue;
     private Game game;
     protected T lastMove;    //this is now protected. You can set this directly in your getMove() method to save an immediate response.
+    private String name = "Unknown Controller";
 
     /**
      * Instantiates a new controller. The constructor initialises the class variables.
@@ -118,4 +119,20 @@ public abstract class Controller<T> implements Runnable {
      * @return The move to be played (i.e., the move calculated by your controller)
      */
     public abstract T getMove(Game game, long timeDue);
+
+    /**
+     * Used for recognising a controller
+     * @param name Name of the controller
+     */
+    public final void setName(String name){
+        this.name = name;
+    }
+
+    /**
+     *Gets the name of the controller
+     * @return The name of the controller
+     */
+    public String getName() {
+        return name;
+    }
 }
