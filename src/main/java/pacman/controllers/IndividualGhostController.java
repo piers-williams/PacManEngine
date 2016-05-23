@@ -9,11 +9,9 @@ import pacman.game.Game;
 public abstract class IndividualGhostController {
 
     protected final GHOST ghost;
-    protected final MASController controller;
 
-    public IndividualGhostController(GHOST ghost, MASController controller) {
+    public IndividualGhostController(GHOST ghost) {
         this.ghost = ghost;
-        this.controller = controller;
     }
 
     public abstract MOVE getMove(Game game, long timeDue);
