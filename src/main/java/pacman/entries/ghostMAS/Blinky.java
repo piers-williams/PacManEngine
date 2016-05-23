@@ -11,8 +11,8 @@ import pacman.game.Game;
 public class Blinky extends IndividualGhostController {
 
 
-    public Blinky(MASController controller) {
-        super(Constants.GHOST.BLINKY, controller);
+    public Blinky() {
+        super(Constants.GHOST.BLINKY);
     }
 
     @Override

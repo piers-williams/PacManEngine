@@ -11,8 +11,8 @@ import pacman.game.Game;
 public class Pinky extends IndividualGhostController {
     private POCommGhost ghost;
 
-    public Pinky(MASController controller) {
-        super(Constants.GHOST.PINKY, controller);
+    public Pinky() {
+        super(Constants.GHOST.PINKY);
         ghost = new POCommGhost(Constants.GHOST.PINKY, 50);
     }
 

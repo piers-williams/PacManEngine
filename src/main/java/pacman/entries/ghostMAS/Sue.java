@@ -10,8 +10,8 @@ import pacman.game.Game;
  */
 public class Sue extends IndividualGhostController {
 
-    public Sue(MASController controller) {
-        super(Constants.GHOST.SUE, controller);
+    public Sue() {
+        super(Constants.GHOST.SUE);
     }
 
     @Override

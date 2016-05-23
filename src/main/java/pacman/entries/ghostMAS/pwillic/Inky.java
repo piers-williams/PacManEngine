@@ -12,8 +12,8 @@ public class Inky extends IndividualGhostController {
 
     private POCommGhost ghost;
 
-    public Inky(MASController controller) {
-        super(Constants.GHOST.INKY, controller);ghost = new POCommGhost(Constants.GHOST.INKY, 50);
+    public Inky() {
+        super(Constants.GHOST.INKY);ghost = new POCommGhost(Constants.GHOST.INKY, 50);
     }
 
     @Override

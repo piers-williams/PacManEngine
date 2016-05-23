@@ -12,8 +12,8 @@ public class Blinky extends IndividualGhostController {
 
     private POCommGhost ghost;
 
-    public Blinky(MASController controller) {
-        super(Constants.GHOST.BLINKY, controller);
+    public Blinky() {
+        super(Constants.GHOST.BLINKY);
         ghost = new POCommGhost(Constants.GHOST.BLINKY, 50);
     }
 

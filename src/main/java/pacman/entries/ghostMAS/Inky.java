@@ -10,8 +10,8 @@ import pacman.game.Game;
  */
 public class Inky extends IndividualGhostController {
 
-    public Inky(MASController controller) {
-        super(Constants.GHOST.INKY, controller);
+    public Inky() {
+        super(Constants.GHOST.INKY);
     }
 
     @Override

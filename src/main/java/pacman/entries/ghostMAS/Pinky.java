@@ -10,8 +10,8 @@ import pacman.game.Game;
  */
 public class Pinky extends IndividualGhostController {
 
-    public Pinky(MASController controller) {
-        super(Constants.GHOST.PINKY, controller);
+    public Pinky() {
+        super(Constants.GHOST.PINKY);
     }
 
     @Override

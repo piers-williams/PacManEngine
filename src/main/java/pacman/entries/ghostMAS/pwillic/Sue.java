@@ -12,8 +12,8 @@ public class Sue extends IndividualGhostController {
 
     private POCommGhost ghost;
 
-    public Sue(MASController controller) {
-        super(Constants.GHOST.SUE, controller);ghost = new POCommGhost(Constants.GHOST.SUE, 50);
+    public Sue() {
+        super(Constants.GHOST.SUE);ghost = new POCommGhost(Constants.GHOST.SUE, 50);
     }
 
     @Override
