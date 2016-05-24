@@ -16,21 +16,20 @@ import static pacman.game.Constants.MOVE;
  * Created by Piers on 16/05/2016.
  */
 public class GhostPredictionsFast {
+    private static final int numGhosts = GHOST.values().length;
     // First mazeSize indices are for ghost Ordinal 0 etc ...
     private double[] probabilities;
     private double[] backProbabilities;
     private MOVE[] moves;
     private MOVE[] backMoves;
-
     private Maze maze;
     private int mazeSize;
-    private static final int numGhosts = GHOST.values().length;
 
     public GhostPredictionsFast(Maze maze) {
         this.maze = maze;
         mazeSize = maze.graph.length;
         probabilities = new double[mazeSize * numGhosts];
-        backProbabilities = new double[mazeSize *numGhosts];
+        backProbabilities = new double[mazeSize * numGhosts];
         moves = new MOVE[mazeSize * numGhosts];
         backMoves = new MOVE[mazeSize * numGhosts];
     }
@@ -56,7 +55,7 @@ public class GhostPredictionsFast {
     }
 
     public void update() {
-        for(int ghost = 0; ghost < numGhosts; ghost++) {
+        for (int ghost = 0; ghost < numGhosts; ghost++) {
             for (int i = (mazeSize * ghost); i < (mazeSize * (ghost + 1)); i++) {
                 if (probabilities[i] > 0) {
                     Node currentNode = maze.graph[i % mazeSize];
@@ -86,9 +85,9 @@ public class GhostPredictionsFast {
     }
 
     public final double calculate(int index) {
-        if(index >= mazeSize) System.out.println("Index was too large: " + index);
+        if (index >= mazeSize) System.out.println("Index was too large: " + index);
         double sum = 0.0d;
-        for(int ghost = 0; ghost < numGhosts; ghost++){
+        for (int ghost = 0; ghost < numGhosts; ghost++) {
             sum += probabilities[(mazeSize * ghost) + index];
         }
         return sum;
@@ -97,12 +96,12 @@ public class GhostPredictionsFast {
     public EnumMap<GHOST, GhostLocation> sampleLocations() {
         EnumMap<GHOST, GhostLocation> results = new EnumMap<GHOST, GhostLocation>(GHOST.class);
 
-        for(int ghost = 0; ghost < numGhosts; ghost++){
+        for (int ghost = 0; ghost < numGhosts; ghost++) {
             double x = Math.random();
             double sum = 0.0d;
-            for(int i = (mazeSize * ghost); i < (mazeSize * (ghost + 1)); i++){
+            for (int i = (mazeSize * ghost); i < (mazeSize * (ghost + 1)); i++) {
                 sum += probabilities[i];
-                if(sum >= x){
+                if (sum >= x) {
                     results.put(GHOST.values()[ghost], new GhostLocation(i % mazeSize, moves[i], probabilities[i]));
                     break;
                 }
@@ -121,27 +120,27 @@ public class GhostPredictionsFast {
         return other;
     }
 
-    public List<GhostLocation> getGhostLocations(GHOST ghost){
+    public List<GhostLocation> getGhostLocations(GHOST ghost) {
         ArrayList<GhostLocation> locations = new ArrayList<>();
-        for(int i = ghost.ordinal() * mazeSize; i < (ghost.ordinal() + 1) * mazeSize; i++){
-            if(probabilities[i] > 0){
+        for (int i = ghost.ordinal() * mazeSize; i < (ghost.ordinal() + 1) * mazeSize; i++) {
+            if (probabilities[i] > 0) {
                 locations.add(new GhostLocation(i % mazeSize, moves[i], probabilities[i]));
             }
         }
         return locations;
     }
 
-    public List<GhostLocation> getGhostLocations(){
+    public List<GhostLocation> getGhostLocations() {
         ArrayList<GhostLocation> locations = new ArrayList<>();
-        for(int i = 0; i < probabilities.length; i++){
-            if(probabilities[i] > 0){
+        for (int i = 0; i < probabilities.length; i++) {
+            if (probabilities[i] > 0) {
                 locations.add(new GhostLocation(i % mazeSize, moves[i], probabilities[i]));
             }
         }
         return locations;
     }
 
-    public String getGhostInfo(GHOST ghost){
+    public String getGhostInfo(GHOST ghost) {
         List<GhostLocation> ghostLocations = getGhostLocations(ghost);
         return "IndividualLocations{" +
                 "length: " + ghostLocations.size() +

@@ -1,13 +1,14 @@
 package pacman.controllers.examples;
 
-import java.awt.Color;
-
-import pacman.controllers.Controller;
+import pacman.controllers.PacmanController;
+import pacman.game.Constants.DM;
 import pacman.game.Game;
 import pacman.game.GameView;
-import pacman.game.Constants.DM;
 
-import static pacman.game.Constants.*;
+import java.awt.*;
+
+import static pacman.game.Constants.GHOST;
+import static pacman.game.Constants.MOVE;
 
 /*
  * Same as NearestPillPacMan but does some visuals to illustrate what can be done.
@@ -15,7 +16,7 @@ import static pacman.game.Constants.*;
  * not make sense from a controller's point of view (i.e., they might not be useful)
  * Comment/un-comment code below as desired (drawing all visuals would probably be too much).
  */
-public final class NearestPillPacManVS extends Controller<MOVE> {
+public final class NearestPillPacManVS extends PacmanController {
 
     /* (non-Javadoc)
      * @see pacman.controllers.Controller#getMove(pacman.game.Game, long)

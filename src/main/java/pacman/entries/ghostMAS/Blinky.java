@@ -1,7 +1,6 @@
 package pacman.entries.ghostMAS;
 
 import pacman.controllers.IndividualGhostController;
-import pacman.controllers.MASController;
 import pacman.game.Constants;
 import pacman.game.Game;
 

@@ -11,14 +11,12 @@ import java.util.Random;
 /**
  * Created by pwillic on 21/04/2016.
  */
-class POCommGhost{
+class POCommGhost {
     private final static float CONSISTENCY = 0.9f;    //attack Ms Pac-Man with this probability
     private final static int PILL_PROXIMITY = 15;        //if Ms Pac-Man is this close to a power pill, back away
-    private int TICK_THRESHOLD;
-
-    private Constants.GHOST ghost;
     Random rnd = new Random();
-
+    private int TICK_THRESHOLD;
+    private Constants.GHOST ghost;
     private int lastPacmanIndex = -1;
     private int tickSeen = -1;
 
@@ -26,7 +24,7 @@ class POCommGhost{
         this(ghost, 5);
     }
 
-    public POCommGhost(Constants.GHOST ghost, int TICK_THRESHOLD){
+    public POCommGhost(Constants.GHOST ghost, int TICK_THRESHOLD) {
         this.ghost = ghost;
         this.TICK_THRESHOLD = TICK_THRESHOLD;
     }
@@ -72,7 +70,7 @@ class POCommGhost{
                     try {
                         return game.getApproximateNextMoveAwayFromTarget(game.getGhostCurrentNodeIndex(ghost),
                                 game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(ghost), Constants.DM.PATH);
-                    }catch(ArrayIndexOutOfBoundsException e){
+                    } catch (ArrayIndexOutOfBoundsException e) {
                         System.out.println(e);
                         System.out.println(pacmanIndex + " : " + currentIndex);
                     }
@@ -82,7 +80,7 @@ class POCommGhost{
                             Constants.MOVE move = game.getApproximateNextMoveTowardsTarget(game.getGhostCurrentNodeIndex(ghost),
                                     pacmanIndex, game.getGhostLastMoveMade(ghost), Constants.DM.PATH);
                             return move;
-                        }catch(ArrayIndexOutOfBoundsException e){
+                        } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println(e);
                             System.out.println(pacmanIndex + " : " + currentIndex);
                         }

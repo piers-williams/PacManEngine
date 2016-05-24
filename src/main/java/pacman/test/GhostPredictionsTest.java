@@ -20,7 +20,7 @@ public class GhostPredictionsTest {
         predictionsFast.observe(Constants.GHOST.INKY, 6, game.getPossibleMoves(6)[0]);
 
 
-        for(int i = 0; i < 100; i++){
+        for (int i = 0; i < 100; i++) {
             predictor.update();
             predictionsFast.update();
             System.out.println(predictor.getGhostInfo(Constants.GHOST.INKY));

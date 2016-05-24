@@ -9,17 +9,16 @@ import java.util.EnumMap;
 
 /**
  * Stores the information needed to populate an empty game into at least a partially full game.
- *
+ * <p>
  * Missing info about pills will be: left out of the simulation
  * Missing info about ghosts will be: left out of the simulation
- *
+ * <p>
  * So if you don't say it is there, it wont be anywhere at all.
- *
+ * <p>
  * An empty game made from a game will contain everything but:
  * locations of pills of any sort
  * Locations of PacMan or ghosts of any sort
  * The messenger
- *
  */
 public class GameInfo {
 
@@ -29,7 +28,7 @@ public class GameInfo {
 
     private EnumMap<Constants.GHOST, Ghost> ghosts;
 
-    public GameInfo(int pillsLength){
+    public GameInfo(int pillsLength) {
         ghosts = new EnumMap<Constants.GHOST, Ghost>(Constants.GHOST.class);
         pills = new BitSet(pillsLength);
         powerPills = new BitSet(4);
@@ -37,33 +36,37 @@ public class GameInfo {
 
     /**
      * Sets whether there is a pill at the index provided
+     *
      * @param index The index in the maze node graph
      * @param value The value about the presence of a pill
      */
-    public void setPillAtIndex(int index, boolean value){
+    public void setPillAtIndex(int index, boolean value) {
         pills.set(index, value);
     }
 
     /**
      * Sets whether there is a power pill at the index provided
+     *
      * @param index The index in the maze node graph
      * @param value The value about the presence of a pill
      */
-    public void setPowerPillAtIndex(int index, boolean value){
+    public void setPowerPillAtIndex(int index, boolean value) {
         powerPills.set(index, value);
     }
 
     /**
      * Sets the data about a ghost
+     *
      * @param ghost The GHOST that is being set (key)
-     * @param data The Ghost that is being set (value)
+     * @param data  The Ghost that is being set (value)
      */
-    public void setGhostIndex(Constants.GHOST ghost, Ghost data){
+    public void setGhostIndex(Constants.GHOST ghost, Ghost data) {
         ghosts.put(ghost, data);
     }
 
     /**
      * Gets the pills data stored in this info
+     *
      * @return The BitSet for the pills
      */
     public BitSet getPills() {
@@ -72,6 +75,7 @@ public class GameInfo {
 
     /**
      * Gets the powerpills data stored in this info
+     *
      * @return The BitSet for the pills
      */
     public BitSet getPowerPills() {
@@ -80,6 +84,7 @@ public class GameInfo {
 
     /**
      * Gets the ghost data stored in this info
+     *
      * @return The Ghost data
      */
     public EnumMap<Constants.GHOST, Ghost> getGhosts() {
@@ -88,6 +93,7 @@ public class GameInfo {
 
     /**
      * Gets the pacman data stored in this info
+     *
      * @return The pacman data
      */
     public PacMan getPacman() {
@@ -96,6 +102,7 @@ public class GameInfo {
 
     /**
      * Sets the pacman data stored in this info
+     *
      * @param pacman The input data
      */
     public void setPacman(PacMan pacman) {

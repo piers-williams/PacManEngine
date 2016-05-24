@@ -1,7 +1,9 @@
 package pacman.controllers.examples.po;
 
 import pacman.controllers.Controller;
-import pacman.game.Constants.*;
+import pacman.game.Constants.DM;
+import pacman.game.Constants.GHOST;
+import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 import pacman.game.comms.BasicMessage;
 import pacman.game.comms.Message;
@@ -21,7 +23,7 @@ public class POCommGhosts extends Controller<EnumMap<GHOST, MOVE>> {
         this(5);
     }
 
-    public POCommGhosts(int TICK_THRESHOLD){
+    public POCommGhosts(int TICK_THRESHOLD) {
         ghosts.put(GHOST.BLINKY, new POCommGhostImproved(GHOST.BLINKY, TICK_THRESHOLD));
         ghosts.put(GHOST.INKY, new POCommGhostImproved(GHOST.INKY, TICK_THRESHOLD));
         ghosts.put(GHOST.PINKY, new POCommGhostImproved(GHOST.PINKY, TICK_THRESHOLD));
@@ -44,11 +46,9 @@ public class POCommGhosts extends Controller<EnumMap<GHOST, MOVE>> {
 class POCommGhostImproved {
     private final static float CONSISTENCY = 0.9f;    //attack Ms Pac-Man with this probability
     private final static int PILL_PROXIMITY = 15;        //if Ms Pac-Man is this close to a power pill, back away
-    private int TICK_THRESHOLD;
-
-    private GHOST ghost;
     Random rnd = new Random();
-
+    private int TICK_THRESHOLD;
+    private GHOST ghost;
     private int lastPacmanIndex = -1;
     private int tickSeen = -1;
 
@@ -56,7 +56,7 @@ class POCommGhostImproved {
         this(ghost, 5);
     }
 
-    public POCommGhostImproved(GHOST ghost, int TICK_THRESHOLD){
+    public POCommGhostImproved(GHOST ghost, int TICK_THRESHOLD) {
         this.ghost = ghost;
         this.TICK_THRESHOLD = TICK_THRESHOLD;
     }
@@ -102,7 +102,7 @@ class POCommGhostImproved {
                     try {
                         return game.getApproximateNextMoveAwayFromTarget(game.getGhostCurrentNodeIndex(ghost),
                                 game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(ghost), DM.PATH);
-                    }catch(ArrayIndexOutOfBoundsException e){
+                    } catch (ArrayIndexOutOfBoundsException e) {
                         System.out.println(e);
                         System.out.println(pacmanIndex + " : " + currentIndex);
                     }
@@ -112,7 +112,7 @@ class POCommGhostImproved {
                             MOVE move = game.getApproximateNextMoveTowardsTarget(game.getGhostCurrentNodeIndex(ghost),
                                     pacmanIndex, game.getGhostLastMoveMade(ghost), DM.PATH);
                             return move;
-                        }catch(ArrayIndexOutOfBoundsException e){
+                        } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println(e);
                             System.out.println(pacmanIndex + " : " + currentIndex);
                         }
@@ -147,9 +147,8 @@ class POCommGhostImproved {
 class POCommGhost {
     private final static float CONSISTENCY = 0.9f;    //attack Ms Pac-Man with this probability
     private final static int PILL_PROXIMITY = 15;        //if Ms Pac-Man is this close to a power pill, back away
-
-    private GHOST ghost;
     Random rnd = new Random();
+    private GHOST ghost;
 
     public POCommGhost(GHOST ghost) {
         this.ghost = ghost;

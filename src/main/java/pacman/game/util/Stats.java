@@ -35,6 +35,19 @@ public class Stats {
         this.sum = sum;
     }
 
+    public static void main(String[] args) {
+        Stats stats = new Stats("");
+        stats.add(1.0f);
+        stats.add(2.0f);
+        stats.add(2.0f);
+        stats.add(2.0f);
+        stats.add(2.0f);
+        stats.add(2.0f);
+
+        System.out.println(stats);
+
+    }
+
     public void add(double observation) {
         n++;
         sum += observation;
@@ -56,18 +69,18 @@ public class Stats {
         }
     }
 
-    public void add(Stats other){
+    public void add(Stats other) {
         n += other.n;
         sum += other.sum;
         sumsq += other.sumsq;
-        if(other.min < min) min = other.min;
-        if(other.max > max) max = other.max;
+        if (other.min < min) min = other.min;
+        if (other.max > max) max = other.max;
         computed = false;
         this.msTaken += other.msTaken;
     }
 
     public double getAverage() {
-        if(!computed) compute();
+        if (!computed) compute();
         return average;
     }
 
@@ -87,13 +100,13 @@ public class Stats {
         return max;
     }
 
-    public double getStandardDeviation(){
-        if(!computed) compute();
+    public double getStandardDeviation() {
+        if (!computed) compute();
         return sd;
     }
 
-    public double getStandardError(){
-        if(!computed) compute();
+    public double getStandardError() {
+        if (!computed) compute();
         return sd / Math.sqrt(n);
     }
 
@@ -110,7 +123,7 @@ public class Stats {
     }
 
     public double getSd() {
-        if(!computed) compute();
+        if (!computed) compute();
         return sd;
     }
 
@@ -124,7 +137,7 @@ public class Stats {
 
     @Override
     public String toString() {
-        if(!computed) compute();
+        if (!computed) compute();
         return "Stats{" +
                 "Desc=" + description +
                 ", average=" + average +
@@ -137,18 +150,5 @@ public class Stats {
                 ", stdErr=" + getStandardError() +
                 ", ms=" + msTaken +
                 '}';
-    }
-
-    public static void main(String[] args) {
-        Stats stats = new Stats("");
-        stats.add(1.0f);
-        stats.add(2.0f);
-        stats.add(2.0f);
-        stats.add(2.0f);
-        stats.add(2.0f);
-        stats.add(2.0f);
-
-        System.out.println(stats);
-
     }
 }

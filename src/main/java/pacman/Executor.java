@@ -256,7 +256,7 @@ public class Executor {
                 ticks.add(game.getCurrentLevelTime());
                 i++;
                 System.out.println("Game finished: " + i + "   " + description);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

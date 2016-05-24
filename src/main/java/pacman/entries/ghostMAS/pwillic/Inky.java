@@ -1,7 +1,6 @@
 package pacman.entries.ghostMAS.pwillic;
 
 import pacman.controllers.IndividualGhostController;
-import pacman.controllers.MASController;
 import pacman.game.Constants;
 import pacman.game.Game;
 
@@ -13,7 +12,8 @@ public class Inky extends IndividualGhostController {
     private POCommGhost ghost;
 
     public Inky() {
-        super(Constants.GHOST.INKY);ghost = new POCommGhost(Constants.GHOST.INKY, 50);
+        super(Constants.GHOST.INKY);
+        ghost = new POCommGhost(Constants.GHOST.INKY, 50);
     }
 
     @Override

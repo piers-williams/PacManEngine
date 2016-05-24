@@ -1,7 +1,6 @@
 package pacman.game.util.glicko;
 
 import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,7 +57,7 @@ public class Player {
         return 1 / sum;
     }
 
-    public double delta(HashMap<Player, Integer> scores, double v){
+    public double delta(HashMap<Player, Integer> scores, double v) {
         double sum = 0.0d;
         for (Map.Entry<Player, Integer> score : scores.entrySet()) {
             sum += (score.getKey().g()) * (score.getValue() - E(score.getKey()));
@@ -66,11 +65,12 @@ public class Player {
 
         return v * sum;
     }
+
     public double delta(HashMap<Player, Integer> scores) {
-       return delta(scores, v(scores.keySet()));
+        return delta(scores, v(scores.keySet()));
     }
 
-    public double newVolatilityIllinois(HashMap<Player, Integer> scores){
+    public double newVolatilityIllinois(HashMap<Player, Integer> scores) {
         double a = Math.log(rd * rd);
         double convergenceTolerance = 0.000001;
         double delta = delta(scores);
@@ -79,7 +79,7 @@ public class Player {
         return 0.0d;
     }
 
-    public double newVolatility(HashMap<Player, Integer> scores){
+    public double newVolatility(HashMap<Player, Integer> scores) {
         int i = 0;
         double v = v(scores.keySet());
         double delta = delta(scores, v);
@@ -88,7 +88,7 @@ public class Player {
         double x1 = 1;
         double tauSquared = tau * tau;
 
-        while(x0 != x1){
+        while (x0 != x1) {
             x0 = x1;
             double d = rating * rating + v + Math.exp(x0);
             double h1 = -(x0 - a) / tauSquared - 0.5 * Math.exp(x0) / d + 0.5 * Math.exp(x0) * Math.pow(delta / d, 2);

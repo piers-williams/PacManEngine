@@ -1,7 +1,6 @@
 package pacman.entries.ghostMAS.pwillic;
 
 import pacman.controllers.IndividualGhostController;
-import pacman.controllers.MASController;
 import pacman.game.Constants;
 import pacman.game.Game;
 
@@ -13,7 +12,8 @@ public class Sue extends IndividualGhostController {
     private POCommGhost ghost;
 
     public Sue() {
-        super(Constants.GHOST.SUE);ghost = new POCommGhost(Constants.GHOST.SUE, 50);
+        super(Constants.GHOST.SUE);
+        ghost = new POCommGhost(Constants.GHOST.SUE, 50);
     }
 
     @Override

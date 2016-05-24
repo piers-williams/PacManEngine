@@ -1,13 +1,9 @@
 package pacman.game.internal;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Set;
-
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
+
+import java.util.*;
 
 /*
  * Pre-computes paths for more efficient execution of the game. It is a tradeoff between loading times, execution speed,
@@ -359,6 +355,17 @@ class Junction {
     public int jctId, nodeId;
     public EnumMap<MOVE, int[]>[] paths;
 
+    @SuppressWarnings("unchecked")
+    public Junction(int jctId, int nodeId, int numJcts) {
+        this.jctId = jctId;
+        this.nodeId = nodeId;
+
+        paths = new EnumMap[numJcts];
+
+        for (int i = 0; i < paths.length; i++)
+            paths[i] = new EnumMap<MOVE, int[]>(MOVE.class);
+    }
+
     public void computeShortestPaths() {
         MOVE[] moves = MOVE.values();
 
@@ -383,17 +390,6 @@ class Junction {
                 paths[i].put(MOVE.NEUTRAL, path);
             }
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    public Junction(int jctId, int nodeId, int numJcts) {
-        this.jctId = jctId;
-        this.nodeId = nodeId;
-
-        paths = new EnumMap[numJcts];
-
-        for (int i = 0; i < paths.length; i++)
-            paths[i] = new EnumMap<MOVE, int[]>(MOVE.class);
     }
 
     // store the shortest path given the last move made

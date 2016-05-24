@@ -1,10 +1,9 @@
 package pacman.controllers.examples.po.mcts.prediction;
 
 import pacman.game.Constants;
-import pacman.game.internal.*;
+import pacman.game.internal.Maze;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 

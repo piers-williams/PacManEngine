@@ -61,7 +61,7 @@ public final class GameView extends JComponent {
         time = game.getTotalTime();
 
         redAlphas = new Color[256];
-        for(int i = 0; i < 256; i++){
+        for (int i = 0; i < 256; i++) {
             redAlphas[i] = new Color(255, 0, 0, i);
         }
     }
@@ -241,7 +241,7 @@ public final class GameView extends JComponent {
         }
 
         // Update them
-        while(game.getCurrentLevelTime() > predictionTicks) {
+        while (game.getCurrentLevelTime() > predictionTicks) {
 //            System.out.println("Updating");
             long time = System.currentTimeMillis();
             predictions.update();
@@ -272,7 +272,7 @@ public final class GameView extends JComponent {
             if (probability > 1E-2) {
 //                System.out.println("Have a probability: " + probability + " alpha: " + (int)(128 * probability));
 //                bufferGraphics.setColor(new Color(255, 0, 0, (int) (Math.max(128 * probability, 255))));
-                bufferGraphics.setColor(redAlphas[(int)Math.min(255*probability, 255)]);
+                bufferGraphics.setColor(redAlphas[(int) Math.min(255 * probability, 255)]);
                 bufferGraphics.fillRect(
                         game.getNodeXCood(i) * MAG - 1,
                         game.getNodeYCood(i) * MAG + 3,

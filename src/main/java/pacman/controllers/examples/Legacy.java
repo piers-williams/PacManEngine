@@ -1,10 +1,10 @@
 package pacman.controllers.examples;
 
-import java.util.EnumMap;
-import java.util.Random;
-
 import pacman.controllers.Controller;
 import pacman.game.Game;
+
+import java.util.EnumMap;
+import java.util.Random;
 
 import static pacman.game.Constants.*;
 

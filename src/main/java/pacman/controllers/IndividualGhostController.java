@@ -1,6 +1,7 @@
 package pacman.controllers;
 
-import pacman.game.Constants.*;
+import pacman.game.Constants.GHOST;
+import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 /**

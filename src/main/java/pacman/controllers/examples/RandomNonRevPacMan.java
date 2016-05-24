@@ -1,16 +1,16 @@
 package pacman.controllers.examples;
 
-import java.util.Random;
-
-import pacman.controllers.Controller;
+import pacman.controllers.PacmanController;
 import pacman.game.Game;
 
-import static pacman.game.Constants.*;
+import java.util.Random;
+
+import static pacman.game.Constants.MOVE;
 
 /*
  * The Class RandomNonRevPacMan.
  */
-public final class RandomNonRevPacMan extends Controller<MOVE> {
+public final class RandomNonRevPacMan extends PacmanController {
     Random rnd = new Random();
 
     /* (non-Javadoc)

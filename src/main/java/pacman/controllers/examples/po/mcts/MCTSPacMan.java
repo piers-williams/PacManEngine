@@ -1,6 +1,6 @@
 package pacman.controllers.examples.po.mcts;
 
-import pacman.controllers.Controller;
+import pacman.controllers.PacmanController;
 import pacman.controllers.examples.po.mcts.prediction.GhostLocation;
 import pacman.controllers.examples.po.mcts.prediction.fast.GhostPredictionsFast;
 import pacman.game.Game;
@@ -14,13 +14,13 @@ import static pacman.game.Constants.MOVE;
 /**
  * Created by pwillic on 06/05/2016.
  */
-public class MCTSPacMan extends Controller<MOVE> {
+public class MCTSPacMan extends PacmanController {
 
+    public static int DEATH_PENALTY = 1000;
     private int maxDepth = 100;
     private int treeLimit = 50;
     private Random random = new Random();
     private Maze maze;
-    public static int DEATH_PENALTY = 1000;
     private int numberOfLives;
     private PillModel pillModel;
 
@@ -40,12 +40,12 @@ public class MCTSPacMan extends Controller<MOVE> {
         long timeStart = System.currentTimeMillis();
         long endTime = (timeDue == -1) ? timeStart + 35 : timeDue - 5;
         boolean mapChanged = maze != game.getCurrentMaze();
-        if(mapChanged){
+        if (mapChanged) {
             ghostPredictions.clear();
             System.out.println("Next Maze");
         }
         maze = game.getCurrentMaze();
-        if(pillModel == null){
+        if (pillModel == null) {
             pillModel = new PillModel(game.getNumberOfNodes());
         }
 
@@ -125,7 +125,7 @@ public class MCTSPacMan extends Controller<MOVE> {
     private MOVE getBestMove(Node root) {
         double bestValue = -Double.MAX_VALUE;
         int bestIndex = -1;
-        if(root == null || root.children == null) return MOVE.LEFT;
+        if (root == null || root.children == null) return MOVE.LEFT;
         for (int i = 0; i < root.children.length; i++) {
             if (root.children[i] != null) {
                 if (root.children[i].getTotalValue() > bestValue) {

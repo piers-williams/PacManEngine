@@ -11,11 +11,11 @@ import pacman.game.Game;
  * @param <T> The generic type of the move to be returned (either a single move for Ms Pac-Man or an EnumMap for the ghosts).
  */
 public abstract class Controller<T> implements Runnable {
+    protected T lastMove;    //this is now protected. You can set this directly in your getMove() method to save an immediate response.
     private boolean alive, wasSignalled, hasComputed;
     private volatile boolean threadStillRunning;
     private long timeDue;
     private Game game;
-    protected T lastMove;    //this is now protected. You can set this directly in your getMove() method to save an immediate response.
     private String name = "Unknown Controller";
 
     /**
@@ -121,18 +121,20 @@ public abstract class Controller<T> implements Runnable {
     public abstract T getMove(Game game, long timeDue);
 
     /**
-     * Used for recognising a controller
-     * @param name Name of the controller
-     */
-    public final void setName(String name){
-        this.name = name;
-    }
-
-    /**
-     *Gets the name of the controller
+     * Gets the name of the controller
+     *
      * @return The name of the controller
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Used for recognising a controller
+     *
+     * @param name Name of the controller
+     */
+    public final void setName(String name) {
+        this.name = name;
     }
 }

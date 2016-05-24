@@ -47,6 +47,7 @@ public class BasicMessenger implements Messenger {
         currentTick++;
 //        System.out.println("Messenger updated");
     }
+
     @Override
     public void addMessage(BasicMessage message) {
         int tickToDeliver = currentTick + delayConstant + (delayMultiplier * message.getType().getDelay());
@@ -56,6 +57,7 @@ public class BasicMessenger implements Messenger {
         }
         messages.get(tickToDeliver).add(message);
     }
+
     @Override
     public ArrayList<Message> getMessages(Constants.GHOST querier) {
         ArrayList<Message> results = new ArrayList<>();
@@ -70,7 +72,7 @@ public class BasicMessenger implements Messenger {
                 if (message.getRecipient() == null) {
 //                    System.out.println("Broadcast received I didn't send");
                     results.add(message);
-                }else if (message.getRecipient().equals(querier)) {
+                } else if (message.getRecipient().equals(querier)) {
 //                    System.out.println("Sent straight to me");
                     results.add(message);
                 }

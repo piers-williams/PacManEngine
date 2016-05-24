@@ -1,11 +1,11 @@
 package pacman.entries.ghosts;
 
-import java.util.EnumMap;
-
 import pacman.controllers.Controller;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
+
+import java.util.EnumMap;
 
 /*
  * This is the class you need to modify for your entry. In particular, you need to

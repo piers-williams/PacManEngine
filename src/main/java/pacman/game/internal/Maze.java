@@ -1,7 +1,5 @@
 package pacman.game.internal;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Scanner;
 
 import static pacman.game.Constants.*;

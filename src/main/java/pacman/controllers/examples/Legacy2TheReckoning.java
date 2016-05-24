@@ -1,9 +1,9 @@
 package pacman.controllers.examples;
 
-import java.util.EnumMap;
-
 import pacman.controllers.Controller;
 import pacman.game.Game;
+
+import java.util.EnumMap;
 
 import static pacman.game.Constants.*;
 

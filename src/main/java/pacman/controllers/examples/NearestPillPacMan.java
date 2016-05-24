@@ -1,14 +1,15 @@
 package pacman.controllers.examples;
 
-import pacman.controllers.Controller;
+import pacman.controllers.PacmanController;
 import pacman.game.Game;
 
-import static pacman.game.Constants.*;
+import static pacman.game.Constants.DM;
+import static pacman.game.Constants.MOVE;
 
 /*
  * The Class NearestPillPacMan.
  */
-public class NearestPillPacMan extends Controller<MOVE> {
+public class NearestPillPacMan extends PacmanController {
 
     /* (non-Javadoc)
      * @see pacman.controllers.Controller#getMove(pacman.game.Game, long)

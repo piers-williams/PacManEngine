@@ -1,9 +1,9 @@
 package pacman.controllers.examples;
 
-import java.util.ArrayList;
-
-import pacman.controllers.Controller;
+import pacman.controllers.PacmanController;
 import pacman.game.Game;
+
+import java.util.ArrayList;
 
 import static pacman.game.Constants.*;
 
@@ -17,7 +17,7 @@ import static pacman.game.Constants.*;
  * 2. Go after the nearest edible ghost
  * 3. Go to the nearest pill/power pill
  */
-public class StarterPacMan extends Controller<MOVE> {
+public class StarterPacMan extends PacmanController {
     private static final int MIN_DISTANCE = 20;    //if a ghost is this close, run away
 
     public MOVE getMove(Game game, long timeDue) {

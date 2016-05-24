@@ -41,7 +41,7 @@ public class GhostPredictions {
     public double calculate(int index) {
         double sum = 0.0d;
         for (GHOST ghost : locations.keySet()) {
-            sum +=locations.get(ghost).getProbability(index);
+            sum += locations.get(ghost).getProbability(index);
         }
         return sum;
     }

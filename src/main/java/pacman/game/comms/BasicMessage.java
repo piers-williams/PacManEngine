@@ -5,7 +5,7 @@ import pacman.game.Constants.GHOST;
 
 /**
  * Represents a message for the game.
- *
+ * <p>
  * Very inflexible - only allowed information will be possible.
  */
 public final class BasicMessage implements Message {

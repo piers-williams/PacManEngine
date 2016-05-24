@@ -1,7 +1,6 @@
 package pacman.controllers.examples.po;
 
-import pacman.controllers.Controller;
-import pacman.game.Constants;
+import pacman.controllers.PacmanController;
 import pacman.game.Game;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import static pacman.game.Constants.*;
 /**
  * Created by Piers on 15/02/2016.
  */
-public class POPacMan extends Controller<MOVE> {
+public class POPacMan extends PacmanController {
     private static final int MIN_DISTANCE = 20;
     private Random random = new Random();
 
@@ -71,7 +70,7 @@ public class POPacMan extends Controller<MOVE> {
 
         for (int i = 0; i < powerPills.length; i++) {            //check with power pills are available
             Boolean pillStillAvailable = game.isPillStillAvailable(i);
-            if(pillStillAvailable == null) continue;
+            if (pillStillAvailable == null) continue;
             if (game.isPowerPillStillAvailable(i)) {
                 targets.add(powerPills[i]);
             }

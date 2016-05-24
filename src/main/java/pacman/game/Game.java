@@ -337,7 +337,6 @@ public final class Game {
      * Then allow a copy of the game to be made with some information provided.
      *
      * @param copyMessenger should the messenger be deep copied or not
-     *
      * @return the game
      */
     public Game copy(boolean copyMessenger) {
@@ -408,7 +407,7 @@ public final class Game {
         return game;
     }
 
-    private boolean canBeForwarded(){
+    private boolean canBeForwarded() {
         return !po || beenBlanked;
     }
 
@@ -426,28 +425,28 @@ public final class Game {
      * @param ghostMoves The moves supplied by the ghosts controller
      */
     public void advanceGame(MOVE pacManMove, EnumMap<GHOST, MOVE> ghostMoves) {
-        if(!canBeForwarded()) return;
+        if (!canBeForwarded()) return;
         updatePacMan(pacManMove);
         updateGhosts(ghostMoves);
         updateGame();
     }
 
     public void advanceGameWithoutReverse(MOVE pacManMove, EnumMap<GHOST, MOVE> ghostMoves) {
-        if(!canBeForwarded()) return;
+        if (!canBeForwarded()) return;
         updatePacMan(pacManMove);
         updateGhostsWithoutReverse(ghostMoves);
         updateGame();
     }
 
     public void advanceGameWithForcedReverse(MOVE pacManMove, EnumMap<GHOST, MOVE> ghostMoves) {
-        if(!canBeForwarded()) return;
+        if (!canBeForwarded()) return;
         updatePacMan(pacManMove);
         updateGhostsWithForcedReverse(ghostMoves);
         updateGame();
     }
 
     public void advanceGameWithPowerPillReverseOnly(MOVE pacManMove, EnumMap<GHOST, MOVE> ghostMoves) {
-        if(!canBeForwarded()) return;
+        if (!canBeForwarded()) return;
         updatePacMan(pacManMove);
 
         if (powerPillWasEaten)
@@ -464,7 +463,7 @@ public final class Game {
      * @param pacManMove The move supplied by the Ms Pac-Man controller
      */
     public void updatePacMan(MOVE pacManMove) {
-        if(!canBeForwarded()) return;
+        if (!canBeForwarded()) return;
         _updatePacMan(pacManMove);                    //move pac-man
         _eatPill();                                    //eat a pill
         _eatPowerPill();                            //eat a power pill
@@ -476,7 +475,7 @@ public final class Game {
      * @param ghostMoves The moves supplied by the ghosts controller
      */
     public void updateGhosts(EnumMap<GHOST, MOVE> ghostMoves) {
-        if(!canBeForwarded()) return;
+        if (!canBeForwarded()) return;
         ghostMoves = _completeGhostMoves(ghostMoves);
 
         if (!_reverseGhosts(ghostMoves, false))
@@ -484,13 +483,13 @@ public final class Game {
     }
 
     public void updateGhostsWithoutReverse(EnumMap<GHOST, MOVE> ghostMoves) {
-        if(!canBeForwarded()) return;
+        if (!canBeForwarded()) return;
         ghostMoves = _completeGhostMoves(ghostMoves);
         _updateGhosts(ghostMoves);
     }
 
     public void updateGhostsWithForcedReverse(EnumMap<GHOST, MOVE> ghostMoves) {
-        if(!canBeForwarded()) return;
+        if (!canBeForwarded()) return;
         ghostMoves = _completeGhostMoves(ghostMoves);
         _reverseGhosts(ghostMoves, true);
     }
@@ -501,7 +500,7 @@ public final class Game {
      * awarded the extra live. Then update the time and see if the level or game is over.
      */
     public void updateGame() {
-        if(!canBeForwarded()) return;
+        if (!canBeForwarded()) return;
         _feast();                                    //ghosts eat pac-man or vice versa
         _updateLairTimes();
         _updatePacManExtraLife();
@@ -522,10 +521,9 @@ public final class Game {
      * @param updateExtraLife Whether or not to update the extra life
      * @param updateTotalTime Whether or not to update the total time
      * @param updateLevelTime Whether or not to update the level time
-     *
      */
     public void updateGame(boolean feast, boolean updateLairTimes, boolean updateExtraLife, boolean updateTotalTime, boolean updateLevelTime) {
-        if(!canBeForwarded()) return;
+        if (!canBeForwarded()) return;
         if (feast) _feast();                //ghosts eat pac-man or vice versa
         if (updateLairTimes) _updateLairTimes();
         if (updateExtraLife) _updatePacManExtraLife();
@@ -792,7 +790,6 @@ public final class Game {
      * Returns whether a ghost was eaten in the last time step
      *
      * @param ghost the ghost to check
-     *
      * @return whether a ghost was eaten.
      */
     public boolean wasGhostEaten(GHOST ghost) {
@@ -1240,7 +1237,8 @@ public final class Game {
         return indices;
     }
 
-    /**s
+    /**
+     * s
      * If in lair (getLairTime(-) &gt; 0) or if not at junction.
      *
      * @param ghostType the ghost type
@@ -1746,6 +1744,7 @@ public final class Game {
 
     /**
      * Gets a data structure that can be modified and then used to construct a forward model
+     *
      * @return The GameInfo object for use in making the
      */
     public GameInfo getBlankGameInfo() {
@@ -1755,6 +1754,7 @@ public final class Game {
 
     /**
      * Gets a copy of the game that is populated with the data contained within info
+     *
      * @param info The data you wish the game to be supplied with
      * @return The resultant game
      */
@@ -1778,9 +1778,10 @@ public final class Game {
 
     /**
      * Is this game Partially Observable?
+     *
      * @return The boolean answer to the question
      */
-    public boolean isGamePo(){
+    public boolean isGamePo() {
         return po;
     }
 }
