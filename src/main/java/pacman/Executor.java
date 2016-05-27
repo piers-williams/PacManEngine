@@ -377,12 +377,14 @@ public class Executor {
      * @param ghostController  The Ghosts controller
      * @param fixedTime        Whether or not to wait until 40ms are up even if both controllers already responded
      * @param visual           Indicates whether or not to use visuals
-     * @return int score achieved by Ms. Pac-Man
+     * @param desc             the description for the stats
+     * @return Stat score achieved by Ms. Pac-Man
      */
-    public int runGameTimedSpeedOptimised(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean fixedTime, boolean visual) {
+    public Stats runGameTimedSpeedOptimised(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean fixedTime, boolean visual, String desc) {
         Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
         GameView gv = null;
+        Stats stats = new Stats(desc);
 
         if (visual)
             gv = new GameView(game).showGame();
@@ -423,7 +425,8 @@ public class Executor {
 
         pacManController.terminate();
         ghostController.terminate();
-        return game.getScore();
+        stats.add(game.getScore());
+        return stats;
     }
 
     /**
