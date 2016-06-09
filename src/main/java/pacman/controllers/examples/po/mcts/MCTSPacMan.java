@@ -5,6 +5,7 @@ import pacman.controllers.examples.po.mcts.prediction.GhostLocation;
 import pacman.controllers.examples.po.mcts.prediction.fast.GhostPredictionsFast;
 import pacman.game.Game;
 import pacman.game.internal.Maze;
+import pacman.game.util.Stats;
 
 import java.util.*;
 
@@ -16,16 +17,20 @@ import static pacman.game.Constants.MOVE;
  */
 public class MCTSPacMan extends PacmanController {
 
-    public static int DEATH_PENALTY = 1000;
-    public static int PILL_GAIN = 10;
-    private int maxDepth = 300;
-    private int treeLimit = 100;
+    public static int DEATH_PENALTY = 1;
+    public static int PILL_GAIN = 1;
+    private int maxDepth = 150;
+    private int treeLimit = 50;
     private Random random = new Random();
     private Maze maze;
     private int numberOfLives;
     private PillModel pillModel;
 
     private List<GhostPredictionsFast> ghostPredictions = new ArrayList<>();
+
+    private boolean enableStatistics = false;
+    // Statistics - [ms for start, iterations in loop, refreshStats]
+    private Stats[] stats;
 
     public MCTSPacMan(int maxDepth, int treeLimit) {
         this.maxDepth = maxDepth;
@@ -36,6 +41,16 @@ public class MCTSPacMan extends PacmanController {
 
     }
 
+    public void setEnableStatistics(boolean enableStatistics) {
+        this.enableStatistics = enableStatistics;
+        if (this.enableStatistics) {
+            stats = new Stats[3];
+            stats[0] = new Stats("Turn maintenance timing");
+            stats[1] = new Stats("Iterations in loop");
+            stats[2] = new Stats("Statistics Refresh");
+        }
+    }
+
     @Override
     public MOVE getMove(Game game, long timeDue) {
         long timeStart = System.currentTimeMillis();
@@ -43,11 +58,15 @@ public class MCTSPacMan extends PacmanController {
         boolean mapChanged = maze != game.getCurrentMaze();
         if (mapChanged) {
             ghostPredictions.clear();
+            pillModel = null;
             System.out.println("Next Maze");
         }
         maze = game.getCurrentMaze();
         if (pillModel == null) {
             pillModel = new PillModel(game.getNumberOfNodes());
+            for (int index : maze.pillIndices) {
+                pillModel.observe(index, true);
+            }
         }
 
         // Tracking lives - need to throw away ghost information on death as they go back to the lair
@@ -56,7 +75,6 @@ public class MCTSPacMan extends PacmanController {
         if (died) {
             ghostPredictions.clear();
         }
-
 
         // Populate the list if needed
         if (ghostPredictions.isEmpty()) {
@@ -68,13 +86,14 @@ public class MCTSPacMan extends PacmanController {
             }
         }
 
-        //Update the pill model
+//        //Update the pill model
         for (int index : game.getPillIndices()) {
             pillModel.observe(index, true);
         }
 
         // With any luck we can keep it
         boolean updated = false;
+        boolean ghostSeen = false;
         // Update the predictions
         GhostPredictionsFast first = ghostPredictions.get(0);
         for (GHOST ghost : GHOST.values()) {
@@ -82,6 +101,7 @@ public class MCTSPacMan extends PacmanController {
             if (ghostIndex != -1) {
                 first.observe(ghost, ghostIndex, game.getGhostLastMoveMade(ghost));
                 updated = true;
+                ghostSeen = true;
             } else {
                 LinkedList<GhostLocation> locationList = new LinkedList<>(first.getGhostLocations(ghost));
                 for (GhostLocation location : locationList) {
@@ -103,25 +123,43 @@ public class MCTSPacMan extends PacmanController {
                 temp.update();
                 ghostPredictions.add(temp);
             }
+            if (enableStatistics) {
+                stats[2].add(1);
+            }
         } else {
             // Otherwise just extend it by one
             GhostPredictionsFast next = ghostPredictions.get(ghostPredictions.size() - 1).copy();
             next.update();
             ghostPredictions.add(new GhostPredictionsFast(game.getCurrentMaze()));
         }
+        if (enableStatistics) {
+            stats[0].add(System.currentTimeMillis() - timeStart);
+        }
 
         Node root = new Node(this, game.getPacmanCurrentNodeIndex(), game.getPacmanLastMoveMade(), pillModel);
-        while (System.currentTimeMillis() < endTime) {
-            Node current = root.select();
-            double value = current.rollout();
-            current.updateValues(value);
+        if (root.decisionNeeded() || ghostSeen) {
+            while (System.currentTimeMillis() < endTime) {
+                Node current = root.select();
+                double value = current.rollout();
+                value++;
+                value /= 2;
+//                System.out.println("Value: " + value);
+                current.updateValues(value);
+            }
+            if (enableStatistics) {
+//                System.out.println("Completed: " + root.getNumberOfVisits() + " Updated: " + updated);
+                stats[1].add(root.getNumberOfVisits());
+            }
         }
         // Always need to throw away the first one at the end of the turn
         ghostPredictions.remove(0);
 
-//        System.out.println("Completed: " + root.getNumberOfVisits() + " Updated: " + updated);
-//        printMoves(root);
-        return getBestMove(root);
+        if (root.decisionNeeded() || ghostSeen) {
+            printMoves(root);
+            return getBestMove(root);
+        } else {
+            return root.getMoveToThisState();
+        }
     }
 
     private MOVE getBestMove(Node root) {
@@ -142,8 +180,12 @@ public class MCTSPacMan extends PacmanController {
 
     private void printMoves(Node root) {
         if (root.children == null) return;
+        System.out.println("Moves\n");
         for (Node child : root.children) {
-            System.out.println("\t Child: " + child.getMoveToThisState() + " Value: " + child.getTotalValue());
+            System.out.println("\t Child: " + child.getMoveToThisState() + " Ghost Penalty: " + child.getGhostPenalty());
+            System.out.println("\t Child: " + child.getMoveToThisState() + " Pill Score: " + child.getPillScore());
+            System.out.println("\t Child: " + child.getMoveToThisState() + " Total Value: " + child.getTotalValue());
+            System.out.println("\t Child: " + child.getMoveToThisState() + " Number Visits: " + child.getNumberOfVisits());
         }
     }
 
@@ -164,13 +206,18 @@ public class MCTSPacMan extends PacmanController {
     }
 
     public double getPredictions(int depth, int index) {
-        return Math.min(DEATH_PENALTY, ghostPredictions.get(depth).calculate(index) * DEATH_PENALTY);
+//        return 0;
+        return ghostPredictions.get(depth).calculate(index) * DEATH_PENALTY;
+    }
+
+    public Stats[] getStats() {
+        return stats;
     }
 }
 
 class Node {
     private static final double EPSILON = 1E-6;
-    private static final double DISCOUNT_FACTOR = 0.95;
+    private static final double DISCOUNT_FACTOR = 1;
     protected Node[] children;
     private MCTSPacMan mctsPacMan;
     private Node parent;
@@ -181,8 +228,10 @@ class Node {
     // This is the depth in tree
     private int currentDepth = 0;
     private PacManLocation pacManLocation;
-    // This is the score considered to have been obtained by the time we reach this node
-    private double rawScore = 0.0d;
+    private double pillScore = 0;
+    private double ghostPenalty = 0;
+
+
     private PillModel pillModel;
 
     public Node(MCTSPacMan mctsPacMan, int index, MOVE moveToThisNode, PillModel pillModel) {
@@ -196,9 +245,8 @@ class Node {
         this.currentDepth = parent.currentDepth++;
         this.mctsPacMan = parent.mctsPacMan;
         pacManLocation = new PacManLocation(index, moveToThisNode, mctsPacMan.getMaze());
-        this.pillModel = parent.pillModel.copy();
-        this.pillModel.update(index);
-        this.rawScore = parent.rawScore;
+        this.pillScore = parent.pillScore;
+        this.ghostPenalty = parent.ghostPenalty;
     }
 
     public boolean decisionNeeded() {
@@ -209,6 +257,7 @@ class Node {
         Node current = this;
 
         while (current.currentDepth < mctsPacMan.getTreeLimit()) {
+            if(current.isLeaf()) return current;
             if (current.isFullyExpanded()) {
                 current = current.selectBestChild();
             } else {
@@ -234,21 +283,24 @@ class Node {
 
     public void updateValues(double value) {
         Node current = this;
+        double discount = 1;
         while (current.parent != null) {
-            current.totalValue += value;
+            current.totalValue += value * discount;
             current.numberOfVisits++;
             current = current.parent;
+            discount *= DISCOUNT_FACTOR;
         }
         // Root - update visits
         current.numberOfVisits++;
     }
 
-
-    // TODO Write this to skip nodes that don't contain decisions
     public Node expand() {
         int bestAction = 0;
         double bestValue = -Double.MAX_VALUE;
-        if (children == null) children = new Node[pacManLocation.possibleMoves().length];
+        if (children == null) {
+            children = new Node[(parent == null) ? pacManLocation.allPossibleMovesIncludingBackwards().length : pacManLocation.possibleMoves().length];
+//            children = new Node[pacManLocation.possibleMoves().length];
+        }
         Random random = mctsPacMan.getRandom();
         for (int i = 0; i < children.length; i++) {
             double x = random.nextDouble();
@@ -259,44 +311,49 @@ class Node {
         }
         PacManLocation next = pacManLocation.copy();
         // Loop until we get to the next decision
-        MOVE bestMOVE = pacManLocation.possibleMoves()[bestAction];
-        int depth = currentDepth + 1;
+        MOVE bestMOVE = (parent == null) ? pacManLocation.allPossibleMovesIncludingBackwards()[bestAction] : pacManLocation.possibleMoves()[bestAction];
+//        MOVE bestMOVE =  pacManLocation.possibleMoves()[bestAction];
+        int depth = currentDepth++;
         next.update(bestMOVE);
-        while(true){
-            // decision
-            if(next.possibleMoves().length >= 2) break;
-            // That move no longer available
-            if(next.possibleMoves()[0] != bestMOVE) break;
-            next.update(bestMOVE);
+        PillModel childModel = pillModel.copy();
+        double ghostPenalty = 0.0d;
+        while (true) {
             depth++;
+            if (depth >= mctsPacMan.getMaxDepth() - 1) break;
+            // decision
+            if (next.possibleMoves().length >= 2) break;
+            // That move no longer available
+            if (next.possibleMoves()[0] != bestMOVE) break;
+            next.update(bestMOVE);
+            childModel.update(next.getIndex());
+            ghostPenalty += mctsPacMan.getPredictions(depth, next.getIndex());
+            if(ghostPenalty >= MCTSPacMan.DEATH_PENALTY) break;
         }
         children[bestAction] = new Node(this, next.getIndex(), next.getLastMoveMade());
-        children[bestAction].rawScore = -mctsPacMan.getPredictions(depth, next.getIndex());
+        children[bestAction].ghostPenalty += -ghostPenalty;
+        children[bestAction].pillModel = childModel;
+        children[bestAction].pillScore = childModel.getPillsFraction() * MCTSPacMan.PILL_GAIN;
+//        System.out.println("Pill Score: " + children[bestAction].pillScore );
         childrenExpandedSoFar++;
         return children[bestAction];
     }
 
     public double rollout() {
         int depth = currentDepth;
-        double score = rawScore;
+        double rolloutGhostPenalty = ghostPenalty;
         PacManLocation next = pacManLocation.copy();
         PillModel rolloutPillModel = pillModel.copy();
-        int pillsEaten = rolloutPillModel.getPillsEaten();
-        double discount = 1;
+
         while (depth < mctsPacMan.getMaxDepth() - 1) {
+            if (rolloutGhostPenalty >= MCTSPacMan.DEATH_PENALTY) break;
             int numPossibleMoves = next.possibleMoves().length;
             next.update(next.possibleMoves()[mctsPacMan.getRandom().nextInt(numPossibleMoves)]);
             rolloutPillModel.update(next.getIndex());
-            int pillsEatenThisTurn = pillsEaten - rolloutPillModel.getPillsEaten();
-            pillsEaten = rolloutPillModel.getPillsEaten();
-//            score -= discount * mctsPacMan.getPredictions(depth, next.getIndex());
-//            score += discount * (pillsEatenThisTurn * MCTSPacMan.PILL_GAIN);
+            rolloutGhostPenalty -= mctsPacMan.getPredictions(depth, next.getIndex());
             depth++;
-            discount *= DISCOUNT_FACTOR;
         }
-        score -= discount * mctsPacMan.getPredictions(depth, next.getIndex());
-        score += discount * (rolloutPillModel.getPillsEaten() * MCTSPacMan.PILL_GAIN);
-        return score;
+//        System.out.println(rolloutGhostPenalty + ": " + rolloutPillScore);
+        return rolloutGhostPenalty + rolloutPillModel.getPillsFraction();
     }
 
     private boolean isFullyExpanded() {
@@ -324,6 +381,18 @@ class Node {
     public MOVE getMoveToThisState() {
         return pacManLocation.getLastMoveMade();
     }
+
+    public boolean isLeaf(){
+        return (ghostPenalty >= MCTSPacMan.DEATH_PENALTY);
+    }
+
+    public double getPillScore() {
+        return pillScore;
+    }
+
+    public double getGhostPenalty() {
+        return ghostPenalty;
+    }
 }
 
 class PacManLocation {
@@ -340,6 +409,10 @@ class PacManLocation {
     // Returns all possible moves except the last move made.
     public MOVE[] possibleMoves() {
         return maze.graph[index].allPossibleMoves.get(lastMoveMade);
+    }
+
+    public MOVE[] allPossibleMovesIncludingBackwards() {
+        return maze.graph[index].neighbourhood.keySet().toArray(new MOVE[maze.graph[index].neighbourhood.keySet().size()]);
     }
 
     public void update(MOVE move) {
@@ -367,14 +440,20 @@ class PacManLocation {
 class PillModel {
     private BitSet pills;
     private int pillsEaten;
+    private double totalPills;
 
     public PillModel(int indices) {
+        this.totalPills = indices;
         this.pills = new BitSet(indices);
     }
 
     // Pacman visited this index
     public void update(int index) {
-        if (pills.get(index)) pillsEaten++;
+        if (pills.get(index)) {
+            pillsEaten++;
+            pills.set(index, false);
+//            pills.flip(index);
+        }
     }
 
     // There is a pill here!
@@ -386,9 +465,15 @@ class PillModel {
         return pillsEaten;
     }
 
+    public double getPillsFraction(){
+        return pillsEaten / totalPills;
+    }
+
     public PillModel copy() {
-        PillModel other = new PillModel(this.pills.length());
+        PillModel other = new PillModel((int)this.totalPills);
         other.pills = (BitSet) this.pills.clone();
+        other.totalPills = this.totalPills;
+        other.pillsEaten = pillsEaten;
         return other;
     }
 }

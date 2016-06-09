@@ -2,6 +2,7 @@ package pacman;
 
 import pacman.controllers.Controller;
 import pacman.controllers.HumanController;
+import pacman.controllers.examples.DudGhosts;
 import pacman.controllers.examples.StarterGhosts;
 import pacman.controllers.examples.StarterPacMan;
 import pacman.controllers.examples.po.POCommGhosts;
@@ -66,8 +67,16 @@ public class Executor {
 
 //        exec.runGameTimed(new POPacMan(), new StarterGhosts(), true);
 
-//        poExec.runGame(new MCTSPacMan(), new POGhosts(), true, 40);
-        int n = 1000;
+        MCTSPacMan pacman = new MCTSPacMan();
+        pacman.setEnableStatistics(true);
+//        poExec.runGame(pacman, new DudGhosts(), true, 40);
+        poExec.runGame(pacman, new POCommGhosts(50), true, 40);
+//
+        Stats[] data = pacman.getStats();
+        for(Stats stats : data){
+            System.out.println(stats);
+        }
+        int n = 10;
 //
 //        Stats[] data = poExec.runExperimentTicks(new POPacMan(), new POCommGhosts(50), n, "POP Vs POGC");
 //        for(Stats stat : data){
@@ -77,42 +86,48 @@ public class Executor {
         int ticks = 4000;
 
         Stats[][] results = new Stats[8][2];
-        results[0] = poExec.runExperiment(new POPacMan(), new POGhosts(), n, "POP Vs POG", ticks);
-        results[1] = exec.runExperiment(new StarterPacMan(), new POGhosts(), n, "COP Vs POG", ticks);
-        results[2] = poExec.runExperiment(new POPacMan(), new StarterGhosts(), n, "POP Vs COG", ticks);
-        results[3] = exec.runExperiment(new StarterPacMan(), new StarterGhosts(), n, "COP Vs COG", ticks);
-        results[4] = nonPOCommExec.runExperiment(new StarterPacMan(), new POCommGhosts(50), n, "COP Vs POGC", ticks);
-        results[5] = poExec.runExperiment(new POPacMan(), new POCommGhosts(50), n, "POP Vs POGC", ticks);
-//        results[7] = poExec.runExperiment(new MCTSPacMan(), new POCommGhosts(50), n, "MCTS Vs POGC", ticks);
+//        results[0] = poExec.runExperiment(new POPacMan(), new POGhosts(), n, "POP Vs POG", ticks);
+//        results[1] = exec.runExperiment(new StarterPacMan(), new POGhosts(), n, "COP Vs POG", ticks);
+//        results[2] = poExec.runExperiment(new POPacMan(), new StarterGhosts(), n, "POP Vs COG", ticks);
+//        results[3] = exec.runExperiment(new StarterPacMan(), new StarterGhosts(), n, "COP Vs COG", ticks);
+//        results[4] = nonPOCommExec.runExperiment(new StarterPacMan(), new POCommGhosts(50), n, "COP Vs POGC", ticks);
+//        results[5] = poExec.runExperiment(new POPacMan(), new POCommGhosts(50), n, "POP Vs POGC", ticks);
 //        results[6] = poExec.runExperiment(new MCTSPacMan(), new StarterGhosts(), n, "MCTS  Vs COG", ticks);
+//        results[7] = poExec.runExperiment(new MCTSPacMan(), new POCommGhosts(50), n, "MCTS Vs POGC", ticks);
+
+
 //
-//
-////
         System.out.println("\n");
         for (int i = 0; i < results.length; i++) {
             System.out.println("\t" + results[i][0]);
             System.out.println("\t" + results[i][1]);
         }
-
-//        File file = new File("results/thresholdCOP.csv");
-//        file.createNewFile();
-//        File filePop = new File("results/thresholdPOP.csv");
-//        filePop.createNewFile();
 //
-//        FileWriter writerCOP = new FileWriter(file);
-//        FileWriter writerPOP = new FileWriter(filePop);
-//        String format = "AI, n, avg, sum, sumsq, sd, n, min, max, stdErr, ms\n";
+//        File file = new File("results/mctsTuning.csv");
+//        file.createNewFile();
+//        File fileTimings = new File("results/mctsTimings.csv");
+//        fileTimings.createNewFile();
+
+//        FileWriter writerCOP = new FileWriter(fileTimings);
+//        FileWriter writerPOP = new FileWriter(file);
+//        String format = "AI, i, avg, sum, sumsq, sd, n, min, max, stdErr, ms\n";
 //        writerCOP.write(format);
 //        writerPOP.write(format);
-//
-//        for(int i = 0; i <= 200; i+=1){
+
+//        for(int i = 100; i <= 300; i+=10){
 //            System.out.println("Starting variable: " + i);
-//            Stats stat = (nonPOCommExec.runExperiment(new StarterPacMan(), new POCommGhosts(i), n, "COP VS POGC"));
+//            MCTSPacMan agent = new MCTSPacMan(i, i * 10);
+//            agent.setEnableStatistics(true);
+//            Stats[] stat = (poExec.runExperiment(agent, new POCommGhosts(50), n, "MCTS(" + i + " : " + i * 10 + ") Vs POGC"));
 //            writeStat(writerCOP, stat, i);
 //            stat = (poExec.runExperiment(new POPacMan(), new POCommGhosts(i), n, "POP VS POGC"));
-//            writeStat(writerPOP, stat, i);
+//            for(Stats data : agent.getStats()){
+//                writeStat(writerPOP, data, i);
+//            }
+//            writeStat(writerPOP, stat[0], i);
+//            writeStat(writerPOP, stat[1], i);
 //        }
-//
+
 //        writerCOP.flush();
 //        writerPOP.flush();
 //        writerCOP.close();

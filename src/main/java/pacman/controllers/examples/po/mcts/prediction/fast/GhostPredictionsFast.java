@@ -86,12 +86,13 @@ public class GhostPredictionsFast {
     }
 
     public final double calculate(int index) {
-        if (index >= mazeSize) System.out.println("Index was too large: " + index);
-        double sum = 0.0d;
+        double sum = 1.0d;
+        // Calculate the likelihood of there being no ghosts at all
         for (int ghost = 0; ghost < numGhosts; ghost++) {
-            sum += probabilities[(mazeSize * ghost) + index];
+            sum *= (1 - probabilities[(mazeSize * ghost) + index]);
         }
-        return sum;
+        // Then reverse the probability to work out the chance of a ghost
+        return 1 - sum;
     }
 
     public EnumMap<GHOST, GhostLocation> sampleLocations() {

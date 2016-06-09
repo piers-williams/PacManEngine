@@ -20,7 +20,7 @@ public class POCommGhosts extends Controller<EnumMap<GHOST, MOVE>> {
     private EnumMap<GHOST, MOVE> myMoves = new EnumMap<GHOST, MOVE>(GHOST.class);
 
     public POCommGhosts() {
-        this(5);
+        this(50);
     }
 
     public POCommGhosts(int TICK_THRESHOLD) {
