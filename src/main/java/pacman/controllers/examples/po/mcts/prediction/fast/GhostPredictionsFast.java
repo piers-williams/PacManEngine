@@ -24,6 +24,7 @@ public class GhostPredictionsFast {
     private MOVE[] backMoves;
     private Maze maze;
     private int mazeSize;
+    private static final double THRESHOLD = 1/32;
 
     public GhostPredictionsFast(Maze maze) {
         this.maze = maze;
@@ -57,7 +58,7 @@ public class GhostPredictionsFast {
     public void update() {
         for (int ghost = 0; ghost < numGhosts; ghost++) {
             for (int i = (mazeSize * ghost); i < (mazeSize * (ghost + 1)); i++) {
-                if (probabilities[i] > 0) {
+                if (probabilities[i] > THRESHOLD) {
                     Node currentNode = maze.graph[i % mazeSize];
                     int numberNodes = currentNode.numNeighbouringNodes;
                     double probability = probabilities[i] / (numberNodes - 1);

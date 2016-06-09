@@ -17,8 +17,9 @@ import static pacman.game.Constants.MOVE;
 public class MCTSPacMan extends PacmanController {
 
     public static int DEATH_PENALTY = 1000;
-    private int maxDepth = 100;
-    private int treeLimit = 50;
+    public static int PILL_GAIN = 10;
+    private int maxDepth = 300;
+    private int treeLimit = 100;
     private Random random = new Random();
     private Maze maze;
     private int numberOfLives;
@@ -115,10 +116,11 @@ public class MCTSPacMan extends PacmanController {
             double value = current.rollout();
             current.updateValues(value);
         }
+        // Always need to throw away the first one at the end of the turn
         ghostPredictions.remove(0);
 
-        // Always need to throw away the first one at the end of the turn
 //        System.out.println("Completed: " + root.getNumberOfVisits() + " Updated: " + updated);
+//        printMoves(root);
         return getBestMove(root);
     }
 
@@ -175,6 +177,8 @@ class Node {
     private int childrenExpandedSoFar = 0;
     private double totalValue = 0;
     private int numberOfVisits = 0;
+
+    // This is the depth in tree
     private int currentDepth = 0;
     private PacManLocation pacManLocation;
     // This is the score considered to have been obtained by the time we reach this node
@@ -189,10 +193,12 @@ class Node {
 
     public Node(Node parent, int index, MOVE moveToThisNode) {
         this.parent = parent;
+        this.currentDepth = parent.currentDepth++;
         this.mctsPacMan = parent.mctsPacMan;
         pacManLocation = new PacManLocation(index, moveToThisNode, mctsPacMan.getMaze());
         this.pillModel = parent.pillModel.copy();
         this.pillModel.update(index);
+        this.rawScore = parent.rawScore;
     }
 
     public boolean decisionNeeded() {
@@ -237,6 +243,8 @@ class Node {
         current.numberOfVisits++;
     }
 
+
+    // TODO Write this to skip nodes that don't contain decisions
     public Node expand() {
         int bestAction = 0;
         double bestValue = -Double.MAX_VALUE;
@@ -250,9 +258,20 @@ class Node {
             }
         }
         PacManLocation next = pacManLocation.copy();
-        next.update(pacManLocation.possibleMoves()[bestAction]);
+        // Loop until we get to the next decision
+        MOVE bestMOVE = pacManLocation.possibleMoves()[bestAction];
+        int depth = currentDepth + 1;
+        next.update(bestMOVE);
+        while(true){
+            // decision
+            if(next.possibleMoves().length >= 2) break;
+            // That move no longer available
+            if(next.possibleMoves()[0] != bestMOVE) break;
+            next.update(bestMOVE);
+            depth++;
+        }
         children[bestAction] = new Node(this, next.getIndex(), next.getLastMoveMade());
-        children[bestAction].rawScore += (Math.pow(DISCOUNT_FACTOR, currentDepth + 1) * -mctsPacMan.getPredictions(currentDepth + 1, next.getIndex()));
+        children[bestAction].rawScore = -mctsPacMan.getPredictions(depth, next.getIndex());
         childrenExpandedSoFar++;
         return children[bestAction];
     }
@@ -262,15 +281,22 @@ class Node {
         double score = rawScore;
         PacManLocation next = pacManLocation.copy();
         PillModel rolloutPillModel = pillModel.copy();
-        while (depth < mctsPacMan.getMaxDepth()) {
+        int pillsEaten = rolloutPillModel.getPillsEaten();
+        double discount = 1;
+        while (depth < mctsPacMan.getMaxDepth() - 1) {
             int numPossibleMoves = next.possibleMoves().length;
             next.update(next.possibleMoves()[mctsPacMan.getRandom().nextInt(numPossibleMoves)]);
             rolloutPillModel.update(next.getIndex());
-            // Penalty for ghosts
-            score -= Math.pow(DISCOUNT_FACTOR, depth) * mctsPacMan.getPredictions(depth, next.getIndex());
+            int pillsEatenThisTurn = pillsEaten - rolloutPillModel.getPillsEaten();
+            pillsEaten = rolloutPillModel.getPillsEaten();
+//            score -= discount * mctsPacMan.getPredictions(depth, next.getIndex());
+//            score += discount * (pillsEatenThisTurn * MCTSPacMan.PILL_GAIN);
             depth++;
+            discount *= DISCOUNT_FACTOR;
         }
-        return score + rolloutPillModel.getPillsEaten() * 10;
+        score -= discount * mctsPacMan.getPredictions(depth, next.getIndex());
+        score += discount * (rolloutPillModel.getPillsEaten() * MCTSPacMan.PILL_GAIN);
+        return score;
     }
 
     private boolean isFullyExpanded() {
@@ -311,6 +337,7 @@ class PacManLocation {
         this.maze = maze;
     }
 
+    // Returns all possible moves except the last move made.
     public MOVE[] possibleMoves() {
         return maze.graph[index].allPossibleMoves.get(lastMoveMade);
     }

@@ -67,7 +67,7 @@ public class Executor {
 //        exec.runGameTimed(new POPacMan(), new StarterGhosts(), true);
 
 //        poExec.runGame(new MCTSPacMan(), new POGhosts(), true, 40);
-        int n = 10;
+        int n = 1000;
 //
 //        Stats[] data = poExec.runExperimentTicks(new POPacMan(), new POCommGhosts(50), n, "POP Vs POGC");
 //        for(Stats stat : data){
@@ -83,8 +83,8 @@ public class Executor {
         results[3] = exec.runExperiment(new StarterPacMan(), new StarterGhosts(), n, "COP Vs COG", ticks);
         results[4] = nonPOCommExec.runExperiment(new StarterPacMan(), new POCommGhosts(50), n, "COP Vs POGC", ticks);
         results[5] = poExec.runExperiment(new POPacMan(), new POCommGhosts(50), n, "POP Vs POGC", ticks);
-        results[7] = poExec.runExperiment(new MCTSPacMan(), new POCommGhosts(50), n, "MCTS Vs POGC", ticks);
-        results[6] = poExec.runExperiment(new MCTSPacMan(), new StarterGhosts(), n, "MCTS  Vs COG", ticks);
+//        results[7] = poExec.runExperiment(new MCTSPacMan(), new POCommGhosts(50), n, "MCTS Vs POGC", ticks);
+//        results[6] = poExec.runExperiment(new MCTSPacMan(), new StarterGhosts(), n, "MCTS  Vs COG", ticks);
 //
 //
 ////
@@ -325,6 +325,7 @@ public class Executor {
             if (visual)
                 gv.repaint();
         }
+        System.out.println(game.getScore());
     }
 
     /**
