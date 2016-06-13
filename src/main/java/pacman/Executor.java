@@ -2,13 +2,6 @@ package pacman;
 
 import pacman.controllers.Controller;
 import pacman.controllers.HumanController;
-import pacman.controllers.examples.DudGhosts;
-import pacman.controllers.examples.StarterGhosts;
-import pacman.controllers.examples.StarterPacMan;
-import pacman.controllers.examples.po.POCommGhosts;
-import pacman.controllers.examples.po.POGhosts;
-import pacman.controllers.examples.po.POPacMan;
-import pacman.controllers.examples.po.mcts.MCTSPacMan;
 import pacman.game.Game;
 import pacman.game.GameView;
 import pacman.game.comms.BasicMessenger;
@@ -60,48 +53,7 @@ public class Executor {
      * @throws IOException It just does
      */
     public static void main(String[] args) throws IOException {
-        Executor exec = new Executor();
 
-        Executor poExec = new Executor(true, true);
-        Executor nonPOCommExec = new Executor(false, true);
-
-//        exec.runGameTimed(new POPacMan(), new StarterGhosts(), true);
-
-        MCTSPacMan pacman = new MCTSPacMan();
-        pacman.setEnableStatistics(true);
-//        poExec.runGame(pacman, new DudGhosts(), true, 40);
-        poExec.runGame(pacman, new POCommGhosts(50), true, 40);
-//
-        Stats[] data = pacman.getStats();
-        for(Stats stats : data){
-            System.out.println(stats);
-        }
-        int n = 10;
-//
-//        Stats[] data = poExec.runExperimentTicks(new POPacMan(), new POCommGhosts(50), n, "POP Vs POGC");
-//        for(Stats stat : data){
-//            System.out.println(stat);
-//        }
-
-        int ticks = 4000;
-
-        Stats[][] results = new Stats[8][2];
-//        results[0] = poExec.runExperiment(new POPacMan(), new POGhosts(), n, "POP Vs POG", ticks);
-//        results[1] = exec.runExperiment(new StarterPacMan(), new POGhosts(), n, "COP Vs POG", ticks);
-//        results[2] = poExec.runExperiment(new POPacMan(), new StarterGhosts(), n, "POP Vs COG", ticks);
-//        results[3] = exec.runExperiment(new StarterPacMan(), new StarterGhosts(), n, "COP Vs COG", ticks);
-//        results[4] = nonPOCommExec.runExperiment(new StarterPacMan(), new POCommGhosts(50), n, "COP Vs POGC", ticks);
-//        results[5] = poExec.runExperiment(new POPacMan(), new POCommGhosts(50), n, "POP Vs POGC", ticks);
-//        results[6] = poExec.runExperiment(new MCTSPacMan(), new StarterGhosts(), n, "MCTS  Vs COG", ticks);
-//        results[7] = poExec.runExperiment(new MCTSPacMan(), new POCommGhosts(50), n, "MCTS Vs POGC", ticks);
-
-
-//
-        System.out.println("\n");
-        for (int i = 0; i < results.length; i++) {
-            System.out.println("\t" + results[i][0]);
-            System.out.println("\t" + results[i][1]);
-        }
 //
 //        File file = new File("results/mctsTuning.csv");
 //        file.createNewFile();
