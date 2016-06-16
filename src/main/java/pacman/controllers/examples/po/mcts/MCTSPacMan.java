@@ -217,7 +217,7 @@ public class MCTSPacMan extends PacmanController {
 
 class Node {
     private static final double EPSILON = 1E-6;
-    private static final double DISCOUNT_FACTOR = 1;
+    private static final double DISCOUNT_FACTOR = 0.99;
     protected Node[] children;
     private MCTSPacMan mctsPacMan;
     private Node parent;
