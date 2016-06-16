@@ -1,7 +1,5 @@
 package pacman.game;
 
-import pacman.controllers.examples.po.mcts.prediction.GhostLocation;
-import pacman.controllers.examples.po.mcts.prediction.GhostPredictions;
 import pacman.game.Constants.*;
 import pacman.game.internal.PacMan;
 
@@ -39,7 +37,6 @@ public final class GameView extends JComponent {
     private GameFrame frame;
     private Graphics bufferGraphics;
     private BufferedImage offscreen;
-    private GhostPredictions predictions;
 
     private Color[] redAlphas;
 
@@ -234,55 +231,55 @@ public final class GameView extends JComponent {
         bufferGraphics.drawImage(images.getPacMan(lastPacManMove, time), game.getNodeXCood(pacLoc) * MAG - 1, game.getNodeYCood(pacLoc) * MAG + 3, null);
     }
 
-    private void drawPacManPredictions() {
-        if (predictions == null) {
-            predictions = new GhostPredictions(game.getCurrentMaze());
-            predictionTicks = game.getCurrentLevelTime();
-        }
-
-        // Update them
-        while (game.getCurrentLevelTime() > predictionTicks) {
-//            System.out.println("Updating");
-            long time = System.currentTimeMillis();
-            predictions.update();
-            System.out.println("Took: " + (System.currentTimeMillis() - time));
-            predictionTicks++;
-        }
-
-
-        // Make observations
-        Game po = game.copy(new PacMan(game.getPacmanCurrentNodeIndex(), game.getPacmanLastMoveMade(), game.getPacmanNumberOfLivesRemaining(), true));
-        // Check the 4 ghosts
-        for (GHOST ghost : GHOST.values()) {
-            int ghostIndex = po.getGhostCurrentNodeIndex(ghost);
-            if (ghostIndex != -1) {
-                predictions.observe(ghost, ghostIndex, po.getGhostLastMoveMade(ghost));
-            } else {
-                LinkedList<GhostLocation> locationList = new LinkedList<>(predictions.getGhostLocations(ghost));
-                for (GhostLocation location : locationList) {
-                    if (po.isNodeObservable(location.getIndex()))
-                        predictions.observeNotPresent(ghost, location.getIndex());
-                }
-            }
-        }
-
-        // Draw it
-        for (int i = 0; i < game.getNumberOfNodes(); i++) {
-            double probability = predictions.calculate(i);
-            if (probability > 1E-2) {
-//                System.out.println("Have a probability: " + probability + " alpha: " + (int)(128 * probability));
-//                bufferGraphics.setColor(new Color(255, 0, 0, (int) (Math.max(128 * probability, 255))));
-                bufferGraphics.setColor(redAlphas[(int) Math.min(255 * probability, 255)]);
-                bufferGraphics.fillRect(
-                        game.getNodeXCood(i) * MAG - 1,
-                        game.getNodeYCood(i) * MAG + 3,
-                        14, 14
-                );
-            }
-        }
-
-//        System.out.println(predictions);
-    }
+//    private void drawPacManPredictions() {
+//        if (predictions == null) {
+//            predictions = new GhostPredictions(game.getCurrentMaze());
+//            predictionTicks = game.getCurrentLevelTime();
+//        }
+//
+//        // Update them
+//        while (game.getCurrentLevelTime() > predictionTicks) {
+////            System.out.println("Updating");
+//            long time = System.currentTimeMillis();
+//            predictions.update();
+//            System.out.println("Took: " + (System.currentTimeMillis() - time));
+//            predictionTicks++;
+//        }
+//
+//
+//        // Make observations
+//        Game po = game.copy(new PacMan(game.getPacmanCurrentNodeIndex(), game.getPacmanLastMoveMade(), game.getPacmanNumberOfLivesRemaining(), true));
+//        // Check the 4 ghosts
+//        for (GHOST ghost : GHOST.values()) {
+//            int ghostIndex = po.getGhostCurrentNodeIndex(ghost);
+//            if (ghostIndex != -1) {
+//                predictions.observe(ghost, ghostIndex, po.getGhostLastMoveMade(ghost));
+//            } else {
+//                LinkedList<GhostLocation> locationList = new LinkedList<>(predictions.getGhostLocations(ghost));
+//                for (GhostLocation location : locationList) {
+//                    if (po.isNodeObservable(location.getIndex()))
+//                        predictions.observeNotPresent(ghost, location.getIndex());
+//                }
+//            }
+//        }
+//
+//        // Draw it
+//        for (int i = 0; i < game.getNumberOfNodes(); i++) {
+//            double probability = predictions.calculate(i);
+//            if (probability > 1E-2) {
+////                System.out.println("Have a probability: " + probability + " alpha: " + (int)(128 * probability));
+////                bufferGraphics.setColor(new Color(255, 0, 0, (int) (Math.max(128 * probability, 255))));
+//                bufferGraphics.setColor(redAlphas[(int) Math.min(255 * probability, 255)]);
+//                bufferGraphics.fillRect(
+//                        game.getNodeXCood(i) * MAG - 1,
+//                        game.getNodeYCood(i) * MAG + 3,
+//                        14, 14
+//                );
+//            }
+//        }
+//
+////        System.out.println(predictions);
+//    }
 
     private void drawPacManVisibility() {
         Game pacmanGame = game.copy(new PacMan(0, game.getPacmanLastMoveMade(), game.getPacmanNumberOfLivesRemaining(), false));
