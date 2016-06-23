@@ -18,7 +18,7 @@ public class KeyBoardInput extends KeyAdapter {
     }
 
     public void keyPressed(KeyEvent e) {
-        System.out.println("Pressed: " + e.getKeyChar());
+//        System.out.println("Pressed: " + e.getKeyChar());
         key = e.getKeyCode();
     }
 }

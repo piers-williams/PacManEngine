@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.EnumMap;
-import java.util.LinkedList;
 import java.util.Vector;
 
 import static pacman.game.Constants.*;
@@ -37,6 +36,7 @@ public final class GameView extends JComponent {
     private GameFrame frame;
     private Graphics bufferGraphics;
     private BufferedImage offscreen;
+    private boolean isPO = false;
 
     private Color[] redAlphas;
 
@@ -169,7 +169,9 @@ public final class GameView extends JComponent {
         drawGhosts();
         drawLives();
         drawGameInfo();
-//        drawPacManVisibility();
+        if (isPO) {
+            drawPacManVisibility();
+        }
 //        drawPacManPredictions();
         if (game.gameOver()) {
             drawGameOver();
@@ -321,7 +323,7 @@ public final class GameView extends JComponent {
             }
         }
 //
-        System.out.println("Total: " + game.getNumberOfNodes() + " Visible: " + totalVisisble);
+//        System.out.println("Total: " + game.getNumberOfNodes() + " Visible: " + totalVisisble);
 //        AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OUT, 0.5f);
 //        Graphics2D original = (Graphics2D) bufferGraphics;
 //        overlay.setComposite(composite);
@@ -565,5 +567,9 @@ public final class GameView extends JComponent {
 
             return image;
         }
+    }
+
+    public void setPO(boolean PO) {
+        isPO = PO;
     }
 }

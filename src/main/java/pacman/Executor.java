@@ -273,7 +273,7 @@ public class Executor {
      * @param visual           Indicates whether or not to use visuals
      * @param delay            The delay between time-steps
      */
-    public void runGame(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean visual, int delay) {
+    public int runGame(Controller<MOVE> pacManController, Controller<EnumMap<GHOST, MOVE>> ghostController, boolean visual, int delay) {
         Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
         GameView gv = null;
@@ -281,10 +281,12 @@ public class Executor {
         if (visual) {
             gv = new GameView(game).showGame();
             if (pacManController instanceof HumanController) {
-                System.out.println("Here");
-//                gv.setFocusable(true);
+//                System.out.println("Here");
+                gv.setFocusable(true);
+                gv.requestFocus();
+                gv.setPO(true);
                 gv.addKeyListener(((HumanController) pacManController).getKeyboardInput());
-                System.out.println("KeyListener added");
+//                System.out.println("KeyListener added");
             }
         }
 
@@ -300,6 +302,7 @@ public class Executor {
                 gv.repaint();
         }
         System.out.println(game.getScore());
+        return game.getScore();
     }
 
     /**
