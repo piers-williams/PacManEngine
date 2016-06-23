@@ -278,8 +278,15 @@ public class Executor {
 
         GameView gv = null;
 
-        if (visual)
+        if (visual) {
             gv = new GameView(game).showGame();
+            if (pacManController instanceof HumanController) {
+                System.out.println("Here");
+//                gv.setFocusable(true);
+                gv.addKeyListener(((HumanController) pacManController).getKeyboardInput());
+                System.out.println("KeyListener added");
+            }
+        }
 
         while (!game.gameOver()) {
             game.advanceGame(pacManController.getMove(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), -1), ghostController.getMove(game.copy(), -1));
