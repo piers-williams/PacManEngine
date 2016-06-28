@@ -77,6 +77,10 @@ public final class Game {
     // Messenger - null if not available
     private Messenger messenger;
 
+    protected boolean ghostsPresent = true;
+    protected boolean pillsPresent = true;
+    protected boolean powerPillsPresent = true;
+
     /**
      * Instantiates a new game. The seed is used to initialise the pseudo-random
      * number generator. This way, a game may be replicated exactly by using identical
@@ -207,10 +211,14 @@ public final class Game {
      * @param maze the maze
      */
     private void _setPills(Maze maze) {
-        pills = new BitSet(currentMaze.pillIndices.length);
-        pills.set(0, currentMaze.pillIndices.length);
-        powerPills = new BitSet(currentMaze.powerPillIndices.length);
-        powerPills.set(0, currentMaze.powerPillIndices.length);
+        if(pillsPresent) {
+            pills = new BitSet(currentMaze.pillIndices.length);
+            pills.set(0, currentMaze.pillIndices.length);
+        }
+        if(powerPillsPresent) {
+            powerPills = new BitSet(currentMaze.powerPillIndices.length);
+            powerPills.set(0, currentMaze.powerPillIndices.length);
+        }
     }
 
     /**
@@ -360,6 +368,10 @@ public final class Game {
         copy.powerPillWasEaten = powerPillWasEaten;
         copy.pacman = pacman.copy();
 
+        copy.ghostsPresent = ghostsPresent;
+        copy.pillsPresent = pillsPresent;
+        copy.powerPillsPresent = powerPillsPresent;
+
         copy.ghostsEaten = new EnumMap<GHOST, Boolean>(GHOST.class);
         copy.ghosts = new EnumMap<GHOST, Ghost>(GHOST.class);
 
@@ -476,6 +488,7 @@ public final class Game {
      */
     public void updateGhosts(EnumMap<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) return;
+        if(!ghostsPresent) return;
         ghostMoves = _completeGhostMoves(ghostMoves);
 
         if (!_reverseGhosts(ghostMoves, false))
@@ -484,12 +497,14 @@ public final class Game {
 
     public void updateGhostsWithoutReverse(EnumMap<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) return;
+        if(!ghostsPresent) return;
         ghostMoves = _completeGhostMoves(ghostMoves);
         _updateGhosts(ghostMoves);
     }
 
     public void updateGhostsWithForcedReverse(EnumMap<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) return;
+        if(!ghostsPresent) return;
         ghostMoves = _completeGhostMoves(ghostMoves);
         _reverseGhosts(ghostMoves, true);
     }
@@ -539,6 +554,7 @@ public final class Game {
      * _update lair times.
      */
     private void _updateLairTimes() {
+        if(!ghostsPresent) return;
         for (Ghost ghost : ghosts.values())
             if (ghost.lairTime > 0)
                 if (--ghost.lairTime == 0)
@@ -1783,5 +1799,17 @@ public final class Game {
      */
     public boolean isGamePo() {
         return po;
+    }
+
+    public void setGhostsPresent(boolean ghostsPresent) {
+        this.ghostsPresent = ghostsPresent;
+    }
+
+    public void setPillsPresent(boolean pillsPresent) {
+        this.pillsPresent = pillsPresent;
+    }
+
+    public void setPowerPillsPresent(boolean powerPillsPresent) {
+        this.powerPillsPresent = powerPillsPresent;
     }
 }

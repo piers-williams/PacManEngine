@@ -25,6 +25,9 @@ import static pacman.game.Constants.*;
 public class Executor {
     protected final boolean pacmanPO;
     protected final boolean ghostsMessage;
+    protected boolean ghostsPresent = true;
+    protected boolean pillsPresent = true;
+    protected boolean powerPillsPresent = true;
 
     protected Messenger messenger;
 
