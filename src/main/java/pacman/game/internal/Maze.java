@@ -39,9 +39,6 @@ public final class Maze {
     //Loads all the nodes from files and initialises all maze-specific information.
     private void loadNodes(String fileName) {
 
-//        BufferedReader br = new BufferedReader(new InputStreamReader(
-//                getClass().getResourceAsStream(pathMazes + "/" + fileName + ".txt")));
-
         Scanner scanner = new Scanner(getClass().getResourceAsStream(pathMazes + "/" + fileName + ".txt"));
         String input = scanner.nextLine();
 
