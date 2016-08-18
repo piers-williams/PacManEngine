@@ -40,7 +40,8 @@ import static pacman.game.Constants.*;
  * it has been provided with a GameInfo. Exact details tbc
  */
 public final class Game {
-    public static final int SIGHT_LIMIT = 100;
+    public static final POType PO_TYPE = POType.RADIUS;
+    public static final int SIGHT_LIMIT = 25;
     public static PathsCache[] caches = new PathsCache[NUM_MAZES];
     //mazes are only loaded once since they don't change over time
     private static Maze[] mazes = new Maze[NUM_MAZES];
@@ -139,15 +140,55 @@ public final class Game {
         Node currentNode = (mazes[mazeIndex]).graph[getNodeIndexOfOwner()];
         Node check = (mazes[mazeIndex]).graph[nodeIndex];
 
-        if (currentNode.x == check.x || currentNode.y == check.y) {
-            // The nodes are in a line
-            // If shortest path to the nodes is equal to direct distance, no obstacles
-            double manhattan = getManhattanDistance(currentNode.nodeIndex, check.nodeIndex);
+        switch (PO_TYPE) {
+            case LOS:
+                if (currentNode.x == check.x || currentNode.y == check.y) {
+                    // The nodes are in a line
+                    // If shortest path to the nodes is equal to direct distance, no obstacles
+                    return straightRouteBlocked(currentNode, check);
+                }
+                return false;
+            case RADIUS:
+                double manhattan = getManhattanDistance(currentNode.nodeIndex, check.nodeIndex);
+                return (manhattan <= SIGHT_LIMIT);
+            case FF_LOS:
+                if (currentNode.x == check.x || currentNode.y == check.y) {
+                    // Get direction currently going in
+                    MOVE previousMove = (agent >= NUM_GHOSTS) ? pacman.lastMoveMade : ghosts.get(GHOST.values()[agent]).lastMoveMade;
+                    switch (previousMove) {
+                        case UP:
+                            if (currentNode.x == check.x && currentNode.y < check.y) {
+                                return straightRouteBlocked(currentNode, check);
+                            }
+                            break;
+                        case DOWN:
+                            if (currentNode.x == check.x && currentNode.y > check.y) {
+                                return straightRouteBlocked(currentNode, check);
+                            }
+                            break;
+                        case LEFT:
+                            if(currentNode.y == check.y && currentNode.x > check.x){
+                                return straightRouteBlocked(currentNode, check);
+                            }
+                            break;
+                        case RIGHT:
+                            if(currentNode.y == check.y && currentNode.x < check.x){
+                                return straightRouteBlocked(currentNode, check);
+                            }
+                            break;
+                    }
+                }
+                break;
+        }
+        return false;
+    }
 
-            if (manhattan <= SIGHT_LIMIT) {
-                double shortestPath = getShortestPathDistance(currentNode.nodeIndex, check.nodeIndex);
-                return (manhattan == shortestPath);
-            }
+    private boolean straightRouteBlocked(Node startNode, Node endNode) {
+        double manhattan = getManhattanDistance(startNode.nodeIndex, endNode.nodeIndex);
+
+        if (manhattan <= SIGHT_LIMIT) {
+            double shortestPath = getShortestPathDistance(startNode.nodeIndex, endNode.nodeIndex);
+            return (manhattan == shortestPath);
         }
         return false;
     }
@@ -211,11 +252,11 @@ public final class Game {
      * @param maze the maze
      */
     private void _setPills(Maze maze) {
-        if(pillsPresent) {
+        if (pillsPresent) {
             pills = new BitSet(currentMaze.pillIndices.length);
             pills.set(0, currentMaze.pillIndices.length);
         }
-        if(powerPillsPresent) {
+        if (powerPillsPresent) {
             powerPills = new BitSet(currentMaze.powerPillIndices.length);
             powerPills.set(0, currentMaze.powerPillIndices.length);
         }
@@ -488,7 +529,7 @@ public final class Game {
      */
     public void updateGhosts(EnumMap<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) return;
-        if(!ghostsPresent) return;
+        if (!ghostsPresent) return;
         ghostMoves = _completeGhostMoves(ghostMoves);
 
         if (!_reverseGhosts(ghostMoves, false))
@@ -497,14 +538,14 @@ public final class Game {
 
     public void updateGhostsWithoutReverse(EnumMap<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) return;
-        if(!ghostsPresent) return;
+        if (!ghostsPresent) return;
         ghostMoves = _completeGhostMoves(ghostMoves);
         _updateGhosts(ghostMoves);
     }
 
     public void updateGhostsWithForcedReverse(EnumMap<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) return;
-        if(!ghostsPresent) return;
+        if (!ghostsPresent) return;
         ghostMoves = _completeGhostMoves(ghostMoves);
         _reverseGhosts(ghostMoves, true);
     }
@@ -554,7 +595,7 @@ public final class Game {
      * _update lair times.
      */
     private void _updateLairTimes() {
-        if(!ghostsPresent) return;
+        if (!ghostsPresent) return;
         for (Ghost ghost : ghosts.values())
             if (ghost.lairTime > 0)
                 if (--ghost.lairTime == 0)

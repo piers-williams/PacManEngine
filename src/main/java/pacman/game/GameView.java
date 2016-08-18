@@ -1,6 +1,7 @@
 package pacman.game;
 
 import pacman.game.Constants.*;
+import pacman.game.internal.Node;
 import pacman.game.internal.PacMan;
 
 import javax.imageio.ImageIO;
@@ -171,6 +172,7 @@ public final class GameView extends JComponent {
         drawGameInfo();
         if (isPO) {
             drawPacManVisibility();
+//            drawNodes();
         }
 //        drawPacManPredictions();
         if (game.gameOver()) {
@@ -283,6 +285,18 @@ public final class GameView extends JComponent {
 ////        System.out.println(predictions);
 //    }
 
+    private void drawNodes(){
+        bufferGraphics.setColor(Color.CYAN);
+        for(Node node : game.getCurrentMaze().graph){
+            bufferGraphics.drawRect(
+                    node.x * MAG - 1,
+                    node.y * MAG + 3,
+                    1,
+                    1
+            );
+        }
+    }
+
     private void drawPacManVisibility() {
         Game pacmanGame = game.copy(new PacMan(0, game.getPacmanLastMoveMade(), game.getPacmanNumberOfLivesRemaining(), false));
         BufferedImage image = new BufferedImage(GV_WIDTH * MAG, GV_HEIGHT * MAG, BufferedImage.TYPE_4BYTE_ABGR);
@@ -311,6 +325,7 @@ public final class GameView extends JComponent {
         for (MOVE move : MOVE.values()) {
             int nextPoint = pacmanLocation;
             while (pacmanGame.isNodeObservable(nextPoint)) {
+                // Don't need to do this - can wait till the last one.
                 overlay.fillRect(
                         game.getNodeXCood(nextPoint) * MAG - 1,
                         game.getNodeYCood(nextPoint) * MAG + 3,

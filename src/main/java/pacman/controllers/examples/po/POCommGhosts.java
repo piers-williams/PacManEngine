@@ -95,7 +95,8 @@ class POCommGhostImproved {
         }
         if (pacmanIndex == -1) pacmanIndex = lastPacmanIndex;
 
-        if (game.doesGhostRequireAction(ghost))        //if ghost requires an action
+        Boolean requiresAction = game.doesGhostRequireAction(ghost);
+        if (requiresAction != null && requiresAction)        //if ghost requires an action
         {
             if (pacmanIndex != -1) {
                 if (game.getGhostEdibleTime(ghost) > 0 || closeToPower(game))    //retreat from Ms Pac-Man if edible or if Ms Pac-Man is close to power pill
