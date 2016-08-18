@@ -40,8 +40,8 @@ import static pacman.game.Constants.*;
  * it has been provided with a GameInfo. Exact details tbc
  */
 public final class Game {
-    public static final POType PO_TYPE = POType.RADIUS;
-    public static final int SIGHT_LIMIT = 25;
+    public  POType PO_TYPE = POType.LOS;
+    public  int SIGHT_LIMIT = 100;
     public static PathsCache[] caches = new PathsCache[NUM_MAZES];
     //mazes are only loaded once since they don't change over time
     private static Maze[] mazes = new Maze[NUM_MAZES];
@@ -157,22 +157,22 @@ public final class Game {
                     MOVE previousMove = (agent >= NUM_GHOSTS) ? pacman.lastMoveMade : ghosts.get(GHOST.values()[agent]).lastMoveMade;
                     switch (previousMove) {
                         case UP:
-                            if (currentNode.x == check.x && currentNode.y < check.y) {
+                            if (currentNode.x == check.x && currentNode.y >= check.y) {
                                 return straightRouteBlocked(currentNode, check);
                             }
                             break;
                         case DOWN:
-                            if (currentNode.x == check.x && currentNode.y > check.y) {
+                            if (currentNode.x == check.x && currentNode.y <= check.y) {
                                 return straightRouteBlocked(currentNode, check);
                             }
                             break;
                         case LEFT:
-                            if(currentNode.y == check.y && currentNode.x > check.x){
+                            if(currentNode.y == check.y && currentNode.x >= check.x){
                                 return straightRouteBlocked(currentNode, check);
                             }
                             break;
                         case RIGHT:
-                            if(currentNode.y == check.y && currentNode.x < check.x){
+                            if(currentNode.y == check.y && currentNode.x <= check.x){
                                 return straightRouteBlocked(currentNode, check);
                             }
                             break;
@@ -408,6 +408,10 @@ public final class Game {
         copy.pillWasEaten = pillWasEaten;
         copy.powerPillWasEaten = powerPillWasEaten;
         copy.pacman = pacman.copy();
+
+        // Will need these to go away later
+        copy.SIGHT_LIMIT = SIGHT_LIMIT;
+        copy.PO_TYPE = PO_TYPE;
 
         copy.ghostsPresent = ghostsPresent;
         copy.pillsPresent = pillsPresent;
