@@ -375,7 +375,7 @@ public class Executor {
 
         new Thread(pacManController).start();
         new Thread(ghostController).start();
-
+        int ticks = 0;
         while (!game.gameOver()) {
             pacManController.update(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY);
             ghostController.update(game.copy(), System.currentTimeMillis() + DELAY);
@@ -402,6 +402,9 @@ public class Executor {
 
             if (visual)
                 gv.repaint();
+
+            ticks++;
+            if(ticks > 4000) break;
         }
 
         pacManController.terminate();

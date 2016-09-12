@@ -282,6 +282,7 @@ public final class Game {
      * @return The game state as a string
      */
     public String getGameState() {
+        if(po) return "";
         StringBuilder sb = new StringBuilder();
 
         sb.append(mazeIndex + "," + totalTime + "," + score + "," + currentLevelTime + "," + levelCount + ","

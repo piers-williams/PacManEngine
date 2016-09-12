@@ -38,6 +38,7 @@ public final class GameView extends JComponent {
     private Graphics bufferGraphics;
     private BufferedImage offscreen;
     private boolean isPO = false;
+    private GHOST ghost = null;
 
     private Color[] redAlphas;
 
@@ -171,7 +172,11 @@ public final class GameView extends JComponent {
         drawLives();
         drawGameInfo();
         if (isPO) {
-            drawPacManVisibility();
+            if(ghost == null) {
+                drawPacManVisibility();
+            }else{
+                drawGhostVisibility(ghost);
+            }
 //            drawNodes();
         }
 //        drawPacManPredictions();
@@ -297,14 +302,22 @@ public final class GameView extends JComponent {
         }
     }
 
-    private void drawPacManVisibility() {
+    private void drawPacManVisibility(){
         Game pacmanGame = game.copy(new PacMan(0, game.getPacmanLastMoveMade(), game.getPacmanNumberOfLivesRemaining(), false));
+        int pacmanLocation = game.getPacmanCurrentNodeIndex();
+        drawVisibility(pacmanLocation, pacmanGame);
+    }
+
+    private void drawGhostVisibility(GHOST ghost){
+        Game ghostGame = game.copy(ghost);
+        int ghostLocation = game.getGhostCurrentNodeIndex(ghost);
+        drawVisibility(ghostLocation, ghostGame);
+    }
+
+    private void drawVisibility(int location, Game pacmanGame) {
         BufferedImage image = new BufferedImage(GV_WIDTH * MAG, GV_HEIGHT * MAG, BufferedImage.TYPE_4BYTE_ABGR);
 
         Graphics2D overlay = (Graphics2D) image.getGraphics();
-
-        int pacmanLocation = game.getPacmanCurrentNodeIndex();
-//        overlay.fillRect(0, 0, GV_WIDTH * MAG, GV_HEIGHT * MAG);
 
         overlay.setColor(Color.GRAY);
         for (int i = 0; i < game.getNumberOfNodes(); i++) {
@@ -316,14 +329,12 @@ public final class GameView extends JComponent {
             }
         }
 
-//        original.setColor(Color.BLACK);
         overlay.setColor(Color.WHITE);
-//        overlay.setColor(new Color(0, 0, 0, 0));
 
         overlay.setComposite(AlphaComposite.Clear);
         int totalVisisble = 0;
         for (MOVE move : MOVE.values()) {
-            int nextPoint = pacmanLocation;
+            int nextPoint = location;
             while (pacmanGame.isNodeObservable(nextPoint)) {
                 // Don't need to do this - can wait till the last one.
                 overlay.fillRect(
@@ -331,20 +342,12 @@ public final class GameView extends JComponent {
                         game.getNodeYCood(nextPoint) * MAG + 3,
                         14, 14
                 );
-//                Rectangle2D.Float rectangle = new Rectangle2D.Float(game.getNodeXCood(nextPoint) * MAG - 1, game.getNodeYCood(nextPoint) * MAG + 3, 14, 14);
-//                bufferGraphics.clipRect(game.getNodeXCood(nextPoint) * MAG - 1, game.getNodeYCood(nextPoint) * MAG + 3, 14, 14);
                 totalVisisble++;
                 nextPoint = game.getNeighbour(nextPoint, move);
             }
         }
-//
-//        System.out.println("Total: " + game.getNumberOfNodes() + " Visible: " + totalVisisble);
-//        AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OUT, 0.5f);
-//        Graphics2D original = (Graphics2D) bufferGraphics;
-//        overlay.setComposite(composite);
-//        overlay.drawImage(offscreen, 0, 0, null);
-        bufferGraphics.drawImage(image, 0, 0, null);
 
+        bufferGraphics.drawImage(image, 0, 0, null);
     }
 
     /**
@@ -585,6 +588,12 @@ public final class GameView extends JComponent {
     }
 
     public void setPO(boolean PO) {
-        isPO = PO;
+        this.isPO = PO;
+        this.ghost = null;
+    }
+
+    public void setPO(boolean PO, GHOST ghost){
+        this.isPO = PO;
+        this.ghost = ghost;
     }
 }
