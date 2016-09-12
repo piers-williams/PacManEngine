@@ -20,8 +20,6 @@ import java.util.EnumMap;
 public class HumanTest {
 
     public static void main(String[] args) {
-        Executor executor = new Executor(true, true);
-
         KeyBoardInput input = new KeyBoardInput();
 
         Game primaryGame = new Game(0);
@@ -55,10 +53,6 @@ public class HumanTest {
             EnumMap<Constants.GHOST, Constants.MOVE> ghostMoves = ghosts.getMove(primaryGame.copy(), -1);
 
             primaryGame.advanceGame(pacmanMove, ghostMoves);
-
-
-            //radiusGame.advanceGame(pacmanMove, ghostMoves);
-            //ff_losGame.advanceGame(pacmanMove, ghostMoves);
 
             view.paintImmediately(view.getBounds());
             primaryGame.PO_TYPE = POType.RADIUS;
