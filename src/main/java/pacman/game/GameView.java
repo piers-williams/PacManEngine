@@ -39,6 +39,7 @@ public final class GameView extends JComponent {
     private BufferedImage offscreen;
     private boolean isPO = false;
     private GHOST ghost = null;
+    private double scaleFactor = 1.0;
 
     private Color[] redAlphas;
 
@@ -157,6 +158,9 @@ public final class GameView extends JComponent {
      */
     public void paintComponent(Graphics g) {
         time = game.getTotalTime();
+
+        Graphics2D g2 = (Graphics2D) g;
+        g2.scale(scaleFactor, scaleFactor);
 
         if (offscreen == null) {
             offscreen = (BufferedImage) createImage(this.getPreferredSize().width, this.getPreferredSize().height);
@@ -409,7 +413,9 @@ public final class GameView extends JComponent {
      * @see javax.swing.JComponent#getPreferredSize()
      */
     public Dimension getPreferredSize() {
-        return new Dimension(GV_WIDTH * MAG, GV_HEIGHT * MAG + 20);
+        return new Dimension(
+                (int)(GV_WIDTH * MAG * scaleFactor),
+                (int)(GV_HEIGHT * MAG * scaleFactor) + 20);
     }
 
     /**
@@ -595,5 +601,9 @@ public final class GameView extends JComponent {
     public void setPO(boolean PO, GHOST ghost){
         this.isPO = PO;
         this.ghost = ghost;
+    }
+
+    public void setScaleFactor(double scaleFactor){
+        this.scaleFactor = scaleFactor;
     }
 }
