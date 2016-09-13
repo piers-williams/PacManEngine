@@ -28,6 +28,7 @@ public class Executor {
     protected boolean ghostsPresent = true;
     protected boolean pillsPresent = true;
     protected boolean powerPillsPresent = true;
+    private double scaleFactor = 1.0d;
 
     protected Messenger messenger;
 
@@ -282,7 +283,9 @@ public class Executor {
         GameView gv = null;
 
         if (visual) {
-            gv = new GameView(game).showGame();
+            gv = new GameView(game);
+            gv.setScaleFactor(scaleFactor);
+            gv.showGame();
             if (pacManController instanceof HumanController) {
 //                System.out.println("Here");
                 gv.setFocusable(true);
@@ -321,8 +324,11 @@ public class Executor {
 
         GameView gv = null;
 
-        if (visual)
-            gv = new GameView(game).showGame();
+        if (visual) {
+            gv = new GameView(game);
+            gv.setScaleFactor(scaleFactor);
+            gv.showGame();
+        }
 
         if (pacManController instanceof HumanController)
             gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
@@ -367,8 +373,11 @@ public class Executor {
         GameView gv = null;
         Stats stats = new Stats(desc);
 
-        if (visual)
-            gv = new GameView(game).showGame();
+        if (visual) {
+            gv = new GameView(game);
+            gv.setScaleFactor(scaleFactor);
+            gv.showGame();
+        }
 
         if (pacManController instanceof HumanController)
             gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
@@ -431,7 +440,9 @@ public class Executor {
         GameView gv = null;
 
         if (visual) {
-            gv = new GameView(game).showGame();
+            gv = new GameView(game);
+            gv.setScaleFactor(scaleFactor);
+            gv.showGame();
 
             if (pacManController instanceof HumanController)
                 gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
@@ -479,8 +490,11 @@ public class Executor {
 
         GameView gv = null;
 
-        if (visual)
-            gv = new GameView(game).showGame();
+        if (visual) {
+            gv = new GameView(game);
+            gv.setScaleFactor(scaleFactor);
+            gv.showGame();
+        }
 
         for (int j = 0; j < timeSteps.size(); j++) {
             game.setGameState(timeSteps.get(j));
@@ -493,5 +507,9 @@ public class Executor {
             if (visual)
                 gv.repaint();
         }
+    }
+
+    public void setScaleFactor(double scaleFactor){
+        this.scaleFactor = scaleFactor;
     }
 }
