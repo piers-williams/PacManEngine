@@ -54,3 +54,4 @@ fabric.properties
 
 *.bat
 *.log
+sonar.sh
