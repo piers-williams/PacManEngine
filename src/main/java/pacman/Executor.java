@@ -32,16 +32,28 @@ public class Executor {
 
     protected Messenger messenger;
 
+    /**
+     *  Creates a default Executor with full observability for the Pacman and no messaging for the ghosts
+     */
     public Executor() {
         this.pacmanPO = false;
         this.ghostsMessage = false;
     }
 
+    /**
+     * Creates an Exeutor with the required pacman observability and no ghost messaging
+     * @param pacmanPO Whether to impose PO on the pacman
+     */
     public Executor(boolean pacmanPO) {
         this.pacmanPO = pacmanPO;
         this.ghostsMessage = false;
     }
 
+    /**
+     * Creates an exectur with the required pacman observabiliy and ghost messaging
+     * @param pacmanPO Whether to impose PO on the pacman
+     * @param ghostsMessage Whether to allow ghost messaging
+     */
     public Executor(boolean pacmanPO, boolean ghostsMessage) {
         this.pacmanPO = pacmanPO;
         this.ghostsMessage = ghostsMessage;
@@ -151,8 +163,7 @@ public class Executor {
 
     //save file for replays
     public static void saveToFile(String data, String name, boolean append) {
-        try {
-            FileOutputStream outS = new FileOutputStream(name, append);
+        try (FileOutputStream outS = new FileOutputStream(name, append)) {
             PrintWriter pw = new PrintWriter(outS);
 
             pw.println(data);
@@ -168,8 +179,7 @@ public class Executor {
     private static ArrayList<String> loadReplay(String fileName) {
         ArrayList<String> replay = new ArrayList<String>();
 
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)))){
             String input = br.readLine();
 
             while (input != null) {
@@ -330,7 +340,7 @@ public class Executor {
             gv.showGame();
         }
 
-        if (pacManController instanceof HumanController)
+        if (gv != null && pacManController instanceof HumanController)
             gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
 
         new Thread(pacManController).start();
@@ -379,7 +389,7 @@ public class Executor {
             gv.showGame();
         }
 
-        if (pacManController instanceof HumanController)
+        if (gv != null && pacManController instanceof HumanController)
             gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
 
         new Thread(pacManController).start();
