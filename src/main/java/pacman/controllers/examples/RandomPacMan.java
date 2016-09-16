@@ -16,6 +16,7 @@ public final class RandomPacMan extends PacmanController {
     /* (non-Javadoc)
      * @see pacman.controllers.Controller#getMove(pacman.game.Game, long)
      */
+    @Override
     public MOVE getMove(Game game, long timeDue) {
         return allMoves[rnd.nextInt(allMoves.length)];
     }

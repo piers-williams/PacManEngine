@@ -7,6 +7,7 @@ import pacman.game.internal.*;
 
 import java.util.BitSet;
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
@@ -40,15 +41,14 @@ import static pacman.game.Constants.*;
  * it has been provided with a GameInfo. Exact details tbc
  */
 public final class Game {
-    public  POType PO_TYPE = POType.LOS;
-    public  int SIGHT_LIMIT = 100;
     public static PathsCache[] caches = new PathsCache[NUM_MAZES];
     //mazes are only loaded once since they don't change over time
     private static Maze[] mazes = new Maze[NUM_MAZES];
 
     static {
-        for (int i = 0; i < mazes.length; i++)
+        for (int i = 0; i < mazes.length; i++) {
             mazes[i] = new Maze(i);
+        }
     }
 
     static {
@@ -57,6 +57,11 @@ public final class Game {
         }
     }
 
+    public POType PO_TYPE = POType.LOS;
+    public int SIGHT_LIMIT = 100;
+    protected boolean ghostsPresent = true;
+    protected boolean pillsPresent = true;
+    protected boolean powerPillsPresent = true;
     //pills stored as bitsets for efficient copying
     private BitSet pills, powerPills;
     //all the game's variables
@@ -68,7 +73,6 @@ public final class Game {
     private EnumMap<GHOST, Ghost> ghosts;
     // PO State
     private boolean po;
-
     private boolean beenBlanked;
     // either ID of a ghost or higher for pacman
     private int agent = 0;
@@ -77,10 +81,6 @@ public final class Game {
     private long seed;
     // Messenger - null if not available
     private Messenger messenger;
-
-    protected boolean ghostsPresent = true;
-    protected boolean pillsPresent = true;
-    protected boolean powerPillsPresent = true;
 
     /**
      * Instantiates a new game. The seed is used to initialise the pseudo-random
@@ -135,8 +135,12 @@ public final class Game {
     }
 
     public boolean isNodeObservable(int nodeIndex) {
-        if (!po) return true;
-        if (nodeIndex == -1) return false;
+        if (!po) {
+            return true;
+        }
+        if (nodeIndex == -1) {
+            return false;
+        }
         Node currentNode = (mazes[mazeIndex]).graph[getNodeIndexOfOwner()];
         Node check = (mazes[mazeIndex]).graph[nodeIndex];
 
@@ -167,12 +171,12 @@ public final class Game {
                             }
                             break;
                         case LEFT:
-                            if(currentNode.y == check.y && currentNode.x >= check.x){
+                            if (currentNode.y == check.y && currentNode.x >= check.x) {
                                 return straightRouteBlocked(currentNode, check);
                             }
                             break;
                         case RIGHT:
-                            if(currentNode.y == check.y && currentNode.x <= check.x){
+                            if (currentNode.y == check.y && currentNode.x <= check.x) {
                                 return straightRouteBlocked(currentNode, check);
                             }
                             break;
@@ -210,8 +214,9 @@ public final class Game {
 
         ghostsEaten = new EnumMap<GHOST, Boolean>(GHOST.class);
 
-        for (GHOST ghost : GHOST.values())
+        for (GHOST ghost : GHOST.values()) {
             ghostsEaten.put(ghost, false);
+        }
 
         _setPills(currentMaze = mazes[mazeIndex]);
         _initGhosts();
@@ -268,9 +273,10 @@ public final class Game {
     private void _initGhosts() {
         ghosts = new EnumMap<GHOST, Ghost>(GHOST.class);
 
-        for (GHOST ghostType : GHOST.values())
+        for (GHOST ghostType : GHOST.values()) {
             ghosts.put(ghostType, new Ghost(ghostType, currentMaze.lairNodeIndex, 0,
                     (int) (ghostType.initialLairTime * (Math.pow(LAIR_REDUCTION, levelCount % LEVEL_RESET_REDUCTION))), MOVE.NEUTRAL));
+        }
     }
 
     /**
@@ -282,28 +288,35 @@ public final class Game {
      * @return The game state as a string
      */
     public String getGameState() {
-        if(po) return "";
+        if (po) {
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
 
         sb.append(mazeIndex + "," + totalTime + "," + score + "," + currentLevelTime + "," + levelCount + ","
                 + pacman.currentNodeIndex + "," + pacman.lastMoveMade + "," + pacman.numberOfLivesRemaining + "," + pacman.hasReceivedExtraLife + ",");
 
-        for (Ghost ghost : ghosts.values())
+        for (Ghost ghost : ghosts.values()) {
             sb.append(ghost.currentNodeIndex + "," + ghost.edibleTime + "," + ghost.lairTime + "," + ghost.lastMoveMade + ",");
+        }
 
-        for (int i = 0; i < currentMaze.pillIndices.length; i++)
-            if (pills.get(i))
+        for (int i = 0; i < currentMaze.pillIndices.length; i++) {
+            if (pills.get(i)) {
                 sb.append("1");
-            else
+            } else {
                 sb.append("0");
+            }
+        }
 
         sb.append(",");
 
-        for (int i = 0; i < currentMaze.powerPillIndices.length; i++)
-            if (powerPills.get(i))
+        for (int i = 0; i < currentMaze.powerPillIndices.length; i++) {
+            if (powerPills.get(i)) {
                 sb.append("1");
-            else
+            } else {
                 sb.append("0");
+            }
+        }
 
         sb.append(",");
         sb.append(timeOfLastGlobalReversal);
@@ -345,33 +358,39 @@ public final class Game {
 
         ghosts = new EnumMap<GHOST, Ghost>(GHOST.class);
 
-        for (GHOST ghostType : GHOST.values())
+        for (GHOST ghostType : GHOST.values()) {
             ghosts.put(ghostType, new Ghost(ghostType, Integer.parseInt(values[index++]), Integer.parseInt(values[index++]),
                     Integer.parseInt(values[index++]), MOVE.valueOf(values[index++])));
+        }
 
         _setPills(currentMaze = mazes[mazeIndex]);
 
-        for (int i = 0; i < values[index].length(); i++)
-            if (values[index].charAt(i) == '1')
+        for (int i = 0; i < values[index].length(); i++) {
+            if (values[index].charAt(i) == '1') {
                 pills.set(i);
-            else
+            } else {
                 pills.clear(i);
+            }
+        }
 
         index++;
 
-        for (int i = 0; i < values[index].length(); i++)
-            if (values[index].charAt(i) == '1')
+        for (int i = 0; i < values[index].length(); i++) {
+            if (values[index].charAt(i) == '1') {
                 powerPills.set(i);
-            else
+            } else {
                 powerPills.clear(i);
+            }
+        }
 
         timeOfLastGlobalReversal = Integer.parseInt(values[++index]);
         pacmanWasEaten = Boolean.parseBoolean(values[++index]);
 
         ghostsEaten = new EnumMap<GHOST, Boolean>(GHOST.class);
 
-        for (GHOST ghost : GHOST.values())
+        for (GHOST ghost : GHOST.values()) {
             ghostsEaten.put(ghost, Boolean.parseBoolean(values[++index]));
+        }
 
         pillWasEaten = Boolean.parseBoolean(values[++index]);
         powerPillWasEaten = Boolean.parseBoolean(values[++index]);
@@ -459,7 +478,9 @@ public final class Game {
 
     public Game copy(int agent) {
         Game game = copy();
-        if (agent == -1) return game;
+        if (agent == -1) {
+            return game;
+        }
         game.po = true;
         game.agent = agent;
         return game;
@@ -468,7 +489,6 @@ public final class Game {
     private boolean canBeForwarded() {
         return !po || beenBlanked;
     }
-
 
     /////////////////////////////////////////////////////////////////////////////
     ///////////////////////////  Game-engine   //////////////////////////////////
@@ -483,34 +503,43 @@ public final class Game {
      * @param ghostMoves The moves supplied by the ghosts controller
      */
     public void advanceGame(MOVE pacManMove, EnumMap<GHOST, MOVE> ghostMoves) {
-        if (!canBeForwarded()) return;
+        if (!canBeForwarded()) {
+            return;
+        }
         updatePacMan(pacManMove);
         updateGhosts(ghostMoves);
         updateGame();
     }
 
     public void advanceGameWithoutReverse(MOVE pacManMove, EnumMap<GHOST, MOVE> ghostMoves) {
-        if (!canBeForwarded()) return;
+        if (!canBeForwarded()) {
+            return;
+        }
         updatePacMan(pacManMove);
         updateGhostsWithoutReverse(ghostMoves);
         updateGame();
     }
 
     public void advanceGameWithForcedReverse(MOVE pacManMove, EnumMap<GHOST, MOVE> ghostMoves) {
-        if (!canBeForwarded()) return;
+        if (!canBeForwarded()) {
+            return;
+        }
         updatePacMan(pacManMove);
         updateGhostsWithForcedReverse(ghostMoves);
         updateGame();
     }
 
     public void advanceGameWithPowerPillReverseOnly(MOVE pacManMove, EnumMap<GHOST, MOVE> ghostMoves) {
-        if (!canBeForwarded()) return;
+        if (!canBeForwarded()) {
+            return;
+        }
         updatePacMan(pacManMove);
 
-        if (powerPillWasEaten)
+        if (powerPillWasEaten) {
             updateGhostsWithForcedReverse(ghostMoves);
-        else
+        } else {
             updateGhostsWithoutReverse(ghostMoves);
+        }
 
         updateGame();
     }
@@ -521,7 +550,9 @@ public final class Game {
      * @param pacManMove The move supplied by the Ms Pac-Man controller
      */
     public void updatePacMan(MOVE pacManMove) {
-        if (!canBeForwarded()) return;
+        if (!canBeForwarded()) {
+            return;
+        }
         _updatePacMan(pacManMove);                    //move pac-man
         _eatPill();                                    //eat a pill
         _eatPowerPill();                            //eat a power pill
@@ -533,24 +564,37 @@ public final class Game {
      * @param ghostMoves The moves supplied by the ghosts controller
      */
     public void updateGhosts(EnumMap<GHOST, MOVE> ghostMoves) {
-        if (!canBeForwarded()) return;
-        if (!ghostsPresent) return;
+        if (!canBeForwarded()) {
+            return;
+        }
+        if (!ghostsPresent) {
+            return;
+        }
         ghostMoves = _completeGhostMoves(ghostMoves);
 
-        if (!_reverseGhosts(ghostMoves, false))
+        if (!_reverseGhosts(ghostMoves, false)) {
             _updateGhosts(ghostMoves);
+        }
     }
 
     public void updateGhostsWithoutReverse(EnumMap<GHOST, MOVE> ghostMoves) {
-        if (!canBeForwarded()) return;
-        if (!ghostsPresent) return;
+        if (!canBeForwarded()) {
+            return;
+        }
+        if (!ghostsPresent) {
+            return;
+        }
         ghostMoves = _completeGhostMoves(ghostMoves);
         _updateGhosts(ghostMoves);
     }
 
     public void updateGhostsWithForcedReverse(EnumMap<GHOST, MOVE> ghostMoves) {
-        if (!canBeForwarded()) return;
-        if (!ghostsPresent) return;
+        if (!canBeForwarded()) {
+            return;
+        }
+        if (!ghostsPresent) {
+            return;
+        }
         ghostMoves = _completeGhostMoves(ghostMoves);
         _reverseGhosts(ghostMoves, true);
     }
@@ -561,7 +605,9 @@ public final class Game {
      * awarded the extra live. Then update the time and see if the level or game is over.
      */
     public void updateGame() {
-        if (!canBeForwarded()) return;
+        if (!canBeForwarded()) {
+            return;
+        }
         _feast();                                    //ghosts eat pac-man or vice versa
         _updateLairTimes();
         _updatePacManExtraLife();
@@ -570,7 +616,9 @@ public final class Game {
         currentLevelTime++;
 
         _checkLevelState();                            //check if level/game is over
-        if (messenger != null) messenger.update();
+        if (messenger != null) {
+            messenger.update();
+        }
     }
 
     /**
@@ -584,27 +632,46 @@ public final class Game {
      * @param updateLevelTime Whether or not to update the level time
      */
     public void updateGame(boolean feast, boolean updateLairTimes, boolean updateExtraLife, boolean updateTotalTime, boolean updateLevelTime) {
-        if (!canBeForwarded()) return;
-        if (feast) _feast();                //ghosts eat pac-man or vice versa
-        if (updateLairTimes) _updateLairTimes();
-        if (updateExtraLife) _updatePacManExtraLife();
+        if (!canBeForwarded()) {
+            return;
+        }
+        if (feast) {
+            _feast();                //ghosts eat pac-man or vice versa
+        }
+        if (updateLairTimes) {
+            _updateLairTimes();
+        }
+        if (updateExtraLife) {
+            _updatePacManExtraLife();
+        }
 
-        if (updateTotalTime) totalTime++;
-        if (updateLevelTime) currentLevelTime++;
+        if (updateTotalTime) {
+            totalTime++;
+        }
+        if (updateLevelTime) {
+            currentLevelTime++;
+        }
 
         _checkLevelState();                            //check if level/game is over
-        if (messenger != null) messenger.update();
+        if (messenger != null) {
+            messenger.update();
+        }
     }
 
     /**
      * _update lair times.
      */
     private void _updateLairTimes() {
-        if (!ghostsPresent) return;
-        for (Ghost ghost : ghosts.values())
-            if (ghost.lairTime > 0)
-                if (--ghost.lairTime == 0)
+        if (!ghostsPresent) {
+            return;
+        }
+        for (Ghost ghost : ghosts.values()) {
+            if (ghost.lairTime > 0) {
+                if (--ghost.lairTime == 0) {
                     ghost.currentNodeIndex = currentMaze.initialGhostNodeIndex;
+                }
+            }
+        }
     }
 
     /**
@@ -675,8 +742,8 @@ public final class Game {
         if (moves == null) {
             moves = new EnumMap<GHOST, MOVE>(GHOST.class);
 
-            for (GHOST ghostType : ghosts.keySet()) {
-                moves.put(ghostType, ghosts.get(ghostType).lastMoveMade);
+            for (Map.Entry<GHOST, Ghost> entry : ghosts.entrySet()) {
+                moves.put(entry.getKey(), entry.getValue().lastMoveMade);
             }
         }
 
@@ -703,12 +770,12 @@ public final class Game {
         Node node = currentMaze.graph[ghost.currentNodeIndex];
 
         //The direction is possible and not opposite to the previous direction of that ghost
-        if (node.neighbourhood.containsKey(direction) && direction != ghost.lastMoveMade.opposite())
+        if (node.neighbourhood.containsKey(direction) && direction != ghost.lastMoveMade.opposite()) {
             return direction;
-        else {
-            if (node.neighbourhood.containsKey(ghost.lastMoveMade))
+        } else {
+            if (node.neighbourhood.containsKey(ghost.lastMoveMade)) {
                 return ghost.lastMoveMade;
-            else {
+            } else {
                 MOVE[] moves = node.allPossibleMoves.get(ghost.lastMoveMade);
                 return moves[rnd.nextInt(moves.length)];
             }
@@ -745,11 +812,13 @@ public final class Game {
 
             int newEdibleTime = (int) (EDIBLE_TIME * (Math.pow(EDIBLE_TIME_REDUCTION, levelCount % LEVEL_RESET_REDUCTION)));
 
-            for (Ghost ghost : ghosts.values())
-                if (ghost.lairTime == 0)
+            for (Ghost ghost : ghosts.values()) {
+                if (ghost.lairTime == 0) {
                     ghost.edibleTime = newEdibleTime;
-                else
+                } else {
                     ghost.edibleTime = 0;
+                }
+            }
 
             powerPillWasEaten = true;
         }
@@ -759,8 +828,9 @@ public final class Game {
         boolean reversed = false;
         boolean globalReverse = false;
 
-        if (Math.random() < GHOST_REVERSAL)
+        if (Math.random() < GHOST_REVERSAL) {
             globalReverse = true;
+        }
 
         for (Entry<GHOST, MOVE> entry : moves.entrySet()) {
             Ghost ghost = ghosts.get(entry.getKey());
@@ -784,9 +854,9 @@ public final class Game {
     private void _feast() {
         pacmanWasEaten = false;
 
-        for (GHOST ghost : ghosts.keySet())
+        for (GHOST ghost : ghosts.keySet()) {
             ghostsEaten.put(ghost, false);
-
+        }
 
         for (Ghost ghost : ghosts.values()) {
             int distance = getShortestPathDistance(pacman.currentNodeIndex, ghost.currentNodeIndex);
@@ -807,18 +877,21 @@ public final class Game {
                     pacman.numberOfLivesRemaining--;
                     pacmanWasEaten = true;
 
-                    if (pacman.numberOfLivesRemaining <= 0)
+                    if (pacman.numberOfLivesRemaining <= 0) {
                         gameOver = true;
-                    else
+                    } else {
                         _levelReset();
+                    }
 
                     return;
                 }
             }
         }
-        for (Ghost ghost : ghosts.values())
-            if (ghost.edibleTime > 0)
+        for (Ghost ghost : ghosts.values()) {
+            if (ghost.edibleTime > 0) {
                 ghost.edibleTime--;
+            }
+        }
     }
 
     /**
@@ -831,8 +904,9 @@ public final class Game {
             score += pacman.numberOfLivesRemaining * AWARD_LIFE_LEFT;
         }
         //if all pills have been eaten or the time is up...
-        else if ((pills.isEmpty() && powerPills.isEmpty()) || currentLevelTime >= LEVEL_LIMIT)
+        else if ((pills.isEmpty() && powerPills.isEmpty()) || currentLevelTime >= LEVEL_LIMIT) {
             _newLevelReset();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////
@@ -990,7 +1064,9 @@ public final class Game {
     public Boolean isPillStillAvailable(int pillIndex) {
         if (po) {
             int pillLocation = currentMaze.pillIndices[pillIndex];
-            if (!isNodeObservable(pillLocation)) return null;
+            if (!isNodeObservable(pillLocation)) {
+                return null;
+            }
 
         }
         return pills.get(pillIndex);
@@ -1005,7 +1081,9 @@ public final class Game {
     public Boolean isPowerPillStillAvailable(int powerPillIndex) {
         if (po) {
             int pillLocation = currentMaze.powerPillIndices[powerPillIndex];
-            if (!isNodeObservable(pillLocation)) return null;
+            if (!isNodeObservable(pillLocation)) {
+                return null;
+            }
         }
         return powerPills.get(powerPillIndex);
     }
@@ -1093,7 +1171,9 @@ public final class Game {
      * @return the pacman current node index
      */
     public int getPacmanCurrentNodeIndex() {
-        if (po && !isNodeObservable(pacman.currentNodeIndex)) return -1;
+        if (po && !isNodeObservable(pacman.currentNodeIndex)) {
+            return -1;
+        }
         return pacman.currentNodeIndex;
     }
 
@@ -1103,7 +1183,9 @@ public final class Game {
      * @return the pacman last move made
      */
     public MOVE getPacmanLastMoveMade() {
-        if (po && !isNodeObservable(pacman.currentNodeIndex)) return null;
+        if (po && !isNodeObservable(pacman.currentNodeIndex)) {
+            return null;
+        }
         return pacman.lastMoveMade;
     }
 
@@ -1414,12 +1496,13 @@ public final class Game {
      * @return the shortest path distance
      */
     public int getShortestPathDistance(int fromNodeIndex, int toNodeIndex) {
-        if (fromNodeIndex == toNodeIndex)
+        if (fromNodeIndex == toNodeIndex) {
             return 0;
-        else if (fromNodeIndex < toNodeIndex)
+        } else if (fromNodeIndex < toNodeIndex) {
             return currentMaze.shortestPathDistances[((toNodeIndex * (toNodeIndex + 1)) / 2) + fromNodeIndex];
-        else
+        } else {
             return currentMaze.shortestPathDistances[((fromNodeIndex * (fromNodeIndex + 1)) / 2) + toNodeIndex];
+        }
     }
 
     /**
@@ -1441,7 +1524,7 @@ public final class Game {
      * @return the manhattan distance
      */
     public int getManhattanDistance(int fromNodeIndex, int toNodeIndex) {
-        return (int) (Math.abs(currentMaze.graph[fromNodeIndex].x - currentMaze.graph[toNodeIndex].x) + Math.abs(currentMaze.graph[fromNodeIndex].y - currentMaze.graph[toNodeIndex].y));
+        return (Math.abs(currentMaze.graph[fromNodeIndex].x - currentMaze.graph[toNodeIndex].x) + Math.abs(currentMaze.graph[fromNodeIndex].y - currentMaze.graph[toNodeIndex].y));
     }
 
     /**
@@ -1746,7 +1829,9 @@ public final class Game {
      */
     public int[] getShortestPath(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade) {
         if (currentMaze.graph[fromNodeIndex].neighbourhood.size() == 0)//lair
+        {
             return new int[0];
+        }
 
         return caches[mazeIndex].getPathFromA2B(fromNodeIndex, toNodeIndex, lastMoveMade);
     }
@@ -1777,7 +1862,9 @@ public final class Game {
      */
     public int getShortestPathDistance(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade) {
         if (currentMaze.graph[fromNodeIndex].neighbourhood.size() == 0)//lair
+        {
             return 0;
+        }
 
         return caches[mazeIndex].getPathDistanceFromA2B(fromNodeIndex, toNodeIndex, lastMoveMade);
     }
@@ -1812,7 +1899,6 @@ public final class Game {
     public GameInfo getBlankGameInfo() {
         return new GameInfo(pills.length());
     }
-
 
     /**
      * Gets a copy of the game that is populated with the data contained within info

@@ -59,7 +59,6 @@ public final class Maze {
         int powerPillIndex = 0;
         int junctionIndex = 0;
 
-
         while (scanner.hasNextLine()) {
             input = scanner.nextLine();
             String[] nd = input.split("\t");
@@ -69,13 +68,15 @@ public final class Maze {
 
             graph[nodeIndex++] = node;
 
-            if (node.pillIndex >= 0)
+            if (node.pillIndex >= 0) {
                 pillIndices[pillIndex++] = node.nodeIndex;
-            else if (node.powerPillIndex >= 0)
+            } else if (node.powerPillIndex >= 0) {
                 powerPillIndices[powerPillIndex++] = node.nodeIndex;
+            }
 
-            if (node.numNeighbouringNodes > 2)
+            if (node.numNeighbouringNodes > 2) {
                 junctionIndices[junctionIndex++] = node.nodeIndex;
+            }
         }
 
         scanner.close();
@@ -91,7 +92,7 @@ public final class Maze {
         this.shortestPathDistances = new int[((graph.length * (graph.length - 1)) / 2) + graph.length];
 
         Scanner scanner = new Scanner(getClass().getResourceAsStream(pathDistances + "/" + fileName));
-//        BufferedReader br = new BufferedReader(new InputStreamReader(ClassLoader.getSystemClassLoader().getResourceAsStream(pathDistances + System.getProperty("file.separator") + fileName)));
+        //        BufferedReader br = new BufferedReader(new InputStreamReader(ClassLoader.getSystemClassLoader().getResourceAsStream(pathDistances + System.getProperty("file.separator") + fileName)));
         String input;
         int index = 0;
 

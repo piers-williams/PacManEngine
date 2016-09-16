@@ -34,7 +34,7 @@ public final class Constants {
     public static final int NUM_LIVES = 3;                    //total number of lives Ms Pac-Man has (current + NUM_LIVES-1 spares)
     public static final int GHOST_SPEED_REDUCTION = 2;        //difference in speed when ghosts are edible (every GHOST_SPEED_REDUCTION, a ghost remains stationary)
     public static final int EDIBLE_ALERT = 30;                //for display only (ghosts turning blue)
-    public static final int INTERVAL_WAIT = 1;                //for quicker execution: check every INTERVAL_WAIT ms to see if controllers have returned
+    public static final long INTERVAL_WAIT = 1;                //for quicker execution: check every INTERVAL_WAIT ms to see if controllers have returned
     //for Competition
     public static final int WAIT_LIMIT = 5000;                //time limit in milliseconds for the controller to initialise;
     public static final int MEMORY_LIMIT = 512;                //memory limit in MB for controllers (including the game)
@@ -50,6 +50,7 @@ public final class Constants {
     public static final int GV_HEIGHT = 130;
     public static String pathImages = "/data/images";
     public static String[] mazeNames = {"maze-a.png", "maze-b.png", "maze-c.png", "maze-d.png"};
+
     private Constants() {
     }
 
@@ -94,6 +95,7 @@ public final class Constants {
 
         public abstract MOVE opposite();
     }
+
     /**
      * Enumeration for the ghosts. The integer arguments are the initial lair times.
      */

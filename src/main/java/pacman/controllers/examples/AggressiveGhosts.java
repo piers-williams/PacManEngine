@@ -22,18 +22,24 @@ public final class AggressiveGhosts extends Controller<EnumMap<GHOST, MOVE>> {
     /* (non-Javadoc)
      * @see pacman.controllers.Controller#getMove(pacman.game.Game, long)
      */
+    @Override
     public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
         myMoves.clear();
 
         for (GHOST ghost : GHOST.values())                //for each ghost
+        {
             if (game.doesGhostRequireAction(ghost))        //if it requires an action
             {
                 if (rnd.nextFloat() < CONSISTENCY)    //approach/retreat from the current node that Ms Pac-Man is at
+                {
                     myMoves.put(ghost, game.getApproximateNextMoveTowardsTarget(game.getGhostCurrentNodeIndex(ghost),
                             game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(ghost), DM.PATH));
-                else                                    //else take a random action
+                } else                                    //else take a random action
+                {
                     myMoves.put(ghost, moves[rnd.nextInt(moves.length)]);
+                }
             }
+        }
 
         return myMoves;
     }

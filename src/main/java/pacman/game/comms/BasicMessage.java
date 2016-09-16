@@ -1,6 +1,5 @@
 package pacman.game.comms;
 
-
 import pacman.game.Constants.GHOST;
 
 /**
@@ -33,22 +32,27 @@ public final class BasicMessage implements Message {
         this.tick = tick;
     }
 
+    @Override
     public GHOST getSender() {
         return sender;
     }
 
+    @Override
     public GHOST getRecipient() {
         return recipient;
     }
 
-    public int getData() {
-        return data;
-    }
-
+    @Override
     public MessageType getType() {
         return type;
     }
 
+    @Override
+    public int getData() {
+        return data;
+    }
+
+    @Override
     public int getTick() {
         return tick;
     }

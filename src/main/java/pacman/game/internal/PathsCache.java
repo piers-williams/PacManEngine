@@ -33,30 +33,36 @@ public class PathsCache {
 
         int[] jctIndices = m.junctionIndices;
 
-        for (int i = 0; i < jctIndices.length; i++)
+        for (int i = 0; i < jctIndices.length; i++) {
             junctionIndexConverter.put(jctIndices[i], i);
+        }
 
         nodes = assignJunctionsToNodes(game);
         junctions = junctionDistances(game);
 
-        for (int i = 0; i < junctions.length; i++)
+        for (int i = 0; i < junctions.length; i++) {
             junctions[i].computeShortestPaths();
+        }
     }
 
     //for Ms Pac-Man
     public int[] getPathFromA2B(int a, int b) {
         //not going anywhere
-        if (a == b)
+        if (a == b) {
             return new int[]{};
+        }
 
         //junctions near the source
         ArrayList<JunctionData> closestFromJunctions = nodes[a].closestJunctions;
 
         //if target is on the way to junction, then we are done
-        for (int w = 0; w < closestFromJunctions.size(); w++)
-            for (int i = 0; i < closestFromJunctions.get(w).path.length; i++)
-                if (closestFromJunctions.get(w).path[i] == b)
+        for (int w = 0; w < closestFromJunctions.size(); w++) {
+            for (int i = 0; i < closestFromJunctions.get(w).path.length; i++) {
+                if (closestFromJunctions.get(w).path[i] == b) {
                     return Arrays.copyOf(closestFromJunctions.get(w).path, i + 1);
+                }
+            }
+        }
 
         //junctions near the target
         ArrayList<JunctionData> closestToJunctions = nodes[b].closestJunctions;
@@ -98,16 +104,19 @@ public class PathsCache {
 
     public int[] getPathFromA2B(int a, int b, MOVE lastMoveMade) {
         //not going anywhere
-        if (a == b)
+        if (a == b) {
             return new int[]{};
+        }
 
         //first, go to closest junction (there is only one since we can't reverse)
         JunctionData fromJunction = nodes[a].getNearestJunction(lastMoveMade);
 
         //if target is on the way to junction, then we are done
-        for (int i = 0; i < fromJunction.path.length; i++)
-            if (fromJunction.path[i] == b)
+        for (int i = 0; i < fromJunction.path.length; i++) {
+            if (fromJunction.path[i] == b) {
                 return Arrays.copyOf(fromJunction.path, i + 1);
+            }
+        }
 
         //we have reached a junction, fromJunction, which we entered with moveEnteredJunction
         int junctionFrom = fromJunction.nodeID;
@@ -131,9 +140,11 @@ public class PathsCache {
                     int[] reversepath = junctionsTo.get(q).reversePath;
                     int cutoff = -1;
 
-                    for (int w = 0; w < reversepath.length; w++)
-                        if (reversepath[w] == b)
+                    for (int w = 0; w < reversepath.length; w++) {
+                        if (reversepath[w] == b) {
                             cutoff = w;
+                        }
+                    }
 
                     shortestPath = Arrays.copyOf(reversepath, cutoff + 1);
                     minDist = shortestPath.length;
@@ -160,11 +171,12 @@ public class PathsCache {
             }
         }
 
-        if (!onTheWay)
+        if (!onTheWay) {
             return concat(fromJunction.path, shortestPath, junctionsTo.get(closestJunction).reversePath);
-        else
+        } else {
             return concat(fromJunction.path, shortestPath);
-//			return concat(fromJunction.path, junctionsTo.get(closestJunction).reversePath);
+        }
+        //			return concat(fromJunction.path, junctionsTo.get(closestJunction).reversePath);
     }
 
     private Junction[] junctionDistances(Game game) {
@@ -217,11 +229,12 @@ public class PathsCache {
                     while (!game.isJunction(currentNode)) {
                         MOVE[] newPossibleMoves = game.getPossibleMoves(currentNode);
 
-                        for (int q = 0; q < newPossibleMoves.length; q++)
+                        for (int q = 0; q < newPossibleMoves.length; q++) {
                             if (newPossibleMoves[q].opposite() != lastMove) {
                                 lastMove = newPossibleMoves[q];
                                 break;
                             }
+                        }
 
                         currentNode = game.getNeighbour(currentNode, lastMove);
                         path.add(currentNode);
@@ -229,8 +242,9 @@ public class PathsCache {
 
                     int[] array = new int[path.size()];
 
-                    for (int w = 0; w < path.size(); w++)
+                    for (int w = 0; w < path.size(); w++) {
                         array[w] = path.get(w);
+                    }
 
                     allNodes[i].addPath(array[array.length - 1], possibleMoves[j], i, array, lastMove);
                 }
@@ -243,16 +257,19 @@ public class PathsCache {
     private int[] concat(int[]... arrays) {
         int totalLength = 0;
 
-        for (int i = 0; i < arrays.length; i++)
+        for (int i = 0; i < arrays.length; i++) {
             totalLength += arrays[i].length;
+        }
 
         int[] fullArray = new int[totalLength];
 
         int index = 0;
 
-        for (int i = 0; i < arrays.length; i++)
-            for (int j = 0; j < arrays[i].length; j++)
+        for (int i = 0; i < arrays.length; i++) {
+            for (int j = 0; j < arrays[i].length; j++) {
                 fullArray[index++] = arrays[i][j];
+            }
+        }
 
         return fullArray;
     }
@@ -270,17 +287,19 @@ class JunctionData {
         this.path = path;
         this.lastMove = lastMove;
 
-        if (path.length > 0)
+        if (path.length > 0) {
             this.reversePath = getReversePath(path);
-        else
+        } else {
             reversePath = new int[]{};
+        }
     }
 
     public int[] getReversePath(int[] path) {
         int[] reversePath = new int[path.length];
 
-        for (int i = 1; i < reversePath.length; i++)
+        for (int i = 1; i < reversePath.length; i++) {
             reversePath[i - 1] = path[path.length - 1 - i];
+        }
 
         reversePath[reversePath.length - 1] = nodeStartedFrom;
 
@@ -303,29 +322,34 @@ class DNode {
 
         this.closestJunctions = new ArrayList<JunctionData>();
 
-        if (isJunction)
+        if (isJunction) {
             closestJunctions.add(new JunctionData(nodeID, MOVE.NEUTRAL, nodeID, new int[]{}, MOVE.NEUTRAL));
+        }
     }
 
     public int[] getPathToJunction(MOVE lastMoveMade) {
-        if (isJunction)
+        if (isJunction) {
             return new int[]{};
+        }
 
-        for (int i = 0; i < closestJunctions.size(); i++)
-            if (!closestJunctions.get(i).firstMove.equals(lastMoveMade.opposite()))
+        for (int i = 0; i < closestJunctions.size(); i++) {
+            if (!closestJunctions.get(i).firstMove.equals(lastMoveMade.opposite())) {
                 return closestJunctions.get(i).path;
+            }
+        }
 
         return null;
     }
 
     public JunctionData getNearestJunction(MOVE lastMoveMade) {
-        if (isJunction)
+        if (isJunction) {
             return closestJunctions.get(0);
+        }
 
         int minDist = Integer.MAX_VALUE;
         int bestIndex = -1;
 
-        for (int i = 0; i < closestJunctions.size(); i++)
+        for (int i = 0; i < closestJunctions.size(); i++) {
             if (!closestJunctions.get(i).firstMove.equals(lastMoveMade.opposite())) {
                 int newDist = closestJunctions.get(i).path.length;
 
@@ -334,11 +358,13 @@ class DNode {
                     bestIndex = i;
                 }
             }
+        }
 
-        if (bestIndex != -1)
+        if (bestIndex != -1) {
             return closestJunctions.get(bestIndex);
-        else
+        } else {
             return null;
+        }
     }
 
     public void addPath(int junctionID, MOVE firstMove, int nodeStartedFrom, int[] path, MOVE lastMove) {
@@ -362,17 +388,18 @@ class Junction {
 
         paths = new EnumMap[numJcts];
 
-        for (int i = 0; i < paths.length; i++)
+        for (int i = 0; i < paths.length; i++) {
             paths[i] = new EnumMap<MOVE, int[]>(MOVE.class);
+        }
     }
 
     public void computeShortestPaths() {
         MOVE[] moves = MOVE.values();
 
         for (int i = 0; i < paths.length; i++) {
-            if (i == jctId)
+            if (i == jctId) {
                 paths[i].put(MOVE.NEUTRAL, new int[]{});
-            else {
+            } else {
                 int distance = Integer.MAX_VALUE;
                 int[] path = null;
 

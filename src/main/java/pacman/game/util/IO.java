@@ -58,8 +58,9 @@ public class IO {
             String input = br.readLine();
 
             while (input != null) {
-                if (!input.equals(""))
+                if (!input.equals("")) {
                     data.append(input + "\n");
+                }
 
                 input = br.readLine();
             }

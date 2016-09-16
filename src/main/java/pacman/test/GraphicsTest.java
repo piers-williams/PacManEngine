@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
  */
 public class GraphicsTest extends JComponent {
 
-
     public static void main(String[] args) {
 
         JFrame frame = new JFrame("Graphics Test");
@@ -33,7 +32,7 @@ public class GraphicsTest extends JComponent {
         Graphics2D cut = (Graphics2D) image.getGraphics();
 
         cut.setColor(Color.BLACK);
-//        cut.fillRect(0, 0, 800, 600);
+        //        cut.fillRect(0, 0, 800, 600);
         cut.setColor(Color.WHITE);
         cut.fillRect(0, 350, 800, 100);
 

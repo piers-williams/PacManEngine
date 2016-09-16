@@ -9,15 +9,15 @@ import pacman.game.Game;
  */
 public class Sue extends IndividualGhostController {
 
-    private POCommGhost ghost;
+    private POCommGhost poCommGhost;
 
     public Sue() {
         super(Constants.GHOST.SUE);
-        ghost = new POCommGhost(Constants.GHOST.SUE, 50);
+        poCommGhost = new POCommGhost(Constants.GHOST.SUE, 50);
     }
 
     @Override
     public Constants.MOVE getMove(Game game, long timeDue) {
-        return ghost.getMove(game, timeDue);
+        return poCommGhost.getMove(game, timeDue);
     }
 }

@@ -9,15 +9,15 @@ import pacman.game.Game;
  */
 public class Blinky extends IndividualGhostController {
 
-    private POCommGhost ghost;
+    private POCommGhost poCommGhost;
 
     public Blinky() {
         super(Constants.GHOST.BLINKY);
-        ghost = new POCommGhost(Constants.GHOST.BLINKY, 50);
+        poCommGhost = new POCommGhost(Constants.GHOST.BLINKY, 50);
     }
 
     @Override
     public Constants.MOVE getMove(Game game, long timeDue) {
-        return ghost.getMove(game, timeDue);
+        return poCommGhost.getMove(game, timeDue);
     }
 }

@@ -12,6 +12,7 @@ import pacman.game.Game;
 public class MyPacMan extends PacmanController {
     private MOVE myMove = MOVE.NEUTRAL;
 
+    @Override
     public MOVE getMove(Game game, long timeDue) {
         //Place your game logic here to play the game as Ms Pac-Man
 

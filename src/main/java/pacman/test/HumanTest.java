@@ -1,6 +1,5 @@
 package pacman.test;
 
-import pacman.Executor;
 import pacman.controllers.HumanController;
 import pacman.controllers.KeyBoardInput;
 import pacman.controllers.PacmanController;
@@ -9,7 +8,6 @@ import pacman.controllers.examples.po.POPacMan;
 import pacman.game.Constants;
 import pacman.game.Game;
 import pacman.game.GameView;
-import pacman.game.comms.BasicMessenger;
 import pacman.game.internal.POType;
 
 import java.util.EnumMap;
@@ -24,7 +22,7 @@ public class HumanTest {
 
         Game primaryGame = new Game(0);
 
-        GameView view  = new GameView(primaryGame).showGame();
+        GameView view = new GameView(primaryGame).showGame();
         GameView radiusView = new GameView(primaryGame).showGame();
         GameView ff_losView = new GameView(primaryGame).showGame();
 
@@ -40,10 +38,10 @@ public class HumanTest {
         view.requestFocus();
         view.addKeyListener(human.getKeyboardInput());
 
-        while(!primaryGame.gameOver()){
-            try{
+        while (!primaryGame.gameOver()) {
+            try {
                 Thread.sleep(40);
-            } catch (Exception e){
+            } catch (Exception e) {
 
             }
             primaryGame.PO_TYPE = POType.LOS;

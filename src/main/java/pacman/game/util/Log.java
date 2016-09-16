@@ -17,8 +17,9 @@ public class Log {
     }
 
     public static Log getLog() {
-        if (log == null)
+        if (log == null) {
             log = new Log();
+        }
 
         return log;
     }
@@ -49,15 +50,17 @@ public class Log {
 
             msg.append(string);
 
-            if (console)
+            if (console) {
                 System.out.println(string);
+            }
         } else {
             String string = "[" + context.getClass().toString() + "]\t" + message;
 
             msg.append(string);
 
-            if (console)
+            if (console) {
                 System.out.println(string);
+            }
         }
     }
 

@@ -9,7 +9,6 @@ import pacman.game.Game;
  */
 public class Blinky extends IndividualGhostController {
 
-
     public Blinky() {
         super(Constants.GHOST.BLINKY);
     }

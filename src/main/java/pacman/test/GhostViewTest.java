@@ -14,7 +14,11 @@ import java.util.EnumMap;
  */
 public class GhostViewTest {
 
-
+    /**
+     * Just a test that shows 5 views, one for pacman !po, one each for the ghosts po
+     *
+     * @param args Not used
+     */
     public static void main(String[] args) {
         Game primaryGame = new Game(0);
 
@@ -26,18 +30,18 @@ public class GhostViewTest {
                 new GameView(primaryGame, false).showGame()
         };
 
-        for(Constants.GHOST ghost : Constants.GHOST.values()){
+        for (Constants.GHOST ghost : Constants.GHOST.values()) {
             ghostViews[ghost.ordinal()].setPO(true, ghost);
         }
 
         PacmanController pacman = new POPacMan();
         POCommGhosts ghosts = new POCommGhosts(50);
 
-        while(!primaryGame.gameOver()){
+        while (!primaryGame.gameOver()) {
             try {
                 Thread.sleep(40);
-            }catch (Exception e){
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             Constants.MOVE pacmanMove = pacman.getMove(primaryGame.copy(5), 40);
@@ -47,7 +51,7 @@ public class GhostViewTest {
 
             primaryView.paintImmediately(primaryView.getBounds());
 
-            for(GameView view : ghostViews){
+            for (GameView view : ghostViews) {
                 view.paintImmediately(view.getBounds());
             }
         }

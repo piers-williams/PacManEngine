@@ -52,8 +52,12 @@ public class Stats {
         n++;
         sum += observation;
         sumsq += (observation * observation);
-        if (observation < min) min = observation;
-        if (observation > max) max = observation;
+        if (observation < min) {
+            min = observation;
+        }
+        if (observation > max) {
+            max = observation;
+        }
         computed = false;
     }
 
@@ -73,14 +77,20 @@ public class Stats {
         n += other.n;
         sum += other.sum;
         sumsq += other.sumsq;
-        if (other.min < min) min = other.min;
-        if (other.max > max) max = other.max;
+        if (other.min < min) {
+            min = other.min;
+        }
+        if (other.max > max) {
+            max = other.max;
+        }
         computed = false;
         this.msTaken += other.msTaken;
     }
 
     public double getAverage() {
-        if (!computed) compute();
+        if (!computed) {
+            compute();
+        }
         return average;
     }
 
@@ -101,12 +111,16 @@ public class Stats {
     }
 
     public double getStandardDeviation() {
-        if (!computed) compute();
+        if (!computed) {
+            compute();
+        }
         return sd;
     }
 
     public double getStandardError() {
-        if (!computed) compute();
+        if (!computed) {
+            compute();
+        }
         return sd / Math.sqrt(n);
     }
 
@@ -123,7 +137,9 @@ public class Stats {
     }
 
     public double getSd() {
-        if (!computed) compute();
+        if (!computed) {
+            compute();
+        }
         return sd;
     }
 
@@ -137,7 +153,9 @@ public class Stats {
 
     @Override
     public String toString() {
-        if (!computed) compute();
+        if (!computed) {
+            compute();
+        }
         return "Stats{" +
                 "Desc=" + description +
                 ", average=" + average +

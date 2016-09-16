@@ -30,18 +30,21 @@ public final class Node {
 
         MOVE[] moves = MOVE.values();
 
-        for (int i = 0; i < _neighbourhood.length; i++)
-            if (_neighbourhood[i] != -1)
+        for (int i = 0; i < _neighbourhood.length; i++) {
+            if (_neighbourhood[i] != -1) {
                 neighbourhood.put(moves[i], _neighbourhood[i]);
+            }
+        }
 
         numNeighbouringNodes = neighbourhood.size();
 
-        for (int i = 0; i < moves.length; i++)
+        for (int i = 0; i < moves.length; i++) {
             if (neighbourhood.containsKey(moves[i])) {
                 EnumMap<MOVE, Integer> tmp = new EnumMap<MOVE, Integer>(neighbourhood);
                 tmp.remove(moves[i]);
                 allNeighbourhoods.put(moves[i].opposite(), tmp);
             }
+        }
 
         allNeighbourhoods.put(MOVE.NEUTRAL, neighbourhood);
 
@@ -50,12 +53,13 @@ public final class Node {
 
         int index = 0;
 
-        for (int i = 0; i < moves.length; i++)
+        for (int i = 0; i < moves.length; i++) {
             if (neighbourhood.containsKey(moves[i])) {
                 neighbouringNodes[index] = neighbourhood.get(moves[i]);
                 possibleMoves[index] = moves[i];
                 index++;
             }
+        }
 
         for (int i = 0; i < moves.length; i++)//check all moves
         {

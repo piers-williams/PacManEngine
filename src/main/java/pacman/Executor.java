@@ -28,12 +28,11 @@ public class Executor {
     protected boolean ghostsPresent = true;
     protected boolean pillsPresent = true;
     protected boolean powerPillsPresent = true;
+    protected Messenger messenger;
     private double scaleFactor = 1.0d;
 
-    protected Messenger messenger;
-
     /**
-     *  Creates a default Executor with full observability for the Pacman and no messaging for the ghosts
+     * Creates a default Executor with full observability for the Pacman and no messaging for the ghosts
      */
     public Executor() {
         this.pacmanPO = false;
@@ -42,6 +41,7 @@ public class Executor {
 
     /**
      * Creates an Exeutor with the required pacman observability and no ghost messaging
+     *
      * @param pacmanPO Whether to impose PO on the pacman
      */
     public Executor(boolean pacmanPO) {
@@ -51,7 +51,8 @@ public class Executor {
 
     /**
      * Creates an exectur with the required pacman observabiliy and ghost messaging
-     * @param pacmanPO Whether to impose PO on the pacman
+     *
+     * @param pacmanPO      Whether to impose PO on the pacman
      * @param ghostsMessage Whether to allow ghost messaging
      */
     public Executor(boolean pacmanPO, boolean ghostsMessage) {
@@ -70,42 +71,42 @@ public class Executor {
      */
     public static void main(String[] args) throws IOException {
 
-//
-//        File file = new File("results/mctsTuning.csv");
-//        file.createNewFile();
-//        File fileTimings = new File("results/mctsTimings.csv");
-//        fileTimings.createNewFile();
+        //
+        //        File file = new File("results/mctsTuning.csv");
+        //        file.createNewFile();
+        //        File fileTimings = new File("results/mctsTimings.csv");
+        //        fileTimings.createNewFile();
 
-//        FileWriter writerCOP = new FileWriter(fileTimings);
-//        FileWriter writerPOP = new FileWriter(file);
-//        String format = "AI, i, avg, sum, sumsq, sd, n, min, max, stdErr, ms\n";
-//        writerCOP.write(format);
-//        writerPOP.write(format);
+        //        FileWriter writerCOP = new FileWriter(fileTimings);
+        //        FileWriter writerPOP = new FileWriter(file);
+        //        String format = "AI, i, avg, sum, sumsq, sd, n, min, max, stdErr, ms\n";
+        //        writerCOP.write(format);
+        //        writerPOP.write(format);
 
-//        for(int i = 100; i <= 300; i+=10){
-//            System.out.println("Starting variable: " + i);
-//            MCTSPacMan agent = new MCTSPacMan(i, i * 10);
-//            agent.setEnableStatistics(true);
-//            Stats[] stat = (poExec.runExperiment(agent, new POCommGhosts(50), n, "MCTS(" + i + " : " + i * 10 + ") Vs POGC"));
-//            writeStat(writerCOP, stat, i);
-//            stat = (poExec.runExperiment(new POPacMan(), new POCommGhosts(i), n, "POP VS POGC"));
-//            for(Stats data : agent.getStats()){
-//                writeStat(writerPOP, data, i);
-//            }
-//            writeStat(writerPOP, stat[0], i);
-//            writeStat(writerPOP, stat[1], i);
-//        }
+        //        for(int i = 100; i <= 300; i+=10){
+        //            System.out.println("Starting variable: " + i);
+        //            MCTSPacMan agent = new MCTSPacMan(i, i * 10);
+        //            agent.setEnableStatistics(true);
+        //            Stats[] stat = (poExec.runExperiment(agent, new POCommGhosts(50), n, "MCTS(" + i + " : " + i * 10 + ") Vs POGC"));
+        //            writeStat(writerCOP, stat, i);
+        //            stat = (poExec.runExperiment(new POPacMan(), new POCommGhosts(i), n, "POP VS POGC"));
+        //            for(Stats data : agent.getStats()){
+        //                writeStat(writerPOP, data, i);
+        //            }
+        //            writeStat(writerPOP, stat[0], i);
+        //            writeStat(writerPOP, stat[1], i);
+        //        }
 
-//        writerCOP.flush();
-//        writerPOP.flush();
-//        writerCOP.close();
-//        writerPOP.close();
+        //        writerCOP.flush();
+        //        writerPOP.flush();
+        //        writerCOP.close();
+        //        writerPOP.close();
         // Test effectiveness of comm ghost with increasing message delay
-//        Executor risingComm = new MultiExecutor(false, true);
-//        for(int i = 0; i < 25; i++){
-//            risingComm.setMessenger(new BasicMessenger(0, i, 0));
-//            System.out.println(risingComm.runExperiment(new StarterPacMan(), new POCommGhosts(), n, "Delay: " + i));
-//        }
+        //        Executor risingComm = new MultiExecutor(false, true);
+        //        for(int i = 0; i < 25; i++){
+        //            risingComm.setMessenger(new BasicMessenger(0, i, 0));
+        //            System.out.println(risingComm.runExperiment(new StarterPacMan(), new POCommGhosts(), n, "Delay: " + i));
+        //        }
 
 
 		/*
@@ -123,10 +124,10 @@ public class Executor {
 
         ///*
         //run the game in asynchronous mode.
-//		boolean visual=true;
-//		exec.runGameTimed(new NearestPillPacMan(),new AggressiveGhosts(),visual);
-//		exec.runGameTimed(new StarterPacMan(),new StarterGhosts(),visual);
-//		exec.runGameTimed(new HumanController(new KeyBoardInput()),new StarterGhosts(),visual);
+        //		boolean visual=true;
+        //		exec.runGameTimed(new NearestPillPacMan(),new AggressiveGhosts(),visual);
+        //		exec.runGameTimed(new StarterPacMan(),new StarterGhosts(),visual);
+        //		exec.runGameTimed(new HumanController(new KeyBoardInput()),new StarterGhosts(),visual);
         //*/
 
 		/*
@@ -147,7 +148,7 @@ public class Executor {
     }
 
     private static void writeStat(FileWriter writer, Stats stat, int i) throws IOException {
-        writer.write(String.format("%s, %d, %f, %f, %f, %f, %d, %f, %f, %f, %d\n",
+        writer.write(String.format("%s, %d, %f, %f, %f, %f, %d, %f, %f, %f, %d%n",
                 stat.getDescription(),
                 i,
                 stat.getAverage(),
@@ -179,12 +180,13 @@ public class Executor {
     private static ArrayList<String> loadReplay(String fileName) {
         ArrayList<String> replay = new ArrayList<String>();
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)))){
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)))) {
             String input = br.readLine();
 
             while (input != null) {
-                if (!input.equals(""))
+                if (!input.equals("")) {
                     replay.add(input);
+                }
 
                 input = br.readLine();
             }
@@ -228,7 +230,9 @@ public class Executor {
                 game = (this.ghostsMessage) ? new Game(rnd.nextLong(), messenger.copy()) : new Game(rnd.nextLong());
 
                 while (!game.gameOver()) {
-                    if (tickLimit != -1 && tickLimit < game.getCurrentLevelTime()) break;
+                    if (tickLimit != -1 && tickLimit < game.getCurrentLevelTime()) {
+                        break;
+                    }
                     game.advanceGame(
                             pacManController.getMove(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY),
                             ghostController.getMove(game.copy(), System.currentTimeMillis() + DELAY));
@@ -297,12 +301,12 @@ public class Executor {
             gv.setScaleFactor(scaleFactor);
             gv.showGame();
             if (pacManController instanceof HumanController) {
-//                System.out.println("Here");
+                //                System.out.println("Here");
                 gv.setFocusable(true);
                 gv.requestFocus();
                 gv.setPO(true);
                 gv.addKeyListener(((HumanController) pacManController).getKeyboardInput());
-//                System.out.println("KeyListener added");
+                //                System.out.println("KeyListener added");
             }
         }
 
@@ -314,8 +318,9 @@ public class Executor {
             } catch (Exception e) {
             }
 
-            if (visual)
+            if (visual) {
                 gv.repaint();
+            }
         }
         System.out.println(game.getScore());
         return game.getScore();
@@ -340,8 +345,9 @@ public class Executor {
             gv.showGame();
         }
 
-        if (gv != null && pacManController instanceof HumanController)
+        if (gv != null && pacManController instanceof HumanController) {
             gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
+        }
 
         new Thread(pacManController).start();
         new Thread(ghostController).start();
@@ -358,8 +364,9 @@ public class Executor {
 
             game.advanceGame(pacManController.getMove(), ghostController.getMove());
 
-            if (visual)
+            if (visual) {
                 gv.repaint();
+            }
         }
 
         pacManController.terminate();
@@ -389,8 +396,9 @@ public class Executor {
             gv.showGame();
         }
 
-        if (gv != null && pacManController instanceof HumanController)
+        if (gv != null && pacManController instanceof HumanController) {
             gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
+        }
 
         new Thread(pacManController).start();
         new Thread(ghostController).start();
@@ -400,7 +408,7 @@ public class Executor {
             ghostController.update(game.copy(), System.currentTimeMillis() + DELAY);
 
             try {
-                int waited = DELAY / INTERVAL_WAIT;
+                long waited = DELAY / INTERVAL_WAIT;
 
                 for (int j = 0; j < DELAY / INTERVAL_WAIT; j++) {
                     Thread.sleep(INTERVAL_WAIT);
@@ -411,19 +419,23 @@ public class Executor {
                     }
                 }
 
-                if (fixedTime)
+                if (fixedTime) {
                     Thread.sleep(((DELAY / INTERVAL_WAIT) - waited) * INTERVAL_WAIT);
+                }
 
                 game.advanceGame(pacManController.getMove(), ghostController.getMove());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            if (visual)
+            if (visual) {
                 gv.repaint();
+            }
 
             ticks++;
-            if(ticks > 4000) break;
+            if (ticks > 4000) {
+                break;
+            }
         }
 
         pacManController.terminate();
@@ -454,8 +466,9 @@ public class Executor {
             gv.setScaleFactor(scaleFactor);
             gv.showGame();
 
-            if (pacManController instanceof HumanController)
+            if (pacManController instanceof HumanController) {
                 gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
+            }
         }
 
         new Thread(pacManController).start();
@@ -473,8 +486,9 @@ public class Executor {
 
             game.advanceGame(pacManController.getMove(), ghostController.getMove());
 
-            if (visual)
+            if (visual) {
                 gv.repaint();
+            }
 
             replay.append(game.getGameState() + "\n");
         }
@@ -514,12 +528,13 @@ public class Executor {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (visual)
+            if (visual) {
                 gv.repaint();
+            }
         }
     }
 
-    public void setScaleFactor(double scaleFactor){
+    public void setScaleFactor(double scaleFactor) {
         this.scaleFactor = scaleFactor;
     }
 }

@@ -15,6 +15,7 @@ import java.util.EnumMap;
 public class MyGhosts extends Controller<EnumMap<GHOST, MOVE>> {
     private EnumMap<GHOST, MOVE> myMoves = new EnumMap<GHOST, MOVE>(GHOST.class);
 
+    @Override
     public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
         myMoves.clear();
 

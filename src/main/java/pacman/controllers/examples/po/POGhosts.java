@@ -50,16 +50,17 @@ class POGhost {
         if (game.doesGhostRequireAction(ghost))        //if ghost requires an action
         {
             if (game.getGhostEdibleTime(ghost) > 0 || closeToPower(game))    //retreat from Ms Pac-Man if edible or if Ms Pac-Man is close to power pill
+            {
                 return game.getApproximateNextMoveAwayFromTarget(game.getGhostCurrentNodeIndex(ghost),
                         game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(ghost), DM.PATH);
-            else {
+            } else {
                 // If can observe pacman and random says ok
-//                if(rnd.nextFloat() < CONSISTENCY) {
+                //                if(rnd.nextFloat() < CONSISTENCY) {
 
                 if (game.getPacmanCurrentNodeIndex() != -1 && rnd.nextFloat() < CONSISTENCY) {            //attack Ms Pac-Man otherwise (with certain probability)
                     MOVE move = game.getApproximateNextMoveTowardsTarget(game.getGhostCurrentNodeIndex(ghost),
                             game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(ghost), DM.PATH);
-//                    if(game.getPacmanCurrentNodeIndex() == -1) System.out.println("Was -1: " + move);
+                    //                    if(game.getPacmanCurrentNodeIndex() == -1) System.out.println("Was -1: " + move);
                     return move;
                 } else                                    //else take a random legal action (to be less predictable)
                 {
@@ -80,7 +81,9 @@ class POGhost {
             Boolean powerPillStillAvailable = game.isPowerPillStillAvailable(i);
             int pacmanNodeIndex = game.getPacmanCurrentNodeIndex();
 
-            if (powerPillStillAvailable == null || pacmanNodeIndex == -1) return false;
+            if (powerPillStillAvailable == null || pacmanNodeIndex == -1) {
+                return false;
+            }
             if (powerPillStillAvailable && game.getShortestPathDistance(powerPills[i], pacmanNodeIndex) < PILL_PROXIMITY) {
                 return true;
             }

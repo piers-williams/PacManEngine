@@ -9,11 +9,11 @@ import pacman.game.Game;
  */
 public class Inky extends IndividualGhostController {
 
-    private POCommGhost ghost;
+    private POCommGhost poCommGhost;
 
     public Inky() {
         super(Constants.GHOST.INKY);
-        ghost = new POCommGhost(Constants.GHOST.INKY, 50);
+        poCommGhost = new POCommGhost(Constants.GHOST.INKY, 50);
     }
 
     @Override

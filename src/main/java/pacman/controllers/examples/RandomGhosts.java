@@ -19,12 +19,15 @@ public final class RandomGhosts extends Controller<EnumMap<GHOST, MOVE>> {
     /* (non-Javadoc)
      * @see pacman.controllers.Controller#getMove(pacman.game.Game, long)
      */
+    @Override
     public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
         moves.clear();
 
-        for (GHOST ghostType : GHOST.values())
-            if (game.doesGhostRequireAction(ghostType))
+        for (GHOST ghostType : GHOST.values()) {
+            if (game.doesGhostRequireAction(ghostType)) {
                 moves.put(ghostType, allMoves[rnd.nextInt(allMoves.length)]);
+            }
+        }
 
         return moves;
     }

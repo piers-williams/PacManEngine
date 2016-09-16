@@ -10,6 +10,7 @@ import pacman.game.comms.Message;
 import pacman.game.comms.Messenger;
 
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -33,10 +34,10 @@ public class POCommGhosts extends Controller<EnumMap<GHOST, MOVE>> {
     @Override
     public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
         myMoves.clear();
-        for (GHOST ghost : ghosts.keySet()) {
-            MOVE move = ghosts.get(ghost).getMove(game.copy(ghost), timeDue);
+        for (Map.Entry<GHOST, POCommGhostImproved> entry : ghosts.entrySet()) {
+            MOVE move = entry.getValue().getMove(game.copy(entry.getKey()), timeDue);
             if (move != null) {
-                myMoves.put(ghost, move);
+                myMoves.put(entry.getKey(), move);
             }
         }
         return myMoves;
@@ -69,7 +70,6 @@ class POCommGhostImproved {
             tickSeen = -1;
         }
 
-
         // Can we see PacMan? If so tell people and update our info
         int pacmanIndex = game.getPacmanCurrentNodeIndex();
         int currentIndex = game.getGhostCurrentNodeIndex(ghost);
@@ -93,13 +93,16 @@ class POCommGhostImproved {
                 }
             }
         }
-        if (pacmanIndex == -1) pacmanIndex = lastPacmanIndex;
+        if (pacmanIndex == -1) {
+            pacmanIndex = lastPacmanIndex;
+        }
 
         Boolean requiresAction = game.doesGhostRequireAction(ghost);
         if (requiresAction != null && requiresAction)        //if ghost requires an action
         {
             if (pacmanIndex != -1) {
                 if (game.getGhostEdibleTime(ghost) > 0 || closeToPower(game))    //retreat from Ms Pac-Man if edible or if Ms Pac-Man is close to power pill
+                {
                     try {
                         return game.getApproximateNextMoveAwayFromTarget(game.getGhostCurrentNodeIndex(ghost),
                                 game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(ghost), DM.PATH);
@@ -107,7 +110,7 @@ class POCommGhostImproved {
                         System.out.println(e);
                         System.out.println(pacmanIndex + " : " + currentIndex);
                     }
-                else {
+                } else {
                     if (rnd.nextFloat() < CONSISTENCY) {            //attack Ms Pac-Man otherwise (with certain probability)
                         try {
                             MOVE move = game.getApproximateNextMoveTowardsTarget(game.getGhostCurrentNodeIndex(ghost),
@@ -134,8 +137,12 @@ class POCommGhostImproved {
         for (int i = 0; i < powerPills.length; i++) {
             Boolean powerPillStillAvailable = game.isPowerPillStillAvailable(i);
             int pacmanNodeIndex = game.getPacmanCurrentNodeIndex();
-            if (pacmanNodeIndex == -1) pacmanNodeIndex = lastPacmanIndex;
-            if (powerPillStillAvailable == null || pacmanNodeIndex == -1) return false;
+            if (pacmanNodeIndex == -1) {
+                pacmanNodeIndex = lastPacmanIndex;
+            }
+            if (powerPillStillAvailable == null || pacmanNodeIndex == -1) {
+                return false;
+            }
             if (powerPillStillAvailable && game.getShortestPathDistance(powerPills[i], pacmanNodeIndex) < PILL_PROXIMITY) {
                 return true;
             }
@@ -176,16 +183,17 @@ class POCommGhost {
         if (game.doesGhostRequireAction(ghost))        //if ghost requires an action
         {
             if (game.getGhostEdibleTime(ghost) > 0 || closeToPower(game))    //retreat from Ms Pac-Man if edible or if Ms Pac-Man is close to power pill
+            {
                 return game.getApproximateNextMoveAwayFromTarget(game.getGhostCurrentNodeIndex(ghost),
                         game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(ghost), DM.PATH);
-            else {
+            } else {
                 // If can observe pacman and random says ok
-//                if(rnd.nextFloat() < CONSISTENCY) {
+                //                if(rnd.nextFloat() < CONSISTENCY) {
 
                 if (pacmanIndex != -1 && rnd.nextFloat() < CONSISTENCY) {            //attack Ms Pac-Man otherwise (with certain probability)
                     MOVE move = game.getApproximateNextMoveTowardsTarget(game.getGhostCurrentNodeIndex(ghost),
                             pacmanIndex, game.getGhostLastMoveMade(ghost), DM.PATH);
-//                    if(game.getPacmanCurrentNodeIndex() == -1) System.out.println("Was -1: " + move);
+                    //                    if(game.getPacmanCurrentNodeIndex() == -1) System.out.println("Was -1: " + move);
                     return move;
                 } else                                    //else take a random legal action (to be less predictable)
                 {
@@ -206,7 +214,9 @@ class POCommGhost {
             Boolean powerPillStillAvailable = game.isPowerPillStillAvailable(i);
             int pacmanNodeIndex = game.getPacmanCurrentNodeIndex();
 
-            if (powerPillStillAvailable == null || pacmanNodeIndex == -1) return false;
+            if (powerPillStillAvailable == null || pacmanNodeIndex == -1) {
+                return false;
+            }
             if (powerPillStillAvailable && game.getShortestPathDistance(powerPills[i], pacmanNodeIndex) < PILL_PROXIMITY) {
                 return true;
             }

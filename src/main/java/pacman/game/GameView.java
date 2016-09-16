@@ -30,7 +30,7 @@ public final class GameView extends JComponent {
     private static boolean isVisible = true;
     private static boolean saveImage = false;
     private static String imageFileName = "";
-    private final Game game;
+    private final transient Game game;
     private Images images;
     private MOVE lastPacManMove;
     private int time;
@@ -58,7 +58,13 @@ public final class GameView extends JComponent {
         this(game, true);
     }
 
-    public GameView (Game game, boolean exitOnClose){
+    /**
+     * Instantiates a new game view.
+     *
+     * @param game        The game that is played
+     * @param exitOnClose Whether to exit on close
+     */
+    public GameView(Game game, boolean exitOnClose) {
         this.game = game;
 
         images = new Images();
@@ -80,9 +86,11 @@ public final class GameView extends JComponent {
      * @param nodeIndices The node indices to be highlighted by the chosen colour
      */
     public synchronized static void addPoints(Game game, Color color, int... nodeIndices) {
-        if (isVisible)
-            for (int i = 0; i < nodeIndices.length; i++)
+        if (isVisible) {
+            for (int i = 0; i < nodeIndices.length; i++) {
                 debugPointers.add(new DebugPointer(game.getNodeXCood(nodeIndices[i]), game.getNodeYCood(nodeIndices[i]), color));
+            }
+        }
     }
 
     /**
@@ -94,9 +102,11 @@ public final class GameView extends JComponent {
      * @param toNodeIndices    The node indices where the lines end
      */
     public synchronized static void addLines(Game game, Color color, int[] fromNnodeIndices, int[] toNodeIndices) {
-        if (isVisible)
-            for (int i = 0; i < fromNnodeIndices.length; i++)
+        if (isVisible) {
+            for (int i = 0; i < fromNnodeIndices.length; i++) {
                 debugLines.add(new DebugLine(game.getNodeXCood(fromNnodeIndices[i]), game.getNodeYCood(fromNnodeIndices[i]), game.getNodeXCood(toNodeIndices[i]), game.getNodeYCood(toNodeIndices[i]), color));
+            }
+        }
     }
 
     /**
@@ -108,8 +118,9 @@ public final class GameView extends JComponent {
      * @param toNodeIndex    the to node index
      */
     public synchronized static void addLines(Game game, Color color, int fromNnodeIndex, int toNodeIndex) {
-        if (isVisible)
+        if (isVisible) {
             debugLines.add(new DebugLine(game.getNodeXCood(fromNnodeIndex), game.getNodeYCood(fromNnodeIndex), game.getNodeXCood(toNodeIndex), game.getNodeYCood(toNodeIndex), color));
+        }
     }
 
     /**
@@ -182,22 +193,32 @@ public final class GameView extends JComponent {
         drawLives();
         drawGameInfo();
         if (isPO) {
-            if(ghost == null) {
+            if (ghost == null) {
                 drawPacManVisibility();
-            }else{
+            } else {
                 drawGhostVisibility(ghost);
             }
-//            drawNodes();
+            //            drawNodes();
         }
-//        drawPacManPredictions();
+        //        drawPacManPredictions();
         if (game.gameOver()) {
             drawGameOver();
         }
 
         g.drawImage(offscreen, 0, 0, this);
 
-        if (saveImage)
+        if (saveImage) {
             saveImage();
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.JComponent#getPreferredSize()
+     */
+    public Dimension getPreferredSize() {
+        return new Dimension(
+                (int) (GV_WIDTH * MAG * scaleFactor),
+                (int) (GV_HEIGHT * MAG * scaleFactor) + 20);
     }
 
     /**
@@ -218,9 +239,11 @@ public final class GameView extends JComponent {
 
         bufferGraphics.setColor(Color.white);
 
-        for (int i = 0; i < pillIndices.length; i++)
-            if (game.isPillStillAvailable(i))
+        for (int i = 0; i < pillIndices.length; i++) {
+            if (game.isPillStillAvailable(i)) {
                 bufferGraphics.fillOval(game.getNodeXCood(pillIndices[i]) * MAG + 4, game.getNodeYCood(pillIndices[i]) * MAG + 8, 3, 3);
+            }
+        }
     }
 
     /**
@@ -231,10 +254,62 @@ public final class GameView extends JComponent {
 
         bufferGraphics.setColor(Color.white);
 
-        for (int i = 0; i < powerPillIndices.length; i++)
-            if (game.isPowerPillStillAvailable(i))
+        for (int i = 0; i < powerPillIndices.length; i++) {
+            if (game.isPowerPillStillAvailable(i)) {
                 bufferGraphics.fillOval(game.getNodeXCood(powerPillIndices[i]) * MAG + 1, game.getNodeYCood(powerPillIndices[i]) * MAG + 5, 8, 8);
+            }
+        }
     }
+
+    //    private void drawPacManPredictions() {
+    //        if (predictions == null) {
+    //            predictions = new GhostPredictions(game.getCurrentMaze());
+    //            predictionTicks = game.getCurrentLevelTime();
+    //        }
+    //
+    //        // Update them
+    //        while (game.getCurrentLevelTime() > predictionTicks) {
+    ////            System.out.println("Updating");
+    //            long time = System.currentTimeMillis();
+    //            predictions.update();
+    //            System.out.println("Took: " + (System.currentTimeMillis() - time));
+    //            predictionTicks++;
+    //        }
+    //
+    //
+    //        // Make observations
+    //        Game po = game.copy(new PacMan(game.getPacmanCurrentNodeIndex(), game.getPacmanLastMoveMade(), game.getPacmanNumberOfLivesRemaining(), true));
+    //        // Check the 4 ghosts
+    //        for (GHOST ghost : GHOST.values()) {
+    //            int ghostIndex = po.getGhostCurrentNodeIndex(ghost);
+    //            if (ghostIndex != -1) {
+    //                predictions.observe(ghost, ghostIndex, po.getGhostLastMoveMade(ghost));
+    //            } else {
+    //                LinkedList<GhostLocation> locationList = new LinkedList<>(predictions.getGhostLocations(ghost));
+    //                for (GhostLocation location : locationList) {
+    //                    if (po.isNodeObservable(location.getIndex()))
+    //                        predictions.observeNotPresent(ghost, location.getIndex());
+    //                }
+    //            }
+    //        }
+    //
+    //        // Draw it
+    //        for (int i = 0; i < game.getNumberOfNodes(); i++) {
+    //            double probability = predictions.calculate(i);
+    //            if (probability > 1E-2) {
+    ////                System.out.println("Have a probability: " + probability + " alpha: " + (int)(128 * probability));
+    ////                bufferGraphics.setColor(new Color(255, 0, 0, (int) (Math.max(128 * probability, 255))));
+    //                bufferGraphics.setColor(redAlphas[(int) Math.min(255 * probability, 255)]);
+    //                bufferGraphics.fillRect(
+    //                        game.getNodeXCood(i) * MAG - 1,
+    //                        game.getNodeYCood(i) * MAG + 3,
+    //                        14, 14
+    //                );
+    //            }
+    //        }
+    //
+    ////        System.out.println(predictions);
+    //    }
 
     /**
      * Draw pac man.
@@ -244,65 +319,16 @@ public final class GameView extends JComponent {
 
         MOVE tmpLastPacManMove = game.getPacmanLastMoveMade();
 
-        if (tmpLastPacManMove != MOVE.NEUTRAL)
+        if (tmpLastPacManMove != MOVE.NEUTRAL) {
             lastPacManMove = tmpLastPacManMove;
+        }
 
         bufferGraphics.drawImage(images.getPacMan(lastPacManMove, time), game.getNodeXCood(pacLoc) * MAG - 1, game.getNodeYCood(pacLoc) * MAG + 3, null);
     }
 
-//    private void drawPacManPredictions() {
-//        if (predictions == null) {
-//            predictions = new GhostPredictions(game.getCurrentMaze());
-//            predictionTicks = game.getCurrentLevelTime();
-//        }
-//
-//        // Update them
-//        while (game.getCurrentLevelTime() > predictionTicks) {
-////            System.out.println("Updating");
-//            long time = System.currentTimeMillis();
-//            predictions.update();
-//            System.out.println("Took: " + (System.currentTimeMillis() - time));
-//            predictionTicks++;
-//        }
-//
-//
-//        // Make observations
-//        Game po = game.copy(new PacMan(game.getPacmanCurrentNodeIndex(), game.getPacmanLastMoveMade(), game.getPacmanNumberOfLivesRemaining(), true));
-//        // Check the 4 ghosts
-//        for (GHOST ghost : GHOST.values()) {
-//            int ghostIndex = po.getGhostCurrentNodeIndex(ghost);
-//            if (ghostIndex != -1) {
-//                predictions.observe(ghost, ghostIndex, po.getGhostLastMoveMade(ghost));
-//            } else {
-//                LinkedList<GhostLocation> locationList = new LinkedList<>(predictions.getGhostLocations(ghost));
-//                for (GhostLocation location : locationList) {
-//                    if (po.isNodeObservable(location.getIndex()))
-//                        predictions.observeNotPresent(ghost, location.getIndex());
-//                }
-//            }
-//        }
-//
-//        // Draw it
-//        for (int i = 0; i < game.getNumberOfNodes(); i++) {
-//            double probability = predictions.calculate(i);
-//            if (probability > 1E-2) {
-////                System.out.println("Have a probability: " + probability + " alpha: " + (int)(128 * probability));
-////                bufferGraphics.setColor(new Color(255, 0, 0, (int) (Math.max(128 * probability, 255))));
-//                bufferGraphics.setColor(redAlphas[(int) Math.min(255 * probability, 255)]);
-//                bufferGraphics.fillRect(
-//                        game.getNodeXCood(i) * MAG - 1,
-//                        game.getNodeYCood(i) * MAG + 3,
-//                        14, 14
-//                );
-//            }
-//        }
-//
-////        System.out.println(predictions);
-//    }
-
-    private void drawNodes(){
+    private void drawNodes() {
         bufferGraphics.setColor(Color.CYAN);
-        for(Node node : game.getCurrentMaze().graph){
+        for (Node node : game.getCurrentMaze().graph) {
             bufferGraphics.drawRect(
                     node.x * MAG - 1,
                     node.y * MAG + 3,
@@ -312,13 +338,13 @@ public final class GameView extends JComponent {
         }
     }
 
-    private void drawPacManVisibility(){
+    private void drawPacManVisibility() {
         Game pacmanGame = game.copy(new PacMan(0, game.getPacmanLastMoveMade(), game.getPacmanNumberOfLivesRemaining(), false));
         int pacmanLocation = game.getPacmanCurrentNodeIndex();
         drawVisibility(pacmanLocation, pacmanGame);
     }
 
-    private void drawGhostVisibility(GHOST ghost){
+    private void drawGhostVisibility(GHOST ghost) {
         Game ghostGame = game.copy(ghost);
         int ghostLocation = game.getGhostCurrentNodeIndex(ghost);
         drawVisibility(ghostLocation, ghostGame);
@@ -371,17 +397,19 @@ public final class GameView extends JComponent {
 
             if (game.getGhostEdibleTime(ghostType) > 0) {
                 //what is the second clause for????
-                if (game.getGhostEdibleTime(ghostType) < EDIBLE_ALERT && ((time % 6) / 3) == 0)
+                if (game.getGhostEdibleTime(ghostType) < EDIBLE_ALERT && ((time % 6) / 3) == 0) {
                     bufferGraphics.drawImage(images.getEdibleGhost(true, time), nodeXCood * MAG - 1, nodeYCood * MAG + 3, null);
-                else
+                } else {
                     bufferGraphics.drawImage(images.getEdibleGhost(false, time), nodeXCood * MAG - 1, nodeYCood * MAG + 3, null);
+                }
             } else {
                 int index = ghostType.ordinal();
 
-                if (game.getGhostLairTime(ghostType) > 0)
+                if (game.getGhostLairTime(ghostType) > 0) {
                     bufferGraphics.drawImage(images.getGhost(ghostType, game.getGhostLastMoveMade(ghostType), time), nodeXCood * MAG - 1 + (index * 5), nodeYCood * MAG + 3, null);
-                else
+                } else {
                     bufferGraphics.drawImage(images.getGhost(ghostType, game.getGhostLastMoveMade(ghostType), time), nodeXCood * MAG - 1, nodeYCood * MAG + 3, null);
+                }
             }
         }
     }
@@ -391,7 +419,9 @@ public final class GameView extends JComponent {
      */
     private void drawLives() {
         for (int i = 0; i < game.getPacmanNumberOfLivesRemaining() - 1; i++) //-1 as lives remaining includes the current life
+        {
             bufferGraphics.drawImage(images.getPacManForExtraLives(), 210 - (30 * i) / 2, 260, null);
+        }
     }
 
     /**
@@ -400,11 +430,11 @@ public final class GameView extends JComponent {
     private void drawGameInfo() {
         bufferGraphics.setColor(Color.WHITE);
         bufferGraphics.drawString("S: ", 4, 271);
-        bufferGraphics.drawString("" + game.getScore(), 16, 271);
+        bufferGraphics.drawString(Integer.toString(game.getScore()), 16, 271);
         bufferGraphics.drawString("L: ", 78, 271);
-        bufferGraphics.drawString("" + (game.getCurrentLevel() + 1), 90, 271);
+        bufferGraphics.drawString(Integer.toString(game.getCurrentLevel() + 1), 90, 271);
         bufferGraphics.drawString("T: ", 116, 271);
-        bufferGraphics.drawString("" + game.getCurrentLevelTime(), 129, 271);
+        bufferGraphics.drawString(Integer.toString(game.getCurrentLevelTime()), 129, 271);
     }
 
     /**
@@ -413,15 +443,6 @@ public final class GameView extends JComponent {
     private void drawGameOver() {
         bufferGraphics.setColor(Color.WHITE);
         bufferGraphics.drawString("Game Over", 80, 150);
-    }
-
-    /* (non-Javadoc)
-     * @see javax.swing.JComponent#getPreferredSize()
-     */
-    public Dimension getPreferredSize() {
-        return new Dimension(
-                (int)(GV_WIDTH * MAG * scaleFactor),
-                (int)(GV_HEIGHT * MAG * scaleFactor) + 20);
     }
 
     /**
@@ -448,6 +469,36 @@ public final class GameView extends JComponent {
      */
     public GameFrame getFrame() {
         return frame;
+    }
+
+    /**
+     * Set the po status for ghost of this view
+     *
+     * @param po Are we po?
+     */
+    public void setPO(boolean po) {
+        this.isPO = po;
+        this.ghost = null;
+    }
+
+    /**
+     * Set the po status and ghost for this view
+     *
+     * @param po    Are we po?
+     * @param ghost Which ghost to be
+     */
+    public void setPO(boolean po, GHOST ghost) {
+        this.isPO = po;
+        this.ghost = ghost;
+    }
+
+    /**
+     * Set the graphical scale factor for the game view
+     *
+     * @param scaleFactor The scale factor
+     */
+    public void setScaleFactor(double scaleFactor) {
+        this.scaleFactor = scaleFactor;
     }
 
     private static class DebugPointer {
@@ -490,7 +541,7 @@ public final class GameView extends JComponent {
             this.setLocation((int) (screen.getWidth() * 3 / 8), (int) (screen.getHeight() * 3 / 8));
             this.setVisible(true);
             this.setResizable(false);
-            setDefaultCloseOperation((exitOnClose) ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
+            setDefaultCloseOperation(exitOnClose ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
             repaint();
         }
     }
@@ -554,8 +605,9 @@ public final class GameView extends JComponent {
             edibleBlinkingGhosts[1] = _loadImage("edible-ghost-blink-2.png");
 
             mazes = new BufferedImage[4];
-            for (int i = 0; i < mazes.length; i++)
+            for (int i = 0; i < mazes.length; i++) {
                 mazes[i] = _loadImage(mazeNames[i]);
+            }
         }
 
         public BufferedImage getPacMan(MOVE move, int time) {
@@ -567,17 +619,19 @@ public final class GameView extends JComponent {
         }
 
         public BufferedImage getGhost(GHOST ghost, MOVE move, int time) {
-            if (move == MOVE.NEUTRAL)
+            if (move == MOVE.NEUTRAL) {
                 return ghosts.get(ghost).get(MOVE.UP)[(time % 6) / 3];
-            else
+            } else {
                 return ghosts.get(ghost).get(move)[(time % 6) / 3];
+            }
         }
 
         public BufferedImage getEdibleGhost(boolean blinking, int time) {
-            if (!blinking)
+            if (!blinking) {
                 return edibleGhosts[(time % 6) / 3];
-            else
+            } else {
                 return edibleBlinkingGhosts[(time % 6) / 3];
+            }
         }
 
         public BufferedImage getMaze(int mazeIndex) {
@@ -597,19 +651,5 @@ public final class GameView extends JComponent {
 
             return image;
         }
-    }
-
-    public void setPO(boolean PO) {
-        this.isPO = PO;
-        this.ghost = null;
-    }
-
-    public void setPO(boolean PO, GHOST ghost){
-        this.isPO = PO;
-        this.ghost = ghost;
-    }
-
-    public void setScaleFactor(double scaleFactor){
-        this.scaleFactor = scaleFactor;
     }
 }

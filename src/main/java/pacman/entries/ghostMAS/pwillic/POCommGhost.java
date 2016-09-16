@@ -37,7 +37,6 @@ class POCommGhost {
             tickSeen = -1;
         }
 
-
         // Can we see PacMan? If so tell people and update our info
         int pacmanIndex = game.getPacmanCurrentNodeIndex();
         int currentIndex = game.getGhostCurrentNodeIndex(ghost);
@@ -61,12 +60,15 @@ class POCommGhost {
                 }
             }
         }
-        if (pacmanIndex == -1) pacmanIndex = lastPacmanIndex;
+        if (pacmanIndex == -1) {
+            pacmanIndex = lastPacmanIndex;
+        }
 
         if (game.doesGhostRequireAction(ghost))        //if ghost requires an action
         {
             if (pacmanIndex != -1) {
                 if (game.getGhostEdibleTime(ghost) > 0 || closeToPower(game))    //retreat from Ms Pac-Man if edible or if Ms Pac-Man is close to power pill
+                {
                     try {
                         return game.getApproximateNextMoveAwayFromTarget(game.getGhostCurrentNodeIndex(ghost),
                                 game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(ghost), Constants.DM.PATH);
@@ -74,7 +76,7 @@ class POCommGhost {
                         System.out.println(e);
                         System.out.println(pacmanIndex + " : " + currentIndex);
                     }
-                else {
+                } else {
                     if (rnd.nextFloat() < CONSISTENCY) {            //attack Ms Pac-Man otherwise (with certain probability)
                         try {
                             Constants.MOVE move = game.getApproximateNextMoveTowardsTarget(game.getGhostCurrentNodeIndex(ghost),
@@ -101,8 +103,12 @@ class POCommGhost {
         for (int i = 0; i < powerPills.length; i++) {
             Boolean powerPillStillAvailable = game.isPowerPillStillAvailable(i);
             int pacmanNodeIndex = game.getPacmanCurrentNodeIndex();
-            if (pacmanNodeIndex == -1) pacmanNodeIndex = lastPacmanIndex;
-            if (powerPillStillAvailable == null || pacmanNodeIndex == -1) return false;
+            if (pacmanNodeIndex == -1) {
+                pacmanNodeIndex = lastPacmanIndex;
+            }
+            if (powerPillStillAvailable == null || pacmanNodeIndex == -1) {
+                return false;
+            }
             if (powerPillStillAvailable && game.getShortestPathDistance(powerPills[i], pacmanNodeIndex) < PILL_PROXIMITY) {
                 return true;
             }

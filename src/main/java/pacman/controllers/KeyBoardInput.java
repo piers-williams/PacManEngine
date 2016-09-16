@@ -13,12 +13,12 @@ public class KeyBoardInput extends KeyAdapter {
         return key;
     }
 
-    public void keyTyped(KeyEvent e){
+    public void keyTyped(KeyEvent e) {
         System.out.println("Typed: " + e.getKeyChar());
     }
 
     public void keyPressed(KeyEvent e) {
-//        System.out.println("Pressed: " + e.getKeyChar());
+        //        System.out.println("Pressed: " + e.getKeyChar());
         key = e.getKeyCode();
     }
 }

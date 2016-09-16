@@ -21,17 +21,20 @@ public class AStar {
         graph = new N[nodes.length];
 
         //create graph
-        for (int i = 0; i < nodes.length; i++)
+        for (int i = 0; i < nodes.length; i++) {
             graph[i] = new N(nodes[i].nodeIndex);
+        }
 
         //add neighbours
         for (int i = 0; i < nodes.length; i++) {
             EnumMap<MOVE, Integer> neighbours = nodes[i].neighbourhood;
             MOVE[] moves = MOVE.values();
 
-            for (int j = 0; j < moves.length; j++)
-                if (neighbours.containsKey(moves[j]))
+            for (int j = 0; j < moves.length; j++) {
+                if (neighbours.containsKey(moves[j])) {
                     graph[i].adj.add(new E(graph[neighbours.get(moves[j])], moves[j], 1));
+                }
+            }
         }
     }
 
@@ -53,8 +56,9 @@ public class AStar {
             N currentNode = open.poll();
             closed.add(currentNode);
 
-            if (currentNode.isEqual(target))
+            if (currentNode.isEqual(target)) {
                 break;
+            }
 
             for (E next : currentNode.adj) {
                 if (next.move != currentNode.reached.opposite()) {
@@ -74,11 +78,13 @@ public class AStar {
 
                         next.node.reached = next.move;
 
-                        if (open.contains(next.node))
+                        if (open.contains(next.node)) {
                             open.remove(next.node);
+                        }
 
-                        if (closed.contains(next.node))
+                        if (closed.contains(next.node)) {
                             closed.remove(next.node);
+                        }
 
                         open.add(next.node);
                     }
@@ -107,8 +113,9 @@ public class AStar {
 
         int[] routeArray = new int[route.size()];
 
-        for (int i = 0; i < routeArray.length; i++)
+        for (int i = 0; i < routeArray.length; i++) {
             routeArray[i] = route.get(i);
+        }
 
         return routeArray;
     }
@@ -150,10 +157,11 @@ class N implements Comparable<N> {
     }
 
     public int compareTo(N another) {
-        if ((g + h) < (another.g + another.h))
+        if ((g + h) < (another.g + another.h)) {
             return -1;
-        else if ((g + h) > (another.g + another.h))
+        } else if ((g + h) > (another.g + another.h)) {
             return 1;
+        }
 
         return 0;
     }

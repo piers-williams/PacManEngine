@@ -62,7 +62,9 @@ public class POPacMan extends PacmanController {
         for (int i = 0; i < pills.length; i++) {
             //check which pills are available
             Boolean pillStillAvailable = game.isPillStillAvailable(i);
-            if (pillStillAvailable == null) continue;
+            if (pillStillAvailable == null) {
+                continue;
+            }
             if (game.isPillStillAvailable(i)) {
                 targets.add(pills[i]);
             }
@@ -70,7 +72,9 @@ public class POPacMan extends PacmanController {
 
         for (int i = 0; i < powerPills.length; i++) {            //check with power pills are available
             Boolean pillStillAvailable = game.isPillStillAvailable(i);
-            if (pillStillAvailable == null) continue;
+            if (pillStillAvailable == null) {
+                continue;
+            }
             if (game.isPowerPillStillAvailable(i)) {
                 targets.add(powerPills[i]);
             }
@@ -85,7 +89,6 @@ public class POPacMan extends PacmanController {
             //return the next direction once the closest target has been identified
             return game.getNextMoveTowardsTarget(current, game.getClosestNodeIndexFromNodeIndex(current, targetsArray, DM.PATH), DM.PATH);
         }
-
 
         // Strategy 4: New PO strategy as now S3 can fail if nothing you can see
         // Going to pick a random action here

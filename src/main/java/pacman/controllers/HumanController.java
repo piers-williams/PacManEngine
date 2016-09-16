@@ -19,8 +19,9 @@ public class HumanController extends PacmanController {
         return input;
     }
 
+    @Override
     public MOVE getMove(Game game, long dueTime) {
-//        System.out.println("Returned: " + input.getKey());
+        //        System.out.println("Returned: " + input.getKey());
         switch (input.getKey()) {
             case KeyEvent.VK_UP:
                 return MOVE.UP;

@@ -16,6 +16,7 @@ public final class RandomNonRevPacMan extends PacmanController {
     /* (non-Javadoc)
      * @see pacman.controllers.Controller#getMove(pacman.game.Game, long)
      */
+    @Override
     public MOVE getMove(Game game, long timeDue) {
         MOVE[] possibleMoves = game.getPossibleMoves(game.getPacmanCurrentNodeIndex(), game.getPacmanLastMoveMade());        //set flag as false to prevent reversals
 

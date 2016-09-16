@@ -30,6 +30,7 @@ public class Legacy2TheReckoning extends Controller<EnumMap<GHOST, MOVE>> {
     /* (non-Javadoc)
      * @see pacman.controllers.Controller#getMove(pacman.game.Game, long)
      */
+    @Override
     public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
         int pacmanIndex = game.getPacmanCurrentNodeIndex();
 
@@ -38,14 +39,17 @@ public class Legacy2TheReckoning extends Controller<EnumMap<GHOST, MOVE>> {
                 int currentIndex = game.getGhostCurrentNodeIndex(ghost);
 
                 //if ghosts are all in close proximity and not near Ms Pac-Man, disperse
-                if (isCrowded(game) && !closeToMsPacMan(game, currentIndex))
+                if (isCrowded(game) && !closeToMsPacMan(game, currentIndex)) {
                     myMoves.put(ghost, getRetreatActions(game, ghost));                                        //go towards the power pill locations
-                    //if edible or Ms Pac-Man is close to power pill, move away from Ms Pac-Man
-                else if (game.getGhostEdibleTime(ghost) > 0 || closeToPower(game))
+                }
+                //if edible or Ms Pac-Man is close to power pill, move away from Ms Pac-Man
+                else if (game.getGhostEdibleTime(ghost) > 0 || closeToPower(game)) {
                     myMoves.put(ghost, game.getApproximateNextMoveAwayFromTarget(currentIndex, pacmanIndex, game.getGhostLastMoveMade(ghost), DM.PATH));                //move away from ms pacman
-                    //else go towards Ms Pac-Man
-                else
+                }
+                //else go towards Ms Pac-Man
+                else {
                     myMoves.put(ghost, game.getApproximateNextMoveTowardsTarget(currentIndex, pacmanIndex, game.getGhostLastMoveMade(ghost), DM.PATH));                //go towards ms pacman
+                }
             }
         }
 
@@ -62,9 +66,11 @@ public class Legacy2TheReckoning extends Controller<EnumMap<GHOST, MOVE>> {
         int pacmanIndex = game.getPacmanCurrentNodeIndex();
         int[] powerPillIndices = game.getActivePowerPillsIndices();
 
-        for (int i = 0; i < powerPillIndices.length; i++)
-            if (game.getShortestPathDistance(powerPillIndices[i], pacmanIndex) < PILL_PROXIMITY)
+        for (int i = 0; i < powerPillIndices.length; i++) {
+            if (game.getShortestPathDistance(powerPillIndices[i], pacmanIndex) < PILL_PROXIMITY) {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -77,8 +83,9 @@ public class Legacy2TheReckoning extends Controller<EnumMap<GHOST, MOVE>> {
      * @return true, if successful
      */
     private boolean closeToMsPacMan(Game game, int location) {
-        if (game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), location) < PACMAN_DISTANCE)
+        if (game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), location) < PACMAN_DISTANCE) {
             return true;
+        }
 
         return false;
     }
@@ -93,9 +100,11 @@ public class Legacy2TheReckoning extends Controller<EnumMap<GHOST, MOVE>> {
         GHOST[] ghosts = GHOST.values();
         float distance = 0;
 
-        for (int i = 0; i < ghosts.length - 1; i++)
-            for (int j = i + 1; j < ghosts.length; j++)
+        for (int i = 0; i < ghosts.length - 1; i++) {
+            for (int j = i + 1; j < ghosts.length; j++) {
                 distance += game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghosts[i]), game.getGhostCurrentNodeIndex(ghosts[j]));
+            }
+        }
 
         return (distance / 6) < CROWDED_DISTANCE ? true : false;
     }
@@ -111,9 +120,10 @@ public class Legacy2TheReckoning extends Controller<EnumMap<GHOST, MOVE>> {
         int currentIndex = game.getGhostCurrentNodeIndex(ghost);
         int pacManIndex = game.getPacmanCurrentNodeIndex();
 
-        if (game.getGhostEdibleTime(ghost) == 0 && game.getShortestPathDistance(currentIndex, pacManIndex) < PACMAN_DISTANCE)
+        if (game.getGhostEdibleTime(ghost) == 0 && game.getShortestPathDistance(currentIndex, pacManIndex) < PACMAN_DISTANCE) {
             return game.getApproximateNextMoveTowardsTarget(currentIndex, pacManIndex, game.getGhostLastMoveMade(ghost), DM.PATH);
-        else
+        } else {
             return game.getApproximateNextMoveTowardsTarget(currentIndex, game.getPowerPillIndices()[cornerAllocation.get(ghost)], game.getGhostLastMoveMade(ghost), DM.PATH);
+        }
     }
 }
