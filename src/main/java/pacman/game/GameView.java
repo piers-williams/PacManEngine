@@ -40,6 +40,7 @@ public final class GameView extends JComponent {
     private boolean isPO = false;
     private GHOST ghost = null;
     private double scaleFactor = 1.0;
+    private boolean exitOnClose = false;
 
     private Color[] redAlphas;
 
@@ -54,6 +55,10 @@ public final class GameView extends JComponent {
      * @param game The game that is played.
      */
     public GameView(Game game) {
+        this(game, true);
+    }
+
+    public GameView (Game game, boolean exitOnClose){
         this.game = game;
 
         images = new Images();
@@ -64,6 +69,7 @@ public final class GameView extends JComponent {
         for (int i = 0; i < 256; i++) {
             redAlphas[i] = new Color(255, 0, 0, i);
         }
+        this.exitOnClose = exitOnClose;
     }
 
     /**
@@ -428,7 +434,7 @@ public final class GameView extends JComponent {
 
         //just wait for a bit for player to be ready
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (Exception e) {
         }
 
@@ -484,7 +490,7 @@ public final class GameView extends JComponent {
             this.setLocation((int) (screen.getWidth() * 3 / 8), (int) (screen.getHeight() * 3 / 8));
             this.setVisible(true);
             this.setResizable(false);
-            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            setDefaultCloseOperation((exitOnClose) ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
             repaint();
         }
     }

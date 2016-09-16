@@ -20,10 +20,10 @@ public class GhostViewTest {
 
         GameView primaryView = new GameView(primaryGame).showGame();
         GameView[] ghostViews = new GameView[]{
-                new GameView(primaryGame).showGame(),
-                new GameView(primaryGame).showGame(),
-                new GameView(primaryGame).showGame(),
-                new GameView(primaryGame).showGame()
+                new GameView(primaryGame, false).showGame(),
+                new GameView(primaryGame, false).showGame(),
+                new GameView(primaryGame, false).showGame(),
+                new GameView(primaryGame, false).showGame()
         };
 
         for(Constants.GHOST ghost : Constants.GHOST.values()){
