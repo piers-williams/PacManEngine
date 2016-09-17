@@ -538,4 +538,8 @@ public class Executor {
     public void setScaleFactor(double scaleFactor) {
         this.scaleFactor = scaleFactor;
     }
+
+    public void setDaemon(boolean daemon) {
+        this.setDaemon = daemon;
+    }
 }
