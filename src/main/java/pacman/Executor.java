@@ -30,6 +30,7 @@ public class Executor {
     protected boolean powerPillsPresent = true;
     protected Messenger messenger;
     private double scaleFactor = 1.0d;
+    private boolean setDaemon = false;
 
     /**
      * Creates a default Executor with full observability for the Pacman and no messaging for the ghosts
@@ -297,7 +298,7 @@ public class Executor {
         GameView gv = null;
 
         if (visual) {
-            gv = new GameView(game);
+            gv = new GameView(game, setDaemon);
             gv.setScaleFactor(scaleFactor);
             gv.showGame();
             if (pacManController instanceof HumanController) {
@@ -340,7 +341,7 @@ public class Executor {
         GameView gv = null;
 
         if (visual) {
-            gv = new GameView(game);
+            gv = new GameView(game, setDaemon);
             gv.setScaleFactor(scaleFactor);
             gv.showGame();
         }
@@ -391,7 +392,7 @@ public class Executor {
         Stats stats = new Stats(desc);
 
         if (visual) {
-            gv = new GameView(game);
+            gv = new GameView(game, setDaemon);
             gv.setScaleFactor(scaleFactor);
             gv.showGame();
         }
@@ -462,7 +463,7 @@ public class Executor {
         GameView gv = null;
 
         if (visual) {
-            gv = new GameView(game);
+            gv = new GameView(game, setDaemon);
             gv.setScaleFactor(scaleFactor);
             gv.showGame();
 
@@ -515,7 +516,7 @@ public class Executor {
         GameView gv = null;
 
         if (visual) {
-            gv = new GameView(game);
+            gv = new GameView(game, setDaemon);
             gv.setScaleFactor(scaleFactor);
             gv.showGame();
         }
