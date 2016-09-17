@@ -41,6 +41,7 @@ public final class GameView extends JComponent {
     private GHOST ghost = null;
     private double scaleFactor = 1.0;
     private boolean exitOnClose = false;
+    private Point desiredLocation;
 
     private Color[] redAlphas;
 
@@ -501,6 +502,10 @@ public final class GameView extends JComponent {
         this.scaleFactor = scaleFactor;
     }
 
+    public void setDesiredLocation(Point desiredLocation){
+        this.desiredLocation = desiredLocation;
+    }
+
     private static class DebugPointer {
         public int x, y;
         public Color color;
@@ -538,7 +543,11 @@ public final class GameView extends JComponent {
             getContentPane().add(BorderLayout.CENTER, comp);
             pack();
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-            this.setLocation((int) (screen.getWidth() * 3 / 8), (int) (screen.getHeight() * 3 / 8));
+            if(desiredLocation == null) {
+                this.setLocation((int) (screen.getWidth() * 3 / 8), (int) (screen.getHeight() * 3 / 8));
+            }else{
+                this.setLocation(desiredLocation);
+            }
             this.setVisible(true);
             this.setResizable(false);
             setDefaultCloseOperation(exitOnClose ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
