@@ -219,7 +219,7 @@ public final class GameView extends JComponent {
     public Dimension getPreferredSize() {
         return new Dimension(
                 (int) (GV_WIDTH * MAG * scaleFactor),
-                (int) (GV_HEIGHT * MAG * scaleFactor) + 20);
+                (int) ((GV_HEIGHT * MAG * scaleFactor) + (20 * scaleFactor)));
     }
 
     /**
