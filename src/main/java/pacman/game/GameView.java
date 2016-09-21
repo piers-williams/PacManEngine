@@ -463,6 +463,13 @@ public final class GameView extends JComponent {
         return this;
     }
 
+    public void closeGame(){
+        if(this.frame != null){
+            frame.setVisible(false);
+            frame.dispose();
+        }
+    }
+
     /**
      * Gets the frame.
      *
