@@ -32,7 +32,11 @@ public final class MASController extends Controller<EnumMap<GHOST, MOVE>> {
         myMoves.clear();
 
         for (GHOST ghost : GHOST.values()) {
-            myMoves.put(ghost, controllers.get(ghost).getMove(game.copy(ghost), timeDue));
+            myMoves.put(
+                    ghost,
+                    controllers.get(ghost).getMove(
+                            (po) ? game.copy(ghost) : game.copy(),
+                            timeDue));
         }
         return myMoves;
     }
