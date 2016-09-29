@@ -40,4 +40,13 @@ public final class MASController extends Controller<EnumMap<GHOST, MOVE>> {
         }
         return myMoves;
     }
+
+    /**
+     * This is a shallow copy used to alter the PO status to force it to a desired value
+     * @param po Should the copy enforce PO on the ghosts
+     * @return The copy created
+     */
+    public MASController copy(boolean po){
+        return new MASController(po, controllers);
+    }
 }
