@@ -13,11 +13,18 @@ import java.util.EnumMap;
  */
 public final class MASController extends Controller<EnumMap<GHOST, MOVE>> {
 
+    private final boolean po;
+
+    public MASController(boolean po, EnumMap<GHOST, IndividualGhostController> controllers) {
+        this.po = po;
+        this.controllers = controllers;
+    }
+
     private EnumMap<GHOST, MOVE> myMoves = new EnumMap<GHOST, MOVE>(GHOST.class);
     private EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
 
     public MASController(EnumMap<GHOST, IndividualGhostController> controllers) {
-        this.controllers = controllers;
+        this(true, controllers);
     }
 
     @Override
