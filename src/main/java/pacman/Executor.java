@@ -88,16 +88,6 @@ public class Executor {
         }
     }
 
-    /**
-     * The main method. Several options are listed - simply remove comments to use the option you want.
-     *
-     * @param args the command line arguments
-     * @throws IOException It just does
-     */
-    public static void main(String[] args) throws IOException {
-
-    }
-
     private static void writeStat(FileWriter writer, Stats stat, int i) throws IOException {
         writer.write(String.format("%s, %d, %f, %f, %f, %f, %d, %f, %f, %f, %d%n",
                 stat.getDescription(),

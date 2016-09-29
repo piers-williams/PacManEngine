@@ -11,7 +11,7 @@ import java.util.EnumMap;
  * <p>
  * Makes the game PO for each controller
  */
-public final class MASController extends Controller<EnumMap<GHOST, MOVE>> {
+public class MASController extends Controller<EnumMap<GHOST, MOVE>> {
 
     private final boolean po;
 
@@ -21,7 +21,7 @@ public final class MASController extends Controller<EnumMap<GHOST, MOVE>> {
     }
 
     private EnumMap<GHOST, MOVE> myMoves = new EnumMap<GHOST, MOVE>(GHOST.class);
-    private EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
+    protected EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
 
     public MASController(EnumMap<GHOST, IndividualGhostController> controllers) {
         this(true, controllers);
@@ -46,7 +46,7 @@ public final class MASController extends Controller<EnumMap<GHOST, MOVE>> {
      * @param po Should the copy enforce PO on the ghosts
      * @return The copy created
      */
-    public MASController copy(boolean po){
+    public final MASController copy(boolean po){
         return new MASController(po, controllers);
     }
 }
