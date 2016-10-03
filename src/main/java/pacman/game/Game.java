@@ -1063,8 +1063,8 @@ public final class Game {
      */
     public Boolean isPillStillAvailable(int pillIndex) {
         if (po) {
-            int pillLocation = currentMaze.pillIndices[pillIndex];
-            if (!isNodeObservable(pillLocation)) {
+            //int pillLocation = currentMaze.pillIndices[pillIndex];
+            if (!isNodeObservable(pillIndex)) {
                 return null;
             }
 
@@ -1080,8 +1080,8 @@ public final class Game {
      */
     public Boolean isPowerPillStillAvailable(int powerPillIndex) {
         if (po) {
-            int pillLocation = currentMaze.powerPillIndices[powerPillIndex];
-            if (!isNodeObservable(pillLocation)) {
+            //int pillLocation = currentMaze.powerPillIndices[powerPillIndex];
+            if (!isNodeObservable(powerPillIndex)) {
                 return null;
             }
         }
