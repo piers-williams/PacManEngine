@@ -75,9 +75,9 @@ public class Executor {
      * Specified Ghost Messaging
      * Specified Ghost Observability
      *
-     * @param pacmanPO Whether to impose PO on the pacman
+     * @param pacmanPO      Whether to impose PO on the pacman
      * @param ghostsMessage Whether to allow ghost messaging
-     * @param ghostPO Whether to impose PO on the ghosts
+     * @param ghostPO       Whether to impose PO on the ghosts
      */
     public Executor(boolean pacmanPO, boolean ghostsMessage, boolean ghostPO) {
         this.pacmanPO = pacmanPO;
@@ -163,7 +163,7 @@ public class Executor {
         Stats stats = new Stats(description);
         Stats ticks = new Stats(description + " Ticks");
         Random rnd = new Random(0);
-        ghostController = ghostController.copy(ghostPO);
+        MASController ghostControllerCopy = ghostController.copy(ghostPO);
         Game game;
 
         Long startTime = System.currentTimeMillis();
@@ -177,7 +177,7 @@ public class Executor {
                     }
                     game.advanceGame(
                             pacManController.getMove(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY),
-                            ghostController.getMove(game.copy(), System.currentTimeMillis() + DELAY));
+                            ghostControllerCopy.getMove(game.copy(), System.currentTimeMillis() + DELAY));
                 }
                 stats.add(game.getScore());
                 ticks.add(game.getCurrentLevelTime());
@@ -203,7 +203,7 @@ public class Executor {
         Stats ticks = new Stats(description);
 
         Random rnd = new Random(0);
-        ghostController = ghostController.copy(ghostPO);
+        MASController ghostControllerCopy = ghostController.copy(ghostPO);
         Game game;
 
         Long startTime = System.currentTimeMillis();
@@ -213,7 +213,7 @@ public class Executor {
             while (!game.gameOver()) {
                 game.advanceGame(
                         pacManController.getMove(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY),
-                        ghostController.getMove(game.copy(), System.currentTimeMillis() + DELAY));
+                        ghostControllerCopy.getMove(game.copy(), System.currentTimeMillis() + DELAY));
             }
             stats.add(game.getScore());
             ticks.add(game.getTotalTime());
@@ -238,7 +238,7 @@ public class Executor {
         Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
         GameView gv = null;
-        ghostController = ghostController.copy(ghostPO);
+        MASController ghostControllerCopy = ghostController.copy(ghostPO);
 
         if (visual) {
             gv = new GameView(game, setDaemon);
@@ -255,7 +255,7 @@ public class Executor {
         }
 
         while (!game.gameOver()) {
-            game.advanceGame(pacManController.getMove(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), -1), ghostController.getMove(game.copy(), -1));
+            game.advanceGame(pacManController.getMove(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), -1), ghostControllerCopy.getMove(game.copy(), -1));
 
             try {
                 Thread.sleep(delay);
@@ -282,7 +282,7 @@ public class Executor {
         Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
         GameView gv = null;
-        ghostController = ghostController.copy(ghostPO);
+        MASController ghostControllerCopy = ghostController.copy(ghostPO);
 
         if (visual) {
             gv = new GameView(game, setDaemon);
@@ -295,11 +295,11 @@ public class Executor {
         }
 
         new Thread(pacManController).start();
-        new Thread(ghostController).start();
+        new Thread(ghostControllerCopy).start();
 
         while (!game.gameOver()) {
             pacManController.update(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY);
-            ghostController.update(game.copy(), System.currentTimeMillis() + DELAY);
+            ghostControllerCopy.update(game.copy(), System.currentTimeMillis() + DELAY);
 
             try {
                 Thread.sleep(DELAY);
@@ -307,7 +307,7 @@ public class Executor {
                 e.printStackTrace();
             }
 
-            game.advanceGame(pacManController.getMove(), ghostController.getMove());
+            game.advanceGame(pacManController.getMove(), ghostControllerCopy.getMove());
 
             if (visual) {
                 gv.repaint();
@@ -315,7 +315,7 @@ public class Executor {
         }
 
         pacManController.terminate();
-        ghostController.terminate();
+        ghostControllerCopy.terminate();
     }
 
     /**
@@ -333,7 +333,7 @@ public class Executor {
         Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
         GameView gv = null;
-        ghostController = ghostController.copy(ghostPO);
+        MASController ghostControllerCopy = ghostController.copy(ghostPO);
         Stats stats = new Stats(desc);
 
         if (visual) {
@@ -347,11 +347,11 @@ public class Executor {
         }
 
         new Thread(pacManController).start();
-        new Thread(ghostController).start();
+        new Thread(ghostControllerCopy).start();
         int ticks = 0;
         while (!game.gameOver()) {
             pacManController.update(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY);
-            ghostController.update(game.copy(), System.currentTimeMillis() + DELAY);
+            ghostControllerCopy.update(game.copy(), System.currentTimeMillis() + DELAY);
 
             try {
                 long waited = DELAY / INTERVAL_WAIT;
@@ -359,7 +359,7 @@ public class Executor {
                 for (int j = 0; j < DELAY / INTERVAL_WAIT; j++) {
                     Thread.sleep(INTERVAL_WAIT);
 
-                    if (pacManController.hasComputed() && ghostController.hasComputed()) {
+                    if (pacManController.hasComputed() && ghostControllerCopy.hasComputed()) {
                         waited = j;
                         break;
                     }
@@ -369,7 +369,7 @@ public class Executor {
                     Thread.sleep(((DELAY / INTERVAL_WAIT) - waited) * INTERVAL_WAIT);
                 }
 
-                game.advanceGame(pacManController.getMove(), ghostController.getMove());
+                game.advanceGame(pacManController.getMove(), ghostControllerCopy.getMove());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -385,7 +385,7 @@ public class Executor {
         }
 
         pacManController.terminate();
-        ghostController.terminate();
+        ghostControllerCopy.terminate();
         stats.add(game.getScore());
         return stats;
     }
@@ -406,7 +406,7 @@ public class Executor {
         Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
         GameView gv = null;
-        ghostController = ghostController.copy(ghostPO);
+        MASController ghostControllerCopy = ghostController.copy(ghostPO);
 
         if (visual) {
             gv = new GameView(game, setDaemon);
@@ -419,11 +419,11 @@ public class Executor {
         }
 
         new Thread(pacManController).start();
-        new Thread(ghostController).start();
+        new Thread(ghostControllerCopy).start();
 
         while (!game.gameOver()) {
             pacManController.update(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY);
-            ghostController.update(game.copy(), System.currentTimeMillis() + DELAY);
+            ghostControllerCopy.update(game.copy(), System.currentTimeMillis() + DELAY);
 
             try {
                 Thread.sleep(DELAY);
@@ -431,7 +431,7 @@ public class Executor {
                 e.printStackTrace();
             }
 
-            game.advanceGame(pacManController.getMove(), ghostController.getMove());
+            game.advanceGame(pacManController.getMove(), ghostControllerCopy.getMove());
 
             if (visual) {
                 gv.repaint();
@@ -442,7 +442,7 @@ public class Executor {
         stats.add(game.getScore());
 
         pacManController.terminate();
-        ghostController.terminate();
+        ghostControllerCopy.terminate();
 
         saveToFile(replay.toString(), fileName, false);
         return stats;

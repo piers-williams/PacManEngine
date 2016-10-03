@@ -1,6 +1,8 @@
 package pacman.controllers.examples.po;
 
 import pacman.controllers.Controller;
+import pacman.controllers.IndividualGhostController;
+import pacman.controllers.MASController;
 import pacman.game.Game;
 
 import java.util.EnumMap;
@@ -11,39 +13,24 @@ import static pacman.game.Constants.*;
 /**
  * Created by Piers on 15/02/2016.
  */
-public class POGhosts extends Controller<EnumMap<GHOST, MOVE>> {
-
-    EnumMap<GHOST, POGhost> ghosts = new EnumMap<GHOST, POGhost>(GHOST.class);
-    EnumMap<GHOST, MOVE> myMoves = new EnumMap<GHOST, MOVE>(GHOST.class);
+public class POGhosts extends MASController {
 
     public POGhosts() {
-        ghosts.put(GHOST.BLINKY, new POGhost(GHOST.BLINKY));
-        ghosts.put(GHOST.INKY, new POGhost(GHOST.INKY));
-        ghosts.put(GHOST.PINKY, new POGhost(GHOST.PINKY));
-        ghosts.put(GHOST.SUE, new POGhost(GHOST.SUE));
-    }
-
-    @Override
-    public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
-        myMoves.clear();
-        for (GHOST ghost : ghosts.keySet()) {
-            MOVE move = ghosts.get(ghost).getMove(game.copy(ghost), timeDue);
-            if (move != null) {
-                myMoves.put(ghost, move);
-            }
-        }
-        return myMoves;
+        super(true, new EnumMap<GHOST, IndividualGhostController>(GHOST.class));
+        controllers.put(GHOST.BLINKY, new POGhost(GHOST.BLINKY));
+        controllers.put(GHOST.INKY, new POGhost(GHOST.INKY));
+        controllers.put(GHOST.PINKY, new POGhost(GHOST.PINKY));
+        controllers.put(GHOST.SUE, new POGhost(GHOST.SUE));
     }
 }
 
-class POGhost {
+class POGhost extends IndividualGhostController{
     private final static float CONSISTENCY = 0.9f;    //attack Ms Pac-Man with this probability
     private final static int PILL_PROXIMITY = 15;        //if Ms Pac-Man is this close to a power pill, back away
     Random rnd = new Random();
-    private GHOST ghost;
 
     public POGhost(GHOST ghost) {
-        this.ghost = ghost;
+        super(ghost);
     }
 
     public MOVE getMove(Game game, long timeDue) {
