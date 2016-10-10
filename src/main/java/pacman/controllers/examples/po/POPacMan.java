@@ -62,22 +62,20 @@ public class POPacMan extends PacmanController {
 
         for (int i = 0; i < pills.length; i++) {
             //check which pills are available
-            Boolean pillStillAvailable = game.isPillStillAvailable(pills[i]);
-            if (pillStillAvailable == null) {
-                continue;
-            }
-            if (game.isPillStillAvailable(pills[i])) {
-                targets.add(pills[i]);
+            Boolean pillStillAvailable = game.isPillStillAvailable(i);
+            if (pillStillAvailable != null) {
+                if (pillStillAvailable) {
+                    targets.add(pills[i]);
+                }
             }
         }
 
         for (int i = 0; i < powerPills.length; i++) {            //check with power pills are available
-            Boolean pillStillAvailable = game.isPillStillAvailable(powerPills[i]);
-            if (pillStillAvailable == null) {
-                continue;
-            }
-            if (game.isPowerPillStillAvailable(powerPills[i])) {
-                targets.add(powerPills[i]);
+            Boolean pillStillAvailable = game.isPillStillAvailable(i);
+            if (pillStillAvailable != null) {
+                if (pillStillAvailable) {
+                    targets.add(powerPills[i]);
+                }
             }
         }
 

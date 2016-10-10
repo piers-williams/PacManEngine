@@ -1063,8 +1063,8 @@ public final class Game {
      */
     public Boolean isPillStillAvailable(int pillIndex) {
         if (po) {
-            //int pillLocation = currentMaze.pillIndices[pillIndex];
-            if (!isNodeObservable(pillIndex)) {
+            int pillLocation = currentMaze.pillIndices[pillIndex];
+            if (!isNodeObservable(pillLocation)) {
                 return null;
             }
 
@@ -1080,8 +1080,8 @@ public final class Game {
      */
     public Boolean isPowerPillStillAvailable(int powerPillIndex) {
         if (po) {
-            //int pillLocation = currentMaze.powerPillIndices[powerPillIndex];
-            if (!isNodeObservable(powerPillIndex)) {
+            int pillLocation = currentMaze.powerPillIndices[powerPillIndex];
+            if (!isNodeObservable(pillLocation)) {
                 return null;
             }
         }
@@ -1125,20 +1125,6 @@ public final class Game {
      * @return the pill indices
      */
     public int[] getPillIndices() {
-        if (po) {
-            int[] indices = currentMaze.pillIndices;
-            int[] results = new int[indices.length];
-            int i = 0;
-            for (int index : indices) {
-                if (isNodeObservable(index)) {
-                    results[i] = index;
-                    i++;
-                }
-            }
-            int[] temp = new int[i];
-            System.arraycopy(results, 0, temp, 0, i);
-            return temp;
-        }
         return currentMaze.pillIndices;
     }
 
@@ -1148,20 +1134,6 @@ public final class Game {
      * @return the power pill indices
      */
     public int[] getPowerPillIndices() {
-        if (po) {
-            int[] indices = currentMaze.powerPillIndices;
-            int[] results = new int[indices.length];
-            int i = 0;
-            for (int index : indices) {
-                if (isNodeObservable(index)) {
-                    results[i] = index;
-                    i++;
-                }
-            }
-            int[] temp = new int[i];
-            System.arraycopy(results, 0, temp, 0, i);
-            return temp;
-        }
         return currentMaze.powerPillIndices;
     }
 
