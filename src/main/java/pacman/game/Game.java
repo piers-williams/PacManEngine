@@ -827,8 +827,8 @@ public final class Game {
     private boolean _reverseGhosts(EnumMap<GHOST, MOVE> moves, boolean force) {
         boolean reversed = false;
         boolean globalReverse = false;
-
-        if (Math.random() < GHOST_REVERSAL) {
+        
+        if (rnd.nextDouble() < GHOST_REVERSAL) {
             globalReverse = true;
         }
 
