@@ -412,7 +412,7 @@ public final class Game {
         Game copy = new Game();
 
         copy.seed = seed;
-        copy.rnd = new Random(seed);
+        copy.rnd = new Random();
         copy.currentMaze = currentMaze;
         copy.pills = (BitSet) pills.clone();
         copy.powerPills = (BitSet) powerPills.clone();
