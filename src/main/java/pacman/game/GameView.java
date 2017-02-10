@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Vector;
 
@@ -42,6 +43,8 @@ public final class GameView extends JComponent {
     private double scaleFactor = 1.0;
     private boolean exitOnClose = false;
     private Point desiredLocation;
+
+    private ArrayList<Drawable> drawables = new ArrayList<>();
 
     private Color[] redAlphas;
 
@@ -202,6 +205,9 @@ public final class GameView extends JComponent {
             //            drawNodes();
         }
         //        drawPacManPredictions();
+
+        drawables.stream().filter(Drawable::enabled).forEach(x -> x.draw(g2));
+
         if (game.gameOver()) {
             drawGameOver();
         }
