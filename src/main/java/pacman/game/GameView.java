@@ -206,7 +206,7 @@ public final class GameView extends JComponent {
         }
         //        drawPacManPredictions();
 
-        drawables.stream().filter(Drawable::enabled).forEach(x -> x.draw(g2));
+        drawables.stream().filter(Drawable::enabled).forEach(x -> x.draw((Graphics2D) bufferGraphics));
 
         if (game.gameOver()) {
             drawGameOver();
@@ -673,5 +673,9 @@ public final class GameView extends JComponent {
 
             return image;
         }
+    }
+
+    public void addDrawable(Drawable drawable){
+        drawables.add(drawable);
     }
 }
