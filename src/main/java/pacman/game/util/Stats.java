@@ -169,4 +169,25 @@ public class Stats {
                 ", ms=" + msTaken +
                 '}';
     }
+
+    public String fileRepresentation(String separator){
+        return msTaken + separator
+                + description + separator
+                + max + separator
+                + min + separator
+                 + n + separator
+                + sumsq + separator
+                + sum;
+    }
+
+    public Stats(String line, String separator){
+        String[] parts = line.split(separator);
+        this.msTaken = Long.parseLong(parts[0]);
+        this.description = parts[1];
+        this.max = Double.parseDouble(parts[2]);
+        this.min = Double.parseDouble(parts[3]);
+        this.n = Integer.parseInt(parts[4]);
+        this.sumsq = Double.parseDouble(parts[5]);
+        this.sum = Double.parseDouble(parts[6]);
+    }
 }

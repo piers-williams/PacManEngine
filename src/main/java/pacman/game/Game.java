@@ -57,11 +57,12 @@ public final class Game {
         }
     }
 
-    public POType PO_TYPE = POType.LOS;
-    public int SIGHT_LIMIT = 100;
-    protected boolean ghostsPresent = true;
-    protected boolean pillsPresent = true;
-    protected boolean powerPillsPresent = true;
+    // TODO Fix these into constructor so they can be final and not fiddleable
+    public final POType PO_TYPE;
+    public final int SIGHT_LIMIT;
+    private boolean ghostsPresent = true;
+    private boolean pillsPresent = true;
+    private boolean powerPillsPresent = true;
     //pills stored as bitsets for efficient copying
     private BitSet pills, powerPills;
     //all the game's variables
@@ -109,11 +110,17 @@ public final class Game {
     }
 
     public Game(long seed, int initialMaze, Messenger messenger) {
+        this(seed, initialMaze, messenger, POType.LOS, 100);
+    }
+
+    public Game(long seed, int initialMaze, Messenger messenger, POType poType, int sightLimit) {
         this.seed = seed;
         rnd = new Random(seed);
         this.messenger = messenger;
 
         _init(initialMaze);
+        this.PO_TYPE = poType;
+        this.SIGHT_LIMIT = sightLimit;
     }
 
     /////////////////////////////////////////////////////////////////////////////
@@ -123,7 +130,9 @@ public final class Game {
     /**
      * Empty constructor used by the copy method.
      */
-    private Game() {
+    private Game(POType poType, int sightLimit) {
+        this.PO_TYPE = poType;
+        this.SIGHT_LIMIT = sightLimit;
     }
 
     private int getNodeIndexOfOwner() {
@@ -409,7 +418,7 @@ public final class Game {
      * @return the game
      */
     public Game copy(boolean copyMessenger) {
-        Game copy = new Game();
+        Game copy = new Game(this.PO_TYPE, this.SIGHT_LIMIT);
 
         copy.seed = seed;
         copy.rnd = new Random();
@@ -428,10 +437,6 @@ public final class Game {
         copy.pillWasEaten = pillWasEaten;
         copy.powerPillWasEaten = powerPillWasEaten;
         copy.pacman = pacman.copy();
-
-        // Will need these to go away later
-        copy.SIGHT_LIMIT = SIGHT_LIMIT;
-        copy.PO_TYPE = PO_TYPE;
 
         copy.ghostsPresent = ghostsPresent;
         copy.pillsPresent = pillsPresent;
@@ -827,7 +832,7 @@ public final class Game {
     private boolean _reverseGhosts(EnumMap<GHOST, MOVE> moves, boolean force) {
         boolean reversed = false;
         boolean globalReverse = false;
-        
+
         if (rnd.nextDouble() < GHOST_REVERSAL) {
             globalReverse = true;
         }
