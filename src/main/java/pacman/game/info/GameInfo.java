@@ -6,6 +6,7 @@ import pacman.game.internal.PacMan;
 
 import java.util.BitSet;
 import java.util.EnumMap;
+import java.util.function.Function;
 
 /**
  * Stores the information needed to populate an empty game into at least a partially full game.
@@ -29,7 +30,7 @@ public class GameInfo {
     private EnumMap<Constants.GHOST, Ghost> ghosts;
 
     public GameInfo(int pillsLength) {
-        ghosts = new EnumMap<Constants.GHOST, Ghost>(Constants.GHOST.class);
+        ghosts = new EnumMap<>(Constants.GHOST.class);
         pills = new BitSet(pillsLength);
         powerPills = new BitSet(4);
     }
@@ -60,8 +61,13 @@ public class GameInfo {
      * @param ghost The GHOST that is being set (key)
      * @param data  The Ghost that is being set (value)
      */
-    public void setGhostIndex(Constants.GHOST ghost, Ghost data) {
+    public void setGhost(Constants.GHOST ghost, Ghost data) {
         ghosts.put(ghost, data);
+    }
+
+    @Deprecated
+    public void setGhostIndex(Constants.GHOST ghost, Ghost data) {
+        setGhost(ghost, data);
     }
 
     /**
@@ -107,5 +113,13 @@ public class GameInfo {
      */
     public void setPacman(PacMan pacman) {
         this.pacman = pacman;
+    }
+
+    public void fixGhosts(Function<Constants.GHOST, Ghost> f){
+        for(Constants.GHOST ghost : Constants.GHOST.values()){
+            if(!ghosts.containsKey(ghost)){
+                ghosts.put(ghost, f.apply(ghost));
+            }
+        }
     }
 }

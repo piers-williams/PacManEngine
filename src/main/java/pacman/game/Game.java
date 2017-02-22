@@ -1061,6 +1061,15 @@ public final class Game {
     }
 
     /**
+     * Returns the node index where Ms. Pac-Man starts in the maze
+     *
+     * @return the node index where Ms. Pac-Man starts in the maze
+     */
+    public int getPacManInitialNodeIndex() {
+        return currentMaze.initialPacManNodeIndex;
+    }
+
+    /**
      * Whether the pill specified is still there or has been eaten.
      *
      * @param pillIndex The pill index
@@ -1871,10 +1880,52 @@ public final class Game {
     /**
      * Gets a data structure that can be modified and then used to construct a forward model
      *
-     * @return The GameInfo object for use in making the
+     * @return The GameInfo object for use in making the Game
      */
     public GameInfo getBlankGameInfo() {
         return new GameInfo(pills.length());
+    }
+
+    /**
+     * Gets a GameInfo object that is populated with present data that you can see
+     *
+     * @return
+     */
+    public GameInfo getPopulatedGameInfo() {
+        GameInfo info = getBlankGameInfo();
+
+        if (getPacmanCurrentNodeIndex() != -1) {
+            info.setPacman(new PacMan(
+                    getPacmanCurrentNodeIndex(),
+                    getPacmanLastMoveMade(),
+                    getPacmanNumberOfLivesRemaining(),
+                    false
+            ));
+        }
+        EnumMap<Constants.GHOST, Ghost> ghosts = info.getGhosts();
+        for (Constants.GHOST ghost : GHOST.values()) {
+            if (getGhostCurrentNodeIndex(ghost) != -1) {
+                ghosts.put(ghost,
+                        new Ghost(
+                                ghost,
+                                getGhostCurrentNodeIndex(ghost),
+                                getGhostEdibleTime(ghost),
+                                getGhostLairTime(ghost),
+                                getGhostLastMoveMade(ghost)
+                        )
+                );
+            }
+        }
+
+        for (int index : getActivePillsIndices()) {
+            info.setPillAtIndex(getPillIndex(index), true);
+        }
+
+        for(int index : getActivePowerPillsIndices()){
+            info.setPowerPillAtIndex(getPowerPillIndex(index), true);
+        }
+
+        return info;
     }
 
     /**

@@ -26,7 +26,9 @@ public class ForwardModelTest {
         // Just forward the game itself
 
         info.setPacman(new PacMan(game.getPacmanCurrentNodeIndex(), MOVE.DOWN, game.getPacmanNumberOfLivesRemaining(), true));
-        info.setGhostIndex(GHOST.INKY, new Ghost(GHOST.INKY, 10, 0, 0, MOVE.NEUTRAL));
+        info.setGhost(GHOST.INKY, new Ghost(GHOST.INKY, 10, 0, 0, MOVE.NEUTRAL));
+
+//        info.fixGhosts((x) -> new Ghost(x, 10, 0, 0, MOVE.NEUTRAL));
 
         Game next = game.getGameFromInfo(info);
         for (int i = 0; i < 100; i++) {
