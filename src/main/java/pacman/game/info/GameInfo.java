@@ -98,7 +98,7 @@ public class GameInfo {
     }
 
     /**
-     * Gets the pacman data stored in this info
+     * Gets the pd acman data stored in this info
      *
      * @return The pacman data
      */
