@@ -68,6 +68,7 @@ public final class BasicMessage implements Message {
         return tick;
     }
 
+    @Override
     public String stringRepresentation(String separator) {
         return "Message" + separator
                 + sender.name() + separator

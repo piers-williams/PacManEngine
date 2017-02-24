@@ -49,7 +49,7 @@ public class BasicMessenger implements Messenger {
     }
 
     @Override
-    public void addMessage(BasicMessage message) {
+    public void addMessage(Message message) {
         int tickToDeliver = currentTick + delayConstant + (delayMultiplier * message.getType().getDelay());
         if (!messages.containsKey(tickToDeliver)) {
             //            System.out.println("Adding new list" + tickToDeliver);

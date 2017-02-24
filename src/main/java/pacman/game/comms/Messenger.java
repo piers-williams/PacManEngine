@@ -26,7 +26,7 @@ public interface Messenger {
      *
      * @param message The message to be added
      */
-    void addMessage(BasicMessage message);
+    void addMessage(Message message);
 
     /**
      * Get all messages that are due to be delivered to me this tick

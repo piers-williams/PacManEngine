@@ -46,6 +46,9 @@ public interface Message {
      */
     public int getTick();
 
+
+    public String stringRepresentation(String separator);
+
     /**
      * MessageType - contains information about message delays
      */
