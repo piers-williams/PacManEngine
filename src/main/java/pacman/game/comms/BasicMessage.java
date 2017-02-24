@@ -32,6 +32,17 @@ public final class BasicMessage implements Message {
         this.tick = tick;
     }
 
+    public static BasicMessage fromString(String line, String separator) {
+        String[] parts = line.split(separator);
+        return new BasicMessage(
+                GHOST.valueOf(parts[1]),
+                GHOST.valueOf(parts[2]),
+                MessageType.valueOf(parts[3]),
+                Integer.parseInt(parts[4]),
+                Integer.parseInt(parts[5])
+        );
+    }
+
     @Override
     public GHOST getSender() {
         return sender;
@@ -55,6 +66,15 @@ public final class BasicMessage implements Message {
     @Override
     public int getTick() {
         return tick;
+    }
+
+    public String stringRepresentation(String separator) {
+        return "Message" + separator
+                + sender.name() + separator
+                + recipient.name() + separator
+                + type.name() + separator
+                + data + separator
+                + tick;
     }
 
 }
