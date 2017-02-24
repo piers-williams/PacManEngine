@@ -36,8 +36,8 @@ public final class BasicMessage implements Message {
 
     public static BasicMessage fromString(String line, String separator) {
         String[] parts = line.split(separator);
-        System.out.println(line);
-        System.out.println(Arrays.toString(parts));
+//        System.out.println(line);
+//        System.out.println(Arrays.toString(parts));
         return new BasicMessage(
                 GHOST.valueOf(parts[1]),
                 (parts[2].equals("NULL")) ? null : GHOST.valueOf(parts[2]),

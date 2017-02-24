@@ -468,7 +468,7 @@ public final class Game {
     }
 
     public Game copy(GHOST ghost, boolean copyMessenger) {
-        Game game = copy();
+        Game game = copy(copyMessenger);
         game.po = true;
         game.agent = ghost.ordinal();
         return game;
