@@ -12,10 +12,10 @@ import java.util.TreeMap;
  * Allows for the creation of messages that will be pollable by other agents when the messages are ready
  */
 public class BasicMessenger implements Messenger {
-    private Map<Integer, ArrayList<Message>> messages;
-    private int currentTick;
-    private int delayConstant;
-    private int delayMultiplier;
+    protected Map<Integer, ArrayList<Message>> messages;
+    protected int currentTick;
+    protected int delayConstant;
+    protected int delayMultiplier;
 
     public BasicMessenger() {
         this(0, 1, 1);
@@ -81,5 +81,17 @@ public class BasicMessenger implements Messenger {
         }
 
         return results;
+    }
+
+    public int getCurrentTick() {
+        return currentTick;
+    }
+
+    public int getDelayConstant() {
+        return delayConstant;
+    }
+
+    public int getDelayMultiplier() {
+        return delayMultiplier;
     }
 }

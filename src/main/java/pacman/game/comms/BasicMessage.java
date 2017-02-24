@@ -2,6 +2,8 @@ package pacman.game.comms;
 
 import pacman.game.Constants.GHOST;
 
+import java.util.Arrays;
+
 /**
  * Represents a message for the game.
  * <p>
@@ -34,10 +36,12 @@ public final class BasicMessage implements Message {
 
     public static BasicMessage fromString(String line, String separator) {
         String[] parts = line.split(separator);
+        System.out.println(line);
+        System.out.println(Arrays.toString(parts));
         return new BasicMessage(
                 GHOST.valueOf(parts[1]),
-                GHOST.valueOf(parts[2]),
-                MessageType.valueOf(parts[3]),
+                (parts[2].equals("NULL")) ? null : GHOST.valueOf(parts[2]),
+                (parts[3].equals("NULL")) ? null : MessageType.valueOf(parts[3]), //TODO are you sure that /messagetype/ can be null?
                 Integer.parseInt(parts[4]),
                 Integer.parseInt(parts[5])
         );
@@ -72,7 +76,7 @@ public final class BasicMessage implements Message {
     public String stringRepresentation(String separator) {
         return "Message" + separator
                 + sender.name() + separator
-                + recipient.name() + separator
+                + ((recipient == null) ? "NULL" : recipient.name()) + separator
                 + type.name() + separator
                 + data + separator
                 + tick;
