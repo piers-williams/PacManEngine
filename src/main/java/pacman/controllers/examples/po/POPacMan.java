@@ -1,5 +1,6 @@
 package pacman.controllers.examples.po;
 
+import com.fossgalaxy.object.annotations.ObjectDef;
 import pacman.controllers.PacmanController;
 import pacman.game.Game;
 
@@ -15,6 +16,10 @@ import static pacman.game.Constants.*;
 public class POPacMan extends PacmanController {
     private static final int MIN_DISTANCE = 20;
     private Random random = new Random();
+
+    @ObjectDef("POP")
+    public POPacMan() {
+    }
 
     @Override
     public MOVE getMove(Game game, long timeDue) {
@@ -97,5 +102,10 @@ public class POPacMan extends PacmanController {
         }
         // Must be possible to turn around
         return game.getPacmanLastMoveMade().opposite();
+    }
+
+    @Override
+    public String getName() {
+        return "POP";
     }
 }

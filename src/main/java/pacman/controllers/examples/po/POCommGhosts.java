@@ -1,5 +1,6 @@
 package pacman.controllers.examples.po;
 
+import com.fossgalaxy.object.annotations.ObjectDef;
 import pacman.controllers.IndividualGhostController;
 import pacman.controllers.MASController;
 import pacman.game.Constants.DM;
@@ -22,6 +23,7 @@ public class POCommGhosts extends MASController {
         this(50);
     }
 
+    @ObjectDef("POGC")
     public POCommGhosts(int TICK_THRESHOLD) {
         super(true, new EnumMap<GHOST, IndividualGhostController>(GHOST.class));
         controllers.put(GHOST.BLINKY, new POCommGhost(GHOST.BLINKY, TICK_THRESHOLD));
@@ -30,5 +32,9 @@ public class POCommGhosts extends MASController {
         controllers.put(GHOST.SUE, new POCommGhost(GHOST.SUE, TICK_THRESHOLD));
     }
 
+    @Override
+    public String getName() {
+        return "POGC";
+    }
 }
 

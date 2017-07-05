@@ -3,6 +3,7 @@ package pacman;
 import pacman.controllers.Controller;
 import pacman.controllers.HumanController;
 import pacman.controllers.MASController;
+import pacman.game.Drawable;
 import pacman.game.Game;
 import pacman.game.GameView;
 import pacman.game.comms.BasicMessenger;
@@ -86,6 +87,18 @@ public class Executor {
         if (this.ghostsMessage) {
             this.messenger = new BasicMessenger(0, 1, 1);
         }
+    }
+
+    public Executor(boolean pacmanPO, boolean ghostPO, boolean ghostsMessage, boolean ghostsPresent, boolean pillsPresent, boolean powerPillsPresent, Messenger messenger, double scaleFactor, boolean setDaemon) {
+        this.pacmanPO = pacmanPO;
+        this.ghostPO = ghostPO;
+        this.ghostsMessage = ghostsMessage;
+        this.ghostsPresent = ghostsPresent;
+        this.pillsPresent = pillsPresent;
+        this.powerPillsPresent = powerPillsPresent;
+        this.messenger = messenger;
+        this.scaleFactor = scaleFactor;
+        this.setDaemon = setDaemon;
     }
 
     private static void writeStat(FileWriter writer, Stats stat, int i) throws IOException {
@@ -252,6 +265,10 @@ public class Executor {
                 gv.addKeyListener(((HumanController) pacManController).getKeyboardInput());
                 //                System.out.println("KeyListener added");
             }
+
+            if(pacManController instanceof Drawable){
+                gv.addDrawable((Drawable)pacManController);
+            }
         }
 
         while (!game.gameOver()) {
@@ -292,6 +309,10 @@ public class Executor {
 
         if (gv != null && pacManController instanceof HumanController) {
             gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
+        }
+
+        if(gv != null && (pacManController instanceof Drawable)){
+            gv.addDrawable((Drawable)pacManController);
         }
 
         new Thread(pacManController).start();
@@ -344,6 +365,10 @@ public class Executor {
 
         if (gv != null && pacManController instanceof HumanController) {
             gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
+        }
+
+        if(gv != null && (pacManController instanceof Drawable)){
+            gv.addDrawable((Drawable)pacManController);
         }
 
         new Thread(pacManController).start();
@@ -415,6 +440,10 @@ public class Executor {
 
             if (pacManController instanceof HumanController) {
                 gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
+            }
+
+            if(pacManController instanceof Drawable){
+                gv.addDrawable((Drawable)pacManController);
             }
         }
 

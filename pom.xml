@@ -7,7 +7,7 @@
 
     <groupId>uk.co.pacmanvghosts</groupId>
     <artifactId>pacman-main</artifactId>
-    <version>1.0.5.2</version>
+    <version>1.0.5.3</version>
     <name>PacMan Vs Ghosts</name>
     <description>The main code for Ms. Pac-Man Vs Ghosts</description>
     <url>http://www.pacmanvghosts.co.uk</url>
@@ -116,5 +116,10 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>com.fossgalaxy.util</groupId>
+            <artifactId>object-creator</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>
