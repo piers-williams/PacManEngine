@@ -18,6 +18,8 @@ public class MessageUtilities {
      *          or otherwise returns latest information in the same format
      */
     public static int[] hasPacmanBeenSeen(Messenger messenger, GHOST ghost, int[] lastPacmanInfo){
+        if(lastPacmanInfo == null) return null;
+        if(lastPacmanInfo.length != 3) return lastPacmanInfo;
         for(Message message : messenger.getMessages(ghost)){
             if(message.getType() == BasicMessage.MessageType.PACMAN_SEEN){
                 if(message.getTick() > lastPacmanInfo[1]){
