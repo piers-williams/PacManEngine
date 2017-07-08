@@ -54,13 +54,21 @@ public interface Message {
      */
     public enum MessageType {
         PACMAN_SEEN(2),
+        PACMAN_HEADING(2),
         I_AM(1),
-        I_AM_HEADING(1);
+        I_AM_HEADING(1),
+        PILL_NOT_SEEN(1);
 
         private int delay;
+        private int cost;
 
         private MessageType(int delay) {
+            this(delay, 0);
+        }
+
+        private MessageType(int delay, int cost){
             this.delay = delay;
+            this.cost = cost;
         }
 
         public int getDelay() {
