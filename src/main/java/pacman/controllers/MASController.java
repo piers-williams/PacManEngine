@@ -1,5 +1,6 @@
 package pacman.controllers;
 
+import com.fossgalaxy.object.annotations.ObjectDef;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -15,6 +16,7 @@ public class MASController extends Controller<EnumMap<GHOST, MOVE>> {
 
     private final boolean po;
 
+    @ObjectDef("MASController")
     public MASController(boolean po, EnumMap<GHOST, IndividualGhostController> controllers) {
         this.po = po;
         this.controllers = controllers;

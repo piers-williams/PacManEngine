@@ -56,8 +56,12 @@ public final class Game {
             caches[i] = new PathsCache(i);
         }
     }
+    public static final int BLINKY = GHOST.BLINKY.ordinal();
+    public static final int INKY = GHOST.INKY.ordinal();
+    public static final int PINKY = GHOST.PINKY.ordinal();
+    public static final int SUE = GHOST.SUE.ordinal();
+    public static final int PACMAN = 5;
 
-    // TODO Fix these into constructor so they can be final and not fiddleable
     public final POType PO_TYPE;
     public final int SIGHT_LIMIT;
     private boolean ghostsPresent = true;
@@ -442,8 +446,8 @@ public final class Game {
         copy.pillsPresent = pillsPresent;
         copy.powerPillsPresent = powerPillsPresent;
 
-        copy.ghostsEaten = new EnumMap<GHOST, Boolean>(GHOST.class);
-        copy.ghosts = new EnumMap<GHOST, Ghost>(GHOST.class);
+        copy.ghostsEaten = new EnumMap<>(GHOST.class);
+        copy.ghosts = new EnumMap<>(GHOST.class);
 
         for (GHOST ghostType : GHOST.values()) {
             copy.ghosts.put(ghostType, ghosts.get(ghostType).copy());
