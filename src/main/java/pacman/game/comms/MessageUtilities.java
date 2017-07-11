@@ -6,6 +6,8 @@ import pacman.game.Constants.* ;
  * Created by Piers on 08/07/2017.
  *
  * This will contain utility functions to help reduce some of the general boiler plate found in communicating AI's
+ *
+ * All items in this class are beta and can't be trusted - ensure they work before using them
  */
 public class MessageUtilities {
 
