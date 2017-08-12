@@ -1,6 +1,6 @@
 package pacman.controllers;
 
-import com.fossgalaxy.object.annotations.ObjectDef;
+import com.fossgalaxy.object.annotations.ObjectDefStatic;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -15,18 +15,26 @@ import java.util.EnumMap;
 public class MASController extends Controller<EnumMap<GHOST, MOVE>> {
 
     private final boolean po;
+    protected EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
+    private EnumMap<GHOST, MOVE> myMoves = new EnumMap<GHOST, MOVE>(GHOST.class);
 
-    @ObjectDef("MASController")
     public MASController(boolean po, EnumMap<GHOST, IndividualGhostController> controllers) {
         this.po = po;
         this.controllers = controllers;
     }
 
-    private EnumMap<GHOST, MOVE> myMoves = new EnumMap<GHOST, MOVE>(GHOST.class);
-    protected EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
-
     public MASController(EnumMap<GHOST, IndividualGhostController> controllers) {
         this(true, controllers);
+    }
+
+    @ObjectDefStatic("MASController")
+    public static MASController masControllerFactory(boolean po, IndividualGhostController blinky, IndividualGhostController inky, IndividualGhostController pinky, IndividualGhostController sue) {
+        EnumMap<GHOST, IndividualGhostController> ghosts = new EnumMap<>(GHOST.class);
+        ghosts.put(GHOST.BLINKY, blinky);
+        ghosts.put(GHOST.INKY, inky);
+        ghosts.put(GHOST.PINKY, pinky);
+        ghosts.put(GHOST.SUE, sue);
+        return new MASController(po, ghosts);
     }
 
     @Override
@@ -45,10 +53,11 @@ public class MASController extends Controller<EnumMap<GHOST, MOVE>> {
 
     /**
      * This is a shallow copy used to alter the PO status to force it to a desired value
+     *
      * @param po Should the copy enforce PO on the ghosts
      * @return The copy created
      */
-    public final MASController copy(boolean po){
+    public final MASController copy(boolean po) {
         return new MASController(po, controllers);
     }
 }
