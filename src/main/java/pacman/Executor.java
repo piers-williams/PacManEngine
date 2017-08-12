@@ -25,80 +25,85 @@ import static pacman.game.Constants.*;
  */
 @SuppressWarnings("unused")
 public class Executor {
-    protected final boolean pacmanPO;
-    protected final boolean ghostPO;
-    protected final boolean ghostsMessage;
-    protected boolean ghostsPresent = true;
-    protected boolean pillsPresent = true;
-    protected boolean powerPillsPresent = true;
-    protected Messenger messenger;
-    private double scaleFactor = 1.0d;
-    private boolean setDaemon = false;
+    private final boolean pacmanPO;
+    private final boolean ghostPO;
+    private final boolean ghostsMessage;
+    private final Messenger messenger;
+    private final double scaleFactor;
+    private final boolean setDaemon;
+    private final boolean visuals;
+    private final int tickLimit;
 
-    /**
-     * Creates an Executor with:
-     * Ms. Pac-Man Full Observability
-     * No Ghost Messaging
-     * Ghost Full Observability
-     */
-    public Executor() {
-        this(false);
-    }
+    public static class Builder{
+        private boolean pacmanPO = true;
+        private boolean ghostPO = true;
+        private boolean ghostsMessage = true;
+        private Messenger messenger;
+        private double scaleFactor = 1.0d;
+        private boolean setDaemon = false;
+        private boolean visuals = false;
+        private int tickLimit = 4000;
 
-    /**
-     * Creates an Executor with:
-     * Specified Ms. Pac-Man Observability
-     * No Ghost Messaging
-     * Ghost Full Observability
-     *
-     * @param pacmanPO Whether to impose PO on the pacman
-     */
-    public Executor(boolean pacmanPO) {
-        this(pacmanPO, false, false);
-    }
+        public Builder setPacmanPO(boolean po){
+            this.pacmanPO = po;
+            return this;
+        }
 
-    /**
-     * Creates an Executor with:
-     * Specified Ms. Pac-Man Observability
-     * Specified Ghost Messaging
-     * Ghost Partial Observability
-     *
-     * @param pacmanPO      Whether to impose PO on the pacman
-     * @param ghostsMessage Whether to allow ghost messaging
-     */
-    public Executor(boolean pacmanPO, boolean ghostsMessage) {
-        this(pacmanPO, ghostsMessage, true);
-    }
+        public Builder setGhostPO(boolean po){
+            this.ghostPO = po;
+            return this;
+        }
 
-    /**
-     * Creates an Executor with:
-     * Specified Ms. Pac-Man Observability
-     * Specified Ghost Messaging
-     * Specified Ghost Observability
-     *
-     * @param pacmanPO      Whether to impose PO on the pacman
-     * @param ghostsMessage Whether to allow ghost messaging
-     * @param ghostPO       Whether to impose PO on the ghosts
-     */
-    public Executor(boolean pacmanPO, boolean ghostsMessage, boolean ghostPO) {
-        this.pacmanPO = pacmanPO;
-        this.ghostsMessage = ghostsMessage;
-        this.ghostPO = ghostPO;
-        if (this.ghostsMessage) {
-            this.messenger = new BasicMessenger(0, 1, 1);
+        public Builder setGhostsMessage(boolean canMessage){
+            this.ghostsMessage = canMessage;
+            if(canMessage){
+                messenger = new BasicMessenger();
+            }else{
+                messenger = null;
+            }
+            return this;
+        }
+
+        public Builder setMessenger(Messenger messenger){
+            this.ghostsMessage = true;
+            this.messenger = messenger;
+            return this;
+        }
+
+        public Builder setScaleFactor(double scaleFactor){
+            this.scaleFactor = scaleFactor;
+            return this;
+        }
+
+        public Builder setGraphicsDaemon(boolean daemon){
+            this.setDaemon = daemon;
+            return this;
+        }
+
+        public Builder setVisual(boolean visual){
+            this.visuals = visual;
+            return this;
+        }
+
+        public Builder setTickLimit(int tickLimit){
+            this.tickLimit = tickLimit;
+            return this;
+        }
+
+        public Executor build(){
+            return new Executor(pacmanPO, ghostPO, ghostsMessage, messenger, scaleFactor, setDaemon, visuals, tickLimit);
         }
     }
 
-    public Executor(boolean pacmanPO, boolean ghostPO, boolean ghostsMessage, boolean ghostsPresent, boolean pillsPresent, boolean powerPillsPresent, Messenger messenger, double scaleFactor, boolean setDaemon) {
+    private Executor(boolean pacmanPO, boolean ghostPO, boolean ghostsMessage, Messenger messenger, double scaleFactor, boolean setDaemon, boolean visuals, int tickLimit) {
         this.pacmanPO = pacmanPO;
         this.ghostPO = ghostPO;
         this.ghostsMessage = ghostsMessage;
-        this.ghostsPresent = ghostsPresent;
-        this.pillsPresent = pillsPresent;
-        this.powerPillsPresent = powerPillsPresent;
         this.messenger = messenger;
         this.scaleFactor = scaleFactor;
         this.setDaemon = setDaemon;
+        this.visuals = visuals;
+        this.tickLimit = tickLimit;
     }
 
     private static void writeStat(FileWriter writer, Stats stat, int i) throws IOException {
@@ -151,14 +156,6 @@ public class Executor {
         return replay;
     }
 
-    public void setMessenger(Messenger messenger) {
-        if (this.ghostsMessage) {
-            if (messenger != null) {
-                this.messenger = messenger;
-            }
-        }
-    }
-
     /**
      * For running multiple games without visuals. This is useful to get a good idea of how well a controller plays
      * against a chosen opponent: the random nature of the game means that performance can vary from game to game.
@@ -169,10 +166,9 @@ public class Executor {
      * @param ghostController  The Ghosts controller
      * @param trials           The number of trials to be executed
      * @param description      Description for the stats
-     * @param tickLimit        Tick limit for the games in the experiment
      * @return Stats[] containing the scores in index 0 and the ticks in position 1
      */
-    public Stats[] runExperiment(Controller<MOVE> pacManController, MASController ghostController, int trials, String description, int tickLimit) {
+    public Stats[] runExperiment(Controller<MOVE> pacManController, MASController ghostController, int trials, String description) {
         Stats stats = new Stats(description);
         Stats ticks = new Stats(description + " Ticks");
         Random rnd = new Random(0);
@@ -205,10 +201,6 @@ public class Executor {
         ticks.setMsTaken(timeTaken);
 
         return new Stats[]{stats, ticks};
-    }
-
-    public Stats[] runExperiment(Controller<MOVE> pacManController, MASController ghostController, int trials, String description) {
-        return runExperiment(pacManController, ghostController, trials, description, -1);
     }
 
     public Stats[] runExperimentTicks(Controller<MOVE> pacManController, MASController ghostController, int trials, String description) {
@@ -244,16 +236,15 @@ public class Executor {
      *
      * @param pacManController The Pac-Man controller
      * @param ghostController  The Ghosts controller
-     * @param visual           Indicates whether or not to use visuals
      * @param delay            The delay between time-steps
      */
-    public int runGame(Controller<MOVE> pacManController, MASController ghostController, boolean visual, int delay) {
+    public int runGame(Controller<MOVE> pacManController, MASController ghostController, int delay) {
         Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
         GameView gv = null;
         MASController ghostControllerCopy = ghostController.copy(ghostPO);
 
-        if (visual) {
+        if (visuals) {
             gv = new GameView(game, setDaemon);
             gv.setScaleFactor(scaleFactor);
             gv.showGame();
@@ -279,7 +270,7 @@ public class Executor {
             } catch (Exception e) {
             }
 
-            if (visual) {
+            if (visuals) {
                 gv.repaint();
             }
         }
@@ -346,18 +337,17 @@ public class Executor {
      * @param pacManController The Pac-Man controller
      * @param ghostController  The Ghosts controller
      * @param fixedTime        Whether or not to wait until 40ms are up even if both controllers already responded
-     * @param visual           Indicates whether or not to use visuals
      * @param desc             the description for the stats
      * @return Stat score achieved by Ms. Pac-Man
      */
-    public Stats runGameTimedSpeedOptimised(Controller<MOVE> pacManController, MASController ghostController, boolean fixedTime, boolean visual, String desc) {
+    public Stats runGameTimedSpeedOptimised(Controller<MOVE> pacManController, MASController ghostController, boolean fixedTime, String desc) {
         Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
         GameView gv = null;
         MASController ghostControllerCopy = ghostController.copy(ghostPO);
         Stats stats = new Stats(desc);
 
-        if (visual) {
+        if (visuals) {
             gv = new GameView(game, setDaemon);
             gv.setScaleFactor(scaleFactor);
             gv.showGame();
@@ -399,7 +389,7 @@ public class Executor {
                 e.printStackTrace();
             }
 
-            if (visual) {
+            if (visuals) {
                 gv.repaint();
             }
 
@@ -420,11 +410,10 @@ public class Executor {
      *
      * @param pacManController The Pac-Man controller
      * @param ghostController  The Ghosts controller
-     * @param visual           Whether to run the game with visuals
      * @param fileName         The file name of the file that saves the replay
      * @return Stats the statistics for the run
      */
-    public Stats runGameTimedRecorded(Controller<MOVE> pacManController, MASController ghostController, boolean visual, String fileName) {
+    public Stats runGameTimedRecorded(Controller<MOVE> pacManController, MASController ghostController, String fileName) {
         Stats stats = new Stats("");
         StringBuilder replay = new StringBuilder();
 
@@ -433,7 +422,7 @@ public class Executor {
         GameView gv = null;
         MASController ghostControllerCopy = ghostController.copy(ghostPO);
 
-        if (visual) {
+        if (visuals) {
             gv = new GameView(game, setDaemon);
             gv.setScaleFactor(scaleFactor);
             gv.showGame();
@@ -462,7 +451,7 @@ public class Executor {
 
             game.advanceGame(pacManController.getMove(), ghostControllerCopy.getMove());
 
-            if (visual) {
+            if (visuals) {
                 gv.repaint();
             }
 
@@ -508,13 +497,5 @@ public class Executor {
                 gv.repaint();
             }
         }
-    }
-
-    public void setScaleFactor(double scaleFactor) {
-        this.scaleFactor = scaleFactor;
-    }
-
-    public void setDaemon(boolean daemon) {
-        this.setDaemon = daemon;
     }
 }
