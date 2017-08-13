@@ -181,7 +181,7 @@ public class Executor {
                 game = (this.ghostsMessage) ? new Game(rnd.nextLong(), messenger.copy()) : new Game(rnd.nextLong());
 
                 while (!game.gameOver()) {
-                    if (tickLimit != -1 && tickLimit < game.getCurrentLevelTime()) {
+                    if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
                         break;
                     }
                     game.advanceGame(
@@ -263,6 +263,9 @@ public class Executor {
         }
 
         while (!game.gameOver()) {
+            if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
+                break;
+            }
             game.advanceGame(pacManController.getMove(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), -1), ghostControllerCopy.getMove(game.copy(), -1));
 
             try {
@@ -310,6 +313,9 @@ public class Executor {
         new Thread(ghostControllerCopy).start();
 
         while (!game.gameOver()) {
+            if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
+                break;
+            }
             pacManController.update(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY);
             ghostControllerCopy.update(game.copy(), System.currentTimeMillis() + DELAY);
 
@@ -365,6 +371,9 @@ public class Executor {
         new Thread(ghostControllerCopy).start();
         int ticks = 0;
         while (!game.gameOver()) {
+            if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
+                break;
+            }
             pacManController.update(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY);
             ghostControllerCopy.update(game.copy(), System.currentTimeMillis() + DELAY);
 
@@ -391,11 +400,6 @@ public class Executor {
 
             if (visuals) {
                 gv.repaint();
-            }
-
-            ticks++;
-            if (ticks > 4000) {
-                break;
             }
         }
 
@@ -440,6 +444,9 @@ public class Executor {
         new Thread(ghostControllerCopy).start();
 
         while (!game.gameOver()) {
+            if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
+                break;
+            }
             pacManController.update(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY);
             ghostControllerCopy.update(game.copy(), System.currentTimeMillis() + DELAY);
 
