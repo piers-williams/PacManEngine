@@ -3,12 +3,12 @@ package pacman;
 import pacman.controllers.Controller;
 import pacman.controllers.HumanController;
 import pacman.controllers.MASController;
-import pacman.game.Constants;
 import pacman.game.Drawable;
 import pacman.game.Game;
 import pacman.game.GameView;
 import pacman.game.comms.BasicMessenger;
 import pacman.game.comms.Messenger;
+import pacman.game.internal.POType;
 import pacman.game.util.Stats;
 
 import java.io.*;
@@ -34,6 +34,8 @@ public class Executor {
     private final boolean visuals;
     private final int tickLimit;
     private final int timeLimit;
+    private final POType poType;
+    private final int sightLimit;
 
     public static class Builder {
         private boolean pacmanPO = true;
@@ -45,6 +47,8 @@ public class Executor {
         private boolean visuals = false;
         private int tickLimit = 4000;
         private int timeLimit = 40;
+        private POType poType = POType.LOS;
+        private int sightLimit = 50;
 
         public Builder setPacmanPO(boolean po) {
             this.pacmanPO = po;
@@ -97,12 +101,34 @@ public class Executor {
             return this;
         }
 
+        public Builder setPOType(POType poType) {
+            this.poType = poType;
+            return this;
+        }
+
+        public Builder setSightLimit(int sightLimit) {
+            this.sightLimit = sightLimit;
+            return this;
+        }
+
         public Executor build() {
-            return new Executor(pacmanPO, ghostPO, ghostsMessage, messenger, scaleFactor, setDaemon, visuals, tickLimit, timeLimit);
+            return new Executor(pacmanPO, ghostPO, ghostsMessage, messenger, scaleFactor, setDaemon, visuals, tickLimit, timeLimit, poType, sightLimit);
         }
     }
 
-    private Executor(boolean pacmanPO, boolean ghostPO, boolean ghostsMessage, Messenger messenger, double scaleFactor, boolean setDaemon, boolean visuals, int tickLimit, int timeLimit) {
+    private Executor(
+            boolean pacmanPO,
+            boolean ghostPO,
+            boolean ghostsMessage,
+            Messenger messenger,
+            double scaleFactor,
+            boolean setDaemon,
+            boolean visuals,
+            int tickLimit,
+            int timeLimit,
+            POType poType,
+            int sightLimit
+            ) {
         this.pacmanPO = pacmanPO;
         this.ghostPO = ghostPO;
         this.ghostsMessage = ghostsMessage;
@@ -112,6 +138,8 @@ public class Executor {
         this.visuals = visuals;
         this.tickLimit = tickLimit;
         this.timeLimit = timeLimit;
+        this.poType = poType;
+        this.sightLimit = sightLimit;
     }
 
     private static void writeStat(FileWriter writer, Stats stat, int i) throws IOException {
