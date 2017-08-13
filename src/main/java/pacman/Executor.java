@@ -303,7 +303,7 @@ public class Executor {
     }
 
     private Game getPacmanCopy(Game game) {
-        return game.copy((pacmanPO) ? GHOST.values().length + 1 : -1);
+        return game.copy((pacmanPO) ? Game.PACMAN : Game.COPY);
     }
 
     private GameView setupGameView(Controller<MOVE> pacManController, Game game) {

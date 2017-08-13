@@ -56,6 +56,8 @@ public final class Game {
             caches[i] = new PathsCache(i);
         }
     }
+
+    public static final int COPY = -1;
     public static final int BLINKY = GHOST.BLINKY.ordinal();
     public static final int INKY = GHOST.INKY.ordinal();
     public static final int PINKY = GHOST.PINKY.ordinal();
@@ -481,13 +483,13 @@ public final class Game {
     public Game copy(PacMan pacman) {
         Game game = copy();
         game.po = true;
-        game.agent = GHOST.values().length + 1;
+        game.agent = PACMAN;
         return game;
     }
 
     public Game copy(int agent) {
         Game game = copy();
-        if (agent == -1) {
+        if (agent == COPY) {
             return game;
         }
         game.po = true;
