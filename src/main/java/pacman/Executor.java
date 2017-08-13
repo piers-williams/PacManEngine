@@ -3,6 +3,7 @@ package pacman;
 import pacman.controllers.Controller;
 import pacman.controllers.HumanController;
 import pacman.controllers.MASController;
+import pacman.game.Constants;
 import pacman.game.Drawable;
 import pacman.game.Game;
 import pacman.game.GameView;
@@ -12,7 +13,6 @@ import pacman.game.util.Stats;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.Random;
 
 import static pacman.game.Constants.*;
@@ -33,8 +33,9 @@ public class Executor {
     private final boolean setDaemon;
     private final boolean visuals;
     private final int tickLimit;
+    private final int timeLimit;
 
-    public static class Builder{
+    public static class Builder {
         private boolean pacmanPO = true;
         private boolean ghostPO = true;
         private boolean ghostsMessage = true;
@@ -43,59 +44,65 @@ public class Executor {
         private boolean setDaemon = false;
         private boolean visuals = false;
         private int tickLimit = 4000;
+        private int timeLimit = 40;
 
-        public Builder setPacmanPO(boolean po){
+        public Builder setPacmanPO(boolean po) {
             this.pacmanPO = po;
             return this;
         }
 
-        public Builder setGhostPO(boolean po){
+        public Builder setGhostPO(boolean po) {
             this.ghostPO = po;
             return this;
         }
 
-        public Builder setGhostsMessage(boolean canMessage){
+        public Builder setGhostsMessage(boolean canMessage) {
             this.ghostsMessage = canMessage;
-            if(canMessage){
+            if (canMessage) {
                 messenger = new BasicMessenger();
-            }else{
+            } else {
                 messenger = null;
             }
             return this;
         }
 
-        public Builder setMessenger(Messenger messenger){
+        public Builder setMessenger(Messenger messenger) {
             this.ghostsMessage = true;
             this.messenger = messenger;
             return this;
         }
 
-        public Builder setScaleFactor(double scaleFactor){
+        public Builder setScaleFactor(double scaleFactor) {
             this.scaleFactor = scaleFactor;
             return this;
         }
 
-        public Builder setGraphicsDaemon(boolean daemon){
+        public Builder setGraphicsDaemon(boolean daemon) {
             this.setDaemon = daemon;
             return this;
         }
 
-        public Builder setVisual(boolean visual){
+        public Builder setVisual(boolean visual) {
             this.visuals = visual;
             return this;
         }
 
-        public Builder setTickLimit(int tickLimit){
+        public Builder setTickLimit(int tickLimit) {
             this.tickLimit = tickLimit;
             return this;
         }
 
-        public Executor build(){
-            return new Executor(pacmanPO, ghostPO, ghostsMessage, messenger, scaleFactor, setDaemon, visuals, tickLimit);
+        public Builder setTimeLimit(int timeLimit) {
+            this.timeLimit = timeLimit;
+            return this;
+        }
+
+        public Executor build() {
+            return new Executor(pacmanPO, ghostPO, ghostsMessage, messenger, scaleFactor, setDaemon, visuals, tickLimit, timeLimit);
         }
     }
 
-    private Executor(boolean pacmanPO, boolean ghostPO, boolean ghostsMessage, Messenger messenger, double scaleFactor, boolean setDaemon, boolean visuals, int tickLimit) {
+    private Executor(boolean pacmanPO, boolean ghostPO, boolean ghostsMessage, Messenger messenger, double scaleFactor, boolean setDaemon, boolean visuals, int tickLimit, int timeLimit) {
         this.pacmanPO = pacmanPO;
         this.ghostPO = ghostPO;
         this.ghostsMessage = ghostsMessage;
@@ -104,6 +111,7 @@ public class Executor {
         this.setDaemon = setDaemon;
         this.visuals = visuals;
         this.tickLimit = tickLimit;
+        this.timeLimit = timeLimit;
     }
 
     private static void writeStat(FileWriter writer, Stats stat, int i) throws IOException {
@@ -185,8 +193,8 @@ public class Executor {
                         break;
                     }
                     game.advanceGame(
-                            pacManController.getMove(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY),
-                            ghostControllerCopy.getMove(game.copy(), System.currentTimeMillis() + DELAY));
+                            pacManController.getMove(getPacmanCopy(game), System.currentTimeMillis() + timeLimit),
+                            ghostControllerCopy.getMove(game.copy(), System.currentTimeMillis() + timeLimit));
                 }
                 stats.add(game.getScore());
                 ticks.add(game.getCurrentLevelTime());
@@ -217,8 +225,8 @@ public class Executor {
 
             while (!game.gameOver()) {
                 game.advanceGame(
-                        pacManController.getMove(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY),
-                        ghostControllerCopy.getMove(game.copy(), System.currentTimeMillis() + DELAY));
+                        pacManController.getMove(getPacmanCopy(game), System.currentTimeMillis() + timeLimit),
+                        ghostControllerCopy.getMove(game.copy(), System.currentTimeMillis() + timeLimit));
             }
             stats.add(game.getScore());
             ticks.add(game.getTotalTime());
@@ -241,32 +249,17 @@ public class Executor {
     public int runGame(Controller<MOVE> pacManController, MASController ghostController, int delay) {
         Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
-        GameView gv = null;
+        GameView gv = (visuals) ? setupGameView(pacManController, game) : null;
+
         MASController ghostControllerCopy = ghostController.copy(ghostPO);
-
-        if (visuals) {
-            gv = new GameView(game, setDaemon);
-            gv.setScaleFactor(scaleFactor);
-            gv.showGame();
-            if (pacManController instanceof HumanController) {
-                //                System.out.println("Here");
-                gv.setFocusable(true);
-                gv.requestFocus();
-                gv.setPO(true);
-                gv.addKeyListener(((HumanController) pacManController).getKeyboardInput());
-                //                System.out.println("KeyListener added");
-            }
-
-            if(pacManController instanceof Drawable){
-                gv.addDrawable((Drawable)pacManController);
-            }
-        }
 
         while (!game.gameOver()) {
             if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
                 break;
             }
-            game.advanceGame(pacManController.getMove(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), -1), ghostControllerCopy.getMove(game.copy(), -1));
+            game.advanceGame(
+                    pacManController.getMove(getPacmanCopy(game), System.currentTimeMillis() + timeLimit),
+                    ghostControllerCopy.getMove(game.copy(), System.currentTimeMillis() + timeLimit));
 
             try {
                 Thread.sleep(delay);
@@ -281,8 +274,32 @@ public class Executor {
         return game.getScore();
     }
 
+    private Game getPacmanCopy(Game game) {
+        return game.copy((pacmanPO) ? GHOST.values().length + 1 : -1);
+    }
+
+    private GameView setupGameView(Controller<MOVE> pacManController, Game game) {
+        GameView gv;
+        gv = new GameView(game, setDaemon);
+        gv.setScaleFactor(scaleFactor);
+        gv.showGame();
+        if (pacManController instanceof HumanController) {
+            //                System.out.println("Here");
+            gv.setFocusable(true);
+            gv.requestFocus();
+            gv.setPO(true);
+            gv.addKeyListener(((HumanController) pacManController).getKeyboardInput());
+            //                System.out.println("KeyListener added");
+        }
+
+        if (pacManController instanceof Drawable) {
+            gv.addDrawable((Drawable) pacManController);
+        }
+        return gv;
+    }
+
     /**
-     * Run the game with time limit (asynchronous mode). This is how it will be done in the competition.
+     * Run the game with time limit (asynchronous mode).
      * Can be played with and without visual display of game states.
      *
      * @param pacManController The Pac-Man controller
@@ -292,22 +309,8 @@ public class Executor {
     public void runGameTimed(Controller<MOVE> pacManController, MASController ghostController, boolean visual) {
         Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
-        GameView gv = null;
+        GameView gv = (visuals) ? setupGameView(pacManController, game) : null;
         MASController ghostControllerCopy = ghostController.copy(ghostPO);
-
-        if (visual) {
-            gv = new GameView(game, setDaemon);
-            gv.setScaleFactor(scaleFactor);
-            gv.showGame();
-        }
-
-        if (gv != null && pacManController instanceof HumanController) {
-            gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
-        }
-
-        if(gv != null && (pacManController instanceof Drawable)){
-            gv.addDrawable((Drawable)pacManController);
-        }
 
         new Thread(pacManController).start();
         new Thread(ghostControllerCopy).start();
@@ -316,7 +319,7 @@ public class Executor {
             if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
                 break;
             }
-            pacManController.update(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY);
+            pacManController.update(getPacmanCopy(game), System.currentTimeMillis() + DELAY);
             ghostControllerCopy.update(game.copy(), System.currentTimeMillis() + DELAY);
 
             try {
@@ -349,32 +352,17 @@ public class Executor {
     public Stats runGameTimedSpeedOptimised(Controller<MOVE> pacManController, MASController ghostController, boolean fixedTime, String desc) {
         Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
 
-        GameView gv = null;
+        GameView gv = (visuals) ? setupGameView(pacManController, game) : null;
         MASController ghostControllerCopy = ghostController.copy(ghostPO);
         Stats stats = new Stats(desc);
 
-        if (visuals) {
-            gv = new GameView(game, setDaemon);
-            gv.setScaleFactor(scaleFactor);
-            gv.showGame();
-        }
-
-        if (gv != null && pacManController instanceof HumanController) {
-            gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
-        }
-
-        if(gv != null && (pacManController instanceof Drawable)){
-            gv.addDrawable((Drawable)pacManController);
-        }
-
         new Thread(pacManController).start();
         new Thread(ghostControllerCopy).start();
-        int ticks = 0;
         while (!game.gameOver()) {
             if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
                 break;
             }
-            pacManController.update(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY);
+            pacManController.update(getPacmanCopy(game), System.currentTimeMillis() + DELAY);
             ghostControllerCopy.update(game.copy(), System.currentTimeMillis() + DELAY);
 
             try {
@@ -435,8 +423,8 @@ public class Executor {
                 gv.getFrame().addKeyListener(((HumanController) pacManController).getKeyboardInput());
             }
 
-            if(pacManController instanceof Drawable){
-                gv.addDrawable((Drawable)pacManController);
+            if (pacManController instanceof Drawable) {
+                gv.addDrawable((Drawable) pacManController);
             }
         }
 
@@ -447,7 +435,7 @@ public class Executor {
             if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
                 break;
             }
-            pacManController.update(game.copy((pacmanPO) ? GHOST.values().length + 1 : -1), System.currentTimeMillis() + DELAY);
+            pacManController.update(getPacmanCopy(game), System.currentTimeMillis() + DELAY);
             ghostControllerCopy.update(game.copy(), System.currentTimeMillis() + DELAY);
 
             try {
