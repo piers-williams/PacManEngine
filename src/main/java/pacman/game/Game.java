@@ -64,8 +64,8 @@ public final class Game {
     public static final int SUE = GHOST.SUE.ordinal();
     public static final int PACMAN = 5;
 
-    public final POType PO_TYPE;
-    public final int SIGHT_LIMIT;
+    private final POType poType;
+    private final int sightLimit;
     private boolean ghostsPresent = true;
     private boolean pillsPresent = true;
     private boolean powerPillsPresent = true;
@@ -125,8 +125,8 @@ public final class Game {
         this.messenger = messenger;
 
         _init(initialMaze);
-        this.PO_TYPE = poType;
-        this.SIGHT_LIMIT = sightLimit;
+        this.poType = poType;
+        this.sightLimit = sightLimit;
     }
 
     /////////////////////////////////////////////////////////////////////////////
@@ -137,8 +137,8 @@ public final class Game {
      * Empty constructor used by the copy method.
      */
     private Game(POType poType, int sightLimit) {
-        this.PO_TYPE = poType;
-        this.SIGHT_LIMIT = sightLimit;
+        this.poType = poType;
+        this.sightLimit = sightLimit;
     }
 
     private int getNodeIndexOfOwner() {
@@ -159,7 +159,7 @@ public final class Game {
         Node currentNode = (mazes[mazeIndex]).graph[getNodeIndexOfOwner()];
         Node check = (mazes[mazeIndex]).graph[nodeIndex];
 
-        switch (PO_TYPE) {
+        switch (poType) {
             case LOS:
                 if (currentNode.x == check.x || currentNode.y == check.y) {
                     // The nodes are in a line
@@ -169,7 +169,7 @@ public final class Game {
                 return false;
             case RADIUS:
                 double manhattan = getManhattanDistance(currentNode.nodeIndex, check.nodeIndex);
-                return (manhattan <= SIGHT_LIMIT);
+                return (manhattan <= sightLimit);
             case FF_LOS:
                 if (currentNode.x == check.x || currentNode.y == check.y) {
                     // Get direction currently going in
@@ -205,7 +205,7 @@ public final class Game {
     private boolean straightRouteBlocked(Node startNode, Node endNode) {
         double manhattan = getManhattanDistance(startNode.nodeIndex, endNode.nodeIndex);
 
-        if (manhattan <= SIGHT_LIMIT) {
+        if (manhattan <= sightLimit) {
             double shortestPath = getShortestPathDistance(startNode.nodeIndex, endNode.nodeIndex);
             return (manhattan == shortestPath);
         }
@@ -424,7 +424,7 @@ public final class Game {
      * @return the game
      */
     public Game copy(boolean copyMessenger) {
-        Game copy = new Game(this.PO_TYPE, this.SIGHT_LIMIT);
+        Game copy = new Game(this.poType, this.sightLimit);
 
         copy.seed = seed;
         copy.rnd = new Random();
