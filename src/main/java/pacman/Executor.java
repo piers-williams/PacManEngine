@@ -1,5 +1,7 @@
 package pacman;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pacman.controllers.Controller;
 import pacman.controllers.HumanController;
 import pacman.controllers.MASController;
@@ -14,6 +16,7 @@ import pacman.game.util.Stats;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.function.Function;
 
 import static pacman.game.Constants.*;
 
@@ -37,6 +40,8 @@ public class Executor {
     private final POType poType;
     private final int sightLimit;
     private final Random rnd = new Random();
+    private final Function<Game, String> peek;
+    private final Logger logger = LoggerFactory.getLogger(Executor.class);
 
     public static class Builder {
         private boolean pacmanPO = true;
@@ -50,6 +55,7 @@ public class Executor {
         private int timeLimit = 40;
         private POType poType = POType.LOS;
         private int sightLimit = 50;
+        private Function<Game, String> peek = null;
 
         public Builder setPacmanPO(boolean po) {
             this.pacmanPO = po;
@@ -112,8 +118,13 @@ public class Executor {
             return this;
         }
 
+        public Builder setPeek(Function<Game, String> peek){
+            this.peek = peek;
+            return this;
+        }
+
         public Executor build() {
-            return new Executor(pacmanPO, ghostPO, ghostsMessage, messenger, scaleFactor, setDaemon, visuals, tickLimit, timeLimit, poType, sightLimit);
+            return new Executor(pacmanPO, ghostPO, ghostsMessage, messenger, scaleFactor, setDaemon, visuals, tickLimit, timeLimit, poType, sightLimit, peek);
         }
     }
 
@@ -128,7 +139,8 @@ public class Executor {
             int tickLimit,
             int timeLimit,
             POType poType,
-            int sightLimit
+            int sightLimit,
+            Function<Game, String> peek
             ) {
         this.pacmanPO = pacmanPO;
         this.ghostPO = ghostPO;
@@ -141,6 +153,7 @@ public class Executor {
         this.timeLimit = timeLimit;
         this.poType = poType;
         this.sightLimit = sightLimit;
+        this.peek = peek;
     }
 
     private static void writeStat(FileWriter writer, Stats stat, int i) throws IOException {
@@ -220,6 +233,7 @@ public class Executor {
                     if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
                         break;
                     }
+                    handlePeek(game);
                     game.advanceGame(
                             pacManController.getMove(getPacmanCopy(game), System.currentTimeMillis() + timeLimit),
                             ghostControllerCopy.getMove(game.copy(), System.currentTimeMillis() + timeLimit));
@@ -243,6 +257,10 @@ public class Executor {
         return (this.ghostsMessage) ? new Game(rnd.nextLong(), 0, messenger.copy(), poType, sightLimit) : new Game(rnd.nextLong(), 0, null, poType, sightLimit);
     }
 
+    private void handlePeek(Game game){
+        if(peek != null) logger.info(peek.apply(game));
+    }
+
     public Stats[] runExperimentTicks(Controller<MOVE> pacManController, MASController ghostController, int trials, String description) {
         Stats stats = new Stats(description);
         Stats ticks = new Stats(description);
@@ -255,6 +273,7 @@ public class Executor {
             game = setupGame();
 
             while (!game.gameOver()) {
+                handlePeek(game);
                 game.advanceGame(
                         pacManController.getMove(getPacmanCopy(game), System.currentTimeMillis() + timeLimit),
                         ghostControllerCopy.getMove(game.copy(), System.currentTimeMillis() + timeLimit));
@@ -288,6 +307,7 @@ public class Executor {
             if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
                 break;
             }
+            handlePeek(game);
             game.advanceGame(
                     pacManController.getMove(getPacmanCopy(game), System.currentTimeMillis() + timeLimit),
                     ghostControllerCopy.getMove(game.copy(), System.currentTimeMillis() + timeLimit));
@@ -350,6 +370,7 @@ public class Executor {
             if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
                 break;
             }
+            handlePeek(game);
             pacManController.update(getPacmanCopy(game), System.currentTimeMillis() + DELAY);
             ghostControllerCopy.update(game.copy(), System.currentTimeMillis() + DELAY);
 
@@ -393,6 +414,7 @@ public class Executor {
             if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
                 break;
             }
+            handlePeek(game);
             pacManController.update(getPacmanCopy(game), System.currentTimeMillis() + DELAY);
             ghostControllerCopy.update(game.copy(), System.currentTimeMillis() + DELAY);
 
@@ -466,6 +488,7 @@ public class Executor {
             if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
                 break;
             }
+            handlePeek(game);
             pacManController.update(getPacmanCopy(game), System.currentTimeMillis() + DELAY);
             ghostControllerCopy.update(game.copy(), System.currentTimeMillis() + DELAY);
 
