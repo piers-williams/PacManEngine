@@ -1574,7 +1574,7 @@ public final class Game {
     }
 
     /**
-     * Returns the EUCLEDIAN distance between two nodes in the current mazes[gs.curMaze].
+     * Returns the EUCLIDEAN distance between two nodes in the current mazes[gs.curMaze].
      *
      * @param fromNodeIndex the from node index
      * @param toNodeIndex   the to node index
