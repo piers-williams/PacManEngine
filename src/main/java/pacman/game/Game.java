@@ -227,7 +227,7 @@ public final class Game {
         pillWasEaten = false;
         powerPillWasEaten = false;
 
-        ghostsEaten = new EnumMap<GHOST, Boolean>(GHOST.class);
+        ghostsEaten = new EnumMap<>(GHOST.class);
 
         for (GHOST ghost : GHOST.values()) {
             ghostsEaten.put(ghost, false);
@@ -286,7 +286,7 @@ public final class Game {
      * _init ghosts.
      */
     private void _initGhosts() {
-        ghosts = new EnumMap<GHOST, Ghost>(GHOST.class);
+        ghosts = new EnumMap<>(GHOST.class);
 
         for (GHOST ghostType : GHOST.values()) {
             ghosts.put(ghostType, new Ghost(ghostType, currentMaze.lairNodeIndex, 0,
@@ -371,7 +371,7 @@ public final class Game {
         pacman = new PacMan(Integer.parseInt(values[index++]), MOVE.valueOf(values[index++]),
                 Integer.parseInt(values[index++]), Boolean.parseBoolean(values[index++]));
 
-        ghosts = new EnumMap<GHOST, Ghost>(GHOST.class);
+        ghosts = new EnumMap<>(GHOST.class);
 
         for (GHOST ghostType : GHOST.values()) {
             ghosts.put(ghostType, new Ghost(ghostType, Integer.parseInt(values[index++]), Integer.parseInt(values[index++]),
@@ -401,7 +401,7 @@ public final class Game {
         timeOfLastGlobalReversal = Integer.parseInt(values[++index]);
         pacmanWasEaten = Boolean.parseBoolean(values[++index]);
 
-        ghostsEaten = new EnumMap<GHOST, Boolean>(GHOST.class);
+        ghostsEaten = new EnumMap<>(GHOST.class);
 
         for (GHOST ghost : GHOST.values()) {
             ghostsEaten.put(ghost, Boolean.parseBoolean(values[++index]));
@@ -506,7 +506,7 @@ public final class Game {
      * @param pacManMove The move supplied by the Ms Pac-Man controller
      * @param ghostMoves The moves supplied by the ghosts controller
      */
-    public void advanceGame(MOVE pacManMove, EnumMap<GHOST, MOVE> ghostMoves) {
+    public void advanceGame(MOVE pacManMove, Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
         }
@@ -515,7 +515,7 @@ public final class Game {
         updateGame();
     }
 
-    public void advanceGameWithoutReverse(MOVE pacManMove, EnumMap<GHOST, MOVE> ghostMoves) {
+    public void advanceGameWithoutReverse(MOVE pacManMove, Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
         }
@@ -524,7 +524,7 @@ public final class Game {
         updateGame();
     }
 
-    public void advanceGameWithForcedReverse(MOVE pacManMove, EnumMap<GHOST, MOVE> ghostMoves) {
+    public void advanceGameWithForcedReverse(MOVE pacManMove, Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
         }
@@ -533,7 +533,7 @@ public final class Game {
         updateGame();
     }
 
-    public void advanceGameWithPowerPillReverseOnly(MOVE pacManMove, EnumMap<GHOST, MOVE> ghostMoves) {
+    public void advanceGameWithPowerPillReverseOnly(MOVE pacManMove, Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
         }
@@ -567,7 +567,7 @@ public final class Game {
      *
      * @param ghostMoves The moves supplied by the ghosts controller
      */
-    public void updateGhosts(EnumMap<GHOST, MOVE> ghostMoves) {
+    public void updateGhosts(Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
         }
@@ -581,7 +581,7 @@ public final class Game {
         }
     }
 
-    public void updateGhostsWithoutReverse(EnumMap<GHOST, MOVE> ghostMoves) {
+    public void updateGhostsWithoutReverse(Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
         }
@@ -592,7 +592,7 @@ public final class Game {
         _updateGhosts(ghostMoves);
     }
 
-    public void updateGhostsWithForcedReverse(EnumMap<GHOST, MOVE> ghostMoves) {
+    public void updateGhostsWithForcedReverse(Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
         }
@@ -728,7 +728,7 @@ public final class Game {
      *
      * @param moves the moves
      */
-    private void _updateGhosts(EnumMap<GHOST, MOVE> moves) {
+    private void _updateGhosts(Map<GHOST, MOVE> moves) {
         for (Entry<GHOST, MOVE> entry : moves.entrySet()) {
             Ghost ghost = ghosts.get(entry.getKey());
 
@@ -742,9 +742,9 @@ public final class Game {
         }
     }
 
-    private EnumMap<GHOST, MOVE> _completeGhostMoves(EnumMap<GHOST, MOVE> moves) {
+    private Map<GHOST, MOVE> _completeGhostMoves(Map<GHOST, MOVE> moves) {
         if (moves == null) {
-            moves = new EnumMap<GHOST, MOVE>(GHOST.class);
+            moves = new EnumMap<>(GHOST.class);
 
             for (Map.Entry<GHOST, Ghost> entry : ghosts.entrySet()) {
                 moves.put(entry.getKey(), entry.getValue().lastMoveMade);
@@ -828,7 +828,7 @@ public final class Game {
         }
     }
 
-    private boolean _reverseGhosts(EnumMap<GHOST, MOVE> moves, boolean force) {
+    private boolean _reverseGhosts(Map<GHOST, MOVE> moves, boolean force) {
         boolean reversed = false;
         boolean globalReverse = false;
 
@@ -1901,10 +1901,10 @@ public final class Game {
                     false
             ));
         }
-        EnumMap<Constants.GHOST, Ghost> ghosts = info.getGhosts();
+        EnumMap<Constants.GHOST, Ghost> copyGhosts = info.getGhosts();
         for (Constants.GHOST ghost : GHOST.values()) {
             if (getGhostCurrentNodeIndex(ghost) != -1) {
-                ghosts.put(ghost,
+                copyGhosts.put(ghost,
                         new Ghost(
                                 ghost,
                                 getGhostCurrentNodeIndex(ghost),
