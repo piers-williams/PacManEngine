@@ -47,7 +47,7 @@ public class Executor {
         private boolean pacmanPO = true;
         private boolean ghostPO = true;
         private boolean ghostsMessage = true;
-        private Messenger messenger;
+        private Messenger messenger = new BasicMessenger();
         private double scaleFactor = 1.0d;
         private boolean setDaemon = false;
         private boolean visuals = false;

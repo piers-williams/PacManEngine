@@ -12,6 +12,7 @@ public class ExecutorTest {
     public static void main(String[] args) {
         Executor executor = new Executor.Builder()
                 .setTickLimit(4000)
+                .setPeek(g -> "Score: " + g.getScore())
                 .build();
 
         executor.runExperiment(
