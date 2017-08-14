@@ -297,7 +297,7 @@ public class Executor {
      * @param delay            The delay between time-steps
      */
     public int runGame(Controller<MOVE> pacManController, MASController ghostController, int delay) {
-        Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
+        Game game = setupGame();
 
         GameView gv = (visuals) ? setupGameView(pacManController, game) : null;
 
@@ -335,12 +335,10 @@ public class Executor {
         gv.setScaleFactor(scaleFactor);
         gv.showGame();
         if (pacManController instanceof HumanController) {
-            //                System.out.println("Here");
             gv.setFocusable(true);
             gv.requestFocus();
             gv.setPO(true);
             gv.addKeyListener(((HumanController) pacManController).getKeyboardInput());
-            //                System.out.println("KeyListener added");
         }
 
         if (pacManController instanceof Drawable) {
