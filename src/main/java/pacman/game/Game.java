@@ -85,13 +85,13 @@ public final class Game {
     private boolean pillWasEaten;
     private boolean powerPillWasEaten;
     private EnumMap<GHOST, Boolean> ghostsEaten;
-    //the data relating to pacman and the ghosts are stored in respective data structures for clarity
-    private PacMan pacman;
+    //the data relating to internalPacman and the ghosts are stored in respective data structures for clarity
+    private PacMan internalPacman;
     private EnumMap<GHOST, Ghost> ghosts;
     // PO State
     private boolean po;
     private boolean beenBlanked;
-    // either ID of a ghost or higher for pacman
+    // either ID of a ghost or higher for internalPacman
     private int agent = 0;
     private Maze currentMaze;
     private Random rnd;
@@ -153,7 +153,7 @@ public final class Game {
 
     private int getNodeIndexOfOwner() {
         if (agent >= NUM_GHOSTS) {
-            return pacman.currentNodeIndex;
+            return internalPacman.currentNodeIndex;
         } else {
             return ghosts.get(GHOST.values()[agent]).currentNodeIndex;
         }
@@ -187,7 +187,7 @@ public final class Game {
     private Boolean handleFFLOS(Node currentNode, Node check) {
         if (currentNode.x == check.x || currentNode.y == check.y) {
             // Get direction currently going in
-            MOVE previousMove = (agent >= NUM_GHOSTS) ? pacman.lastMoveMade : ghosts.get(GHOST.values()[agent]).lastMoveMade;
+            MOVE previousMove = (agent >= NUM_GHOSTS) ? internalPacman.lastMoveMade : ghosts.get(GHOST.values()[agent]).lastMoveMade;
             switch (previousMove) {
                 case UP:
                     if (currentNode.x == check.x && currentNode.y >= check.y) {
@@ -253,7 +253,7 @@ public final class Game {
         setPills();
         initGhosts();
 
-        pacman = new PacMan(currentMaze.initialPacManNodeIndex, MOVE.LEFT, NUM_LIVES, false);
+        internalPacman = new PacMan(currentMaze.initialPacManNodeIndex, MOVE.LEFT, NUM_LIVES, false);
     }
 
     /**
@@ -279,8 +279,8 @@ public final class Game {
 
         initGhosts();
 
-        pacman.currentNodeIndex = currentMaze.initialPacManNodeIndex;
-        pacman.lastMoveMade = MOVE.LEFT;
+        internalPacman.currentNodeIndex = currentMaze.initialPacManNodeIndex;
+        internalPacman.lastMoveMade = MOVE.LEFT;
     }
 
     /**
@@ -327,7 +327,7 @@ public final class Game {
         StringBuilder sb = new StringBuilder();
 
         sb.append(mazeIndex + "," + totalTime + "," + score + "," + currentLevelTime + "," + levelCount + ","
-                + pacman.currentNodeIndex + "," + pacman.lastMoveMade + "," + pacman.numberOfLivesRemaining + "," + pacman.hasReceivedExtraLife + ",");
+                + internalPacman.currentNodeIndex + "," + internalPacman.lastMoveMade + "," + internalPacman.numberOfLivesRemaining + "," + internalPacman.hasReceivedExtraLife + ",");
 
         for (Ghost ghost : ghosts.values()) {
             sb.append(ghost.currentNodeIndex + "," + ghost.edibleTime + "," + ghost.lairTime + "," + ghost.lastMoveMade + ",");
@@ -387,7 +387,7 @@ public final class Game {
         currentLevelTime = Integer.parseInt(values[index++]);
         levelCount = Integer.parseInt(values[index++]);
 
-        pacman = new PacMan(Integer.parseInt(values[index++]), MOVE.valueOf(values[index++]),
+        internalPacman = new PacMan(Integer.parseInt(values[index++]), MOVE.valueOf(values[index++]),
                 Integer.parseInt(values[index++]), Boolean.parseBoolean(values[index++]));
 
         ghosts = new EnumMap<>(GHOST.class);
@@ -463,7 +463,7 @@ public final class Game {
         copy.pacmanWasEaten = pacmanWasEaten;
         copy.pillWasEaten = pillWasEaten;
         copy.powerPillWasEaten = powerPillWasEaten;
-        copy.pacman = pacman.copy();
+        copy.internalPacman = internalPacman.copy();
 
         copy.ghostsPresent = ghostsPresent;
         copy.pillsPresent = pillsPresent;
@@ -715,10 +715,10 @@ public final class Game {
      * _update pac man extra life.
      */
     private void updatePacManExtraLife() {
-        if (!pacman.hasReceivedExtraLife && score >= EXTRA_LIFE_SCORE)    //award 1 extra life at 10000 points
+        if (!internalPacman.hasReceivedExtraLife && score >= EXTRA_LIFE_SCORE)    //award 1 extra life at 10000 points
         {
-            pacman.hasReceivedExtraLife = true;
-            pacman.numberOfLivesRemaining++;
+            internalPacman.hasReceivedExtraLife = true;
+            internalPacman.numberOfLivesRemaining++;
         }
     }
 
@@ -728,9 +728,9 @@ public final class Game {
      * @param move the move
      */
     private void _updatePacMan(MOVE move) {
-        pacman.lastMoveMade = correctPacManDir(move);
-        pacman.currentNodeIndex = pacman.lastMoveMade == MOVE.NEUTRAL ? pacman.currentNodeIndex :
-                currentMaze.graph[pacman.currentNodeIndex].neighbourhood.get(pacman.lastMoveMade);
+        internalPacman.lastMoveMade = correctPacManDir(move);
+        internalPacman.currentNodeIndex = internalPacman.lastMoveMade == MOVE.NEUTRAL ? internalPacman.currentNodeIndex :
+                currentMaze.graph[internalPacman.currentNodeIndex].neighbourhood.get(internalPacman.lastMoveMade);
     }
 
     /**
@@ -740,15 +740,15 @@ public final class Game {
      * @return the mOVE
      */
     private MOVE correctPacManDir(MOVE direction) {
-        Node node = currentMaze.graph[pacman.currentNodeIndex];
+        Node node = currentMaze.graph[internalPacman.currentNodeIndex];
 
         //direction is correct, return it
         if (node.neighbourhood.containsKey(direction)) {
             return direction;
         } else {
             //try to use previous direction (i.e., continue in the same direction)
-            if (node.neighbourhood.containsKey(pacman.lastMoveMade)) {
-                return pacman.lastMoveMade;
+            if (node.neighbourhood.containsKey(internalPacman.lastMoveMade)) {
+                return internalPacman.lastMoveMade;
                 //else stay put
             } else {
                 return MOVE.NEUTRAL;
@@ -826,7 +826,7 @@ public final class Game {
     private void eatPill() {
         pillWasEaten = false;
 
-        int pillIndex = currentMaze.graph[pacman.currentNodeIndex].pillIndex;
+        int pillIndex = currentMaze.graph[internalPacman.currentNodeIndex].pillIndex;
 
         if (pillIndex >= 0 && pills.get(pillIndex)) {
             score += PILL;
@@ -841,7 +841,7 @@ public final class Game {
     private void eatPowerPill() {
         powerPillWasEaten = false;
 
-        int powerPillIndex = currentMaze.graph[pacman.currentNodeIndex].powerPillIndex;
+        int powerPillIndex = currentMaze.graph[internalPacman.currentNodeIndex].powerPillIndex;
 
         if (powerPillIndex >= 0 && powerPills.get(powerPillIndex)) {
             score += POWER_PILL;
@@ -897,7 +897,7 @@ public final class Game {
         }
 
         for (Ghost ghost : ghosts.values()) {
-            int distance = getShortestPathDistance(pacman.currentNodeIndex, ghost.currentNodeIndex);
+            int distance = getShortestPathDistance(internalPacman.currentNodeIndex, ghost.currentNodeIndex);
 
             if (distance <= EAT_DISTANCE && distance != -1) {
                 if (ghost.edibleTime > 0)                                    //pac-man eats ghost
@@ -912,10 +912,10 @@ public final class Game {
                     ghostsEaten.put(ghost.type, true);
                 } else                                                    //ghost eats pac-man
                 {
-                    pacman.numberOfLivesRemaining--;
+                    internalPacman.numberOfLivesRemaining--;
                     pacmanWasEaten = true;
 
-                    if (pacman.numberOfLivesRemaining <= 0) {
+                    if (internalPacman.numberOfLivesRemaining <= 0) {
                         gameOver = true;
                     } else {
                         levelReset();
@@ -939,7 +939,7 @@ public final class Game {
         //put a cap on the total time a game can be played for
         if (totalTime + 1 > MAX_TIME) {
             gameOver = true;
-            score += pacman.numberOfLivesRemaining * AWARD_LIFE_LEFT;
+            score += internalPacman.numberOfLivesRemaining * AWARD_LIFE_LEFT;
         }
         //if all pills have been eaten or the time is up...
         else if ((pills.isEmpty() && powerPills.isEmpty()) || currentLevelTime >= LEVEL_LIMIT) {
@@ -952,7 +952,7 @@ public final class Game {
     /////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns whether pacman was eaten in the last time step
+     * Returns whether internalPacman was eaten in the last time step
      *
      * @return whether Ms Pac-Man was eaten.
      */
@@ -1210,27 +1210,27 @@ public final class Game {
     /**
      * Current node index of Ms Pac-Man.
      *
-     * @return the pacman current node index
+     * @return the internalPacman current node index
      */
     @SuppressWarnings({"WeakerAccess", "unused"})
     public int getPacmanCurrentNodeIndex() {
-        if (po && !isNodeObservable(pacman.currentNodeIndex)) {
+        if (po && !isNodeObservable(internalPacman.currentNodeIndex)) {
             return -1;
         }
-        return pacman.currentNodeIndex;
+        return internalPacman.currentNodeIndex;
     }
 
     /**
      * Current node index of Ms Pac-Man.
      *
-     * @return the pacman last move made
+     * @return the internalPacman last move made
      */
     @SuppressWarnings({"WeakerAccess", "unused"})
     public MOVE getPacmanLastMoveMade() {
-        if (po && !isNodeObservable(pacman.currentNodeIndex)) {
+        if (po && !isNodeObservable(internalPacman.currentNodeIndex)) {
             return null;
         }
-        return pacman.lastMoveMade;
+        return internalPacman.lastMoveMade;
     }
 
     /**
@@ -1240,7 +1240,7 @@ public final class Game {
      */
     @SuppressWarnings({"WeakerAccess", "unused"})
     public int getPacmanNumberOfLivesRemaining() {
-        return pacman.numberOfLivesRemaining;
+        return internalPacman.numberOfLivesRemaining;
     }
 
     /**
@@ -2047,7 +2047,7 @@ public final class Game {
         game.pills = info.getPills();
         game.powerPills = info.getPowerPills();
         // Etc
-        game.pacman = info.getPacman();
+        game.internalPacman = info.getPacman();
 
         game.ghosts = info.getGhosts();
 
