@@ -36,6 +36,7 @@ public class Executor {
     private final int timeLimit;
     private final POType poType;
     private final int sightLimit;
+    private final Random rnd = new Random();
 
     public static class Builder {
         private boolean pacmanPO = true;
@@ -207,14 +208,13 @@ public class Executor {
     public Stats[] runExperiment(Controller<MOVE> pacManController, MASController ghostController, int trials, String description) {
         Stats stats = new Stats(description);
         Stats ticks = new Stats(description + " Ticks");
-        Random rnd = new Random(0);
         MASController ghostControllerCopy = ghostController.copy(ghostPO);
         Game game;
 
         Long startTime = System.currentTimeMillis();
         for (int i = 0; i < trials; ) {
             try {
-                game = (this.ghostsMessage) ? new Game(rnd.nextLong(), messenger.copy()) : new Game(rnd.nextLong());
+                game = setupGame();
 
                 while (!game.gameOver()) {
                     if (tickLimit != -1 && tickLimit < game.getTotalTime()) {
@@ -239,17 +239,20 @@ public class Executor {
         return new Stats[]{stats, ticks};
     }
 
+    private Game setupGame() {
+        return (this.ghostsMessage) ? new Game(rnd.nextLong(), 0, messenger.copy(), poType, sightLimit) : new Game(rnd.nextLong(), 0, null, poType, sightLimit);
+    }
+
     public Stats[] runExperimentTicks(Controller<MOVE> pacManController, MASController ghostController, int trials, String description) {
         Stats stats = new Stats(description);
         Stats ticks = new Stats(description);
 
-        Random rnd = new Random(0);
         MASController ghostControllerCopy = ghostController.copy(ghostPO);
         Game game;
 
         Long startTime = System.currentTimeMillis();
         for (int i = 0; i < trials; i++) {
-            game = (this.ghostsMessage) ? new Game(rnd.nextLong(), messenger.copy()) : new Game(rnd.nextLong());
+            game = setupGame();
 
             while (!game.gameOver()) {
                 game.advanceGame(
@@ -335,7 +338,7 @@ public class Executor {
      * @param visual           Indicates whether or not to use visuals
      */
     public void runGameTimed(Controller<MOVE> pacManController, MASController ghostController, boolean visual) {
-        Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
+        Game game = setupGame();
 
         GameView gv = (visuals) ? setupGameView(pacManController, game) : null;
         MASController ghostControllerCopy = ghostController.copy(ghostPO);
@@ -378,7 +381,7 @@ public class Executor {
      * @return Stat score achieved by Ms. Pac-Man
      */
     public Stats runGameTimedSpeedOptimised(Controller<MOVE> pacManController, MASController ghostController, boolean fixedTime, String desc) {
-        Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
+        Game game = setupGame();
 
         GameView gv = (visuals) ? setupGameView(pacManController, game) : null;
         MASController ghostControllerCopy = ghostController.copy(ghostPO);
@@ -437,7 +440,7 @@ public class Executor {
         Stats stats = new Stats("");
         StringBuilder replay = new StringBuilder();
 
-        Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
+        Game game = setupGame();
 
         GameView gv = null;
         MASController ghostControllerCopy = ghostController.copy(ghostPO);
@@ -498,7 +501,7 @@ public class Executor {
     public void replayGame(String fileName, boolean visual) {
         ArrayList<String> timeSteps = loadReplay(fileName);
 
-        Game game = (this.ghostsMessage) ? new Game(0, messenger.copy()) : new Game(0);
+        Game game = setupGame();
 
         GameView gv = null;
 
