@@ -10,15 +10,15 @@ import pacman.controllers.examples.po.POPacMan;
 public class ExecutorTest {
 
     public static void main(String[] args) {
-        Executor executor = new Executor(true, true, true);
+        Executor executor = new Executor.Builder()
+                .setTickLimit(4000)
+                .build();
 
         executor.runExperiment(
                 new POPacMan(),
                 new POCommGhosts(50),
                 10,
-                "POP Vs POGC",
-                4000
+                "POP Vs POGC"
         );
-
     }
 }
