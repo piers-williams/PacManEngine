@@ -41,7 +41,7 @@ import static pacman.game.Constants.*;
  * it has been provided with a GameInfo. Exact details tbc
  */
 public final class Game {
-    public static PathsCache[] caches = new PathsCache[NUM_MAZES];
+    private static PathsCache[] caches = new PathsCache[NUM_MAZES];
     //mazes are only loaded once since they don't change over time
     private static Maze[] mazes = new Maze[NUM_MAZES];
 
@@ -149,6 +149,7 @@ public final class Game {
         }
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public boolean isNodeObservable(int nodeIndex) {
         if (!po) {
             return true;
@@ -302,6 +303,7 @@ public final class Game {
      *
      * @return The game state as a string
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public String getGameState() {
         if (po) {
             return "";
@@ -357,6 +359,7 @@ public final class Game {
      *
      * @param gameState The game state represented as a string
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void setGameState(String gameState) {
         String[] values = gameState.split(",");
 
@@ -423,6 +426,7 @@ public final class Game {
      * @param copyMessenger should the messenger be deep copied or not
      * @return the game
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public Game copy(boolean copyMessenger) {
         Game copy = new Game(this.poType, this.sightLimit);
 
@@ -465,14 +469,17 @@ public final class Game {
         return copy;
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public Game copy() {
         return copy(false);
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public Game copy(GHOST ghost) {
         return copy(ghost, false);
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public Game copy(GHOST ghost, boolean copyMessenger) {
         Game game = copy(copyMessenger);
         game.po = true;
@@ -480,6 +487,7 @@ public final class Game {
         return game;
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public Game copy(int agent) {
         Game game = copy();
         if (agent == COPY) {
@@ -506,6 +514,7 @@ public final class Game {
      * @param pacManMove The move supplied by the Ms Pac-Man controller
      * @param ghostMoves The moves supplied by the ghosts controller
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void advanceGame(MOVE pacManMove, Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
@@ -515,6 +524,7 @@ public final class Game {
         updateGame();
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void advanceGameWithoutReverse(MOVE pacManMove, Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
@@ -524,6 +534,7 @@ public final class Game {
         updateGame();
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void advanceGameWithForcedReverse(MOVE pacManMove, Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
@@ -533,6 +544,7 @@ public final class Game {
         updateGame();
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void advanceGameWithPowerPillReverseOnly(MOVE pacManMove, Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
@@ -553,6 +565,7 @@ public final class Game {
      *
      * @param pacManMove The move supplied by the Ms Pac-Man controller
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void updatePacMan(MOVE pacManMove) {
         if (!canBeForwarded()) {
             return;
@@ -567,6 +580,7 @@ public final class Game {
      *
      * @param ghostMoves The moves supplied by the ghosts controller
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void updateGhosts(Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
@@ -581,6 +595,7 @@ public final class Game {
         }
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void updateGhostsWithoutReverse(Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
@@ -592,6 +607,7 @@ public final class Game {
         _updateGhosts(ghostMoves);
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void updateGhostsWithForcedReverse(Map<GHOST, MOVE> ghostMoves) {
         if (!canBeForwarded()) {
             return;
@@ -608,6 +624,7 @@ public final class Game {
      * can eat anyone else. Then update the lair times and check if Ms Pac-Man should be
      * awarded the extra live. Then update the time and see if the level or game is over.
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void updateGame() {
         if (!canBeForwarded()) {
             return;
@@ -635,6 +652,7 @@ public final class Game {
      * @param updateTotalTime Whether or not to update the total time
      * @param updateLevelTime Whether or not to update the level time
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void updateGame(boolean feast, boolean updateLairTimes, boolean updateExtraLife, boolean updateTotalTime, boolean updateLevelTime) {
         if (!canBeForwarded()) {
             return;
@@ -922,6 +940,7 @@ public final class Game {
      *
      * @return whether Ms Pac-Man was eaten.
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public boolean wasPacManEaten() {
         return pacmanWasEaten;
     }
@@ -932,10 +951,12 @@ public final class Game {
      * @param ghost the ghost to check
      * @return whether a ghost was eaten.
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public boolean wasGhostEaten(GHOST ghost) {
         return ghostsEaten.get(ghost);
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getNumGhostsEaten() {
         int count = 0;
         for (GHOST ghost : ghosts.keySet()) {
@@ -952,6 +973,7 @@ public final class Game {
      *
      * @return whether a pill was eaten.
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public boolean wasPillEaten() {
         return pillWasEaten;
     }
@@ -961,6 +983,7 @@ public final class Game {
      *
      * @return whether a power pill was eaten.
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public boolean wasPowerPillEaten() {
         return powerPillWasEaten;
     }
@@ -970,6 +993,7 @@ public final class Game {
      *
      * @return time the last global reversal event took place (not including power pill reversals)
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getTimeOfLastGlobalReversal() {
         return timeOfLastGlobalReversal;
     }
@@ -980,6 +1004,7 @@ public final class Game {
      *
      * @return true, if successful
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public boolean gameOver() {
         return gameOver;
     }
@@ -989,6 +1014,7 @@ public final class Game {
      *
      * @return The current maze.
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public Maze getCurrentMaze() {
         return currentMaze;
     }
@@ -999,6 +1025,7 @@ public final class Game {
      * @param nodeIndex the node index
      * @return the node x cood
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getNodeXCood(int nodeIndex) {
         return currentMaze.graph[nodeIndex].x;
     }
@@ -1009,6 +1036,7 @@ public final class Game {
      * @param nodeIndex The node index
      * @return The node's y coordinate
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getNodeYCood(int nodeIndex) {
         return currentMaze.graph[nodeIndex].y;
     }
@@ -1018,6 +1046,7 @@ public final class Game {
      *
      * @return The maze index
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getMazeIndex() {
         return mazeIndex;
     }
@@ -1027,6 +1056,7 @@ public final class Game {
      *
      * @return The current level
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getCurrentLevel() {
         return levelCount;
     }
@@ -1036,6 +1066,7 @@ public final class Game {
      *
      * @return number of nodes in the current maze.
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getNumberOfNodes() {
         return currentMaze.graph.length;
     }
@@ -1045,6 +1076,7 @@ public final class Game {
      *
      * @return the current value awarded for eating a ghost.
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getGhostCurrentEdibleScore() {
         return GHOST_EAT_SCORE * ghostEatMultiplier;
     }
@@ -1055,6 +1087,7 @@ public final class Game {
      *
      * @return the node index where ghosts start after leaving the lair.
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getGhostInitialNodeIndex() {
         return currentMaze.initialGhostNodeIndex;
     }
@@ -1064,6 +1097,7 @@ public final class Game {
      *
      * @return the node index where Ms. Pac-Man starts in the maze
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getPacManInitialNodeIndex() {
         return currentMaze.initialPacManNodeIndex;
     }
@@ -1074,6 +1108,7 @@ public final class Game {
      * @param pillIndex The pill index
      * @return true, if is pill still available
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public Boolean isPillStillAvailable(int pillIndex) {
         if (po) {
             int pillLocation = currentMaze.pillIndices[pillIndex];
@@ -1091,6 +1126,7 @@ public final class Game {
      * @param powerPillIndex The power pill index
      * @return true, if is power pill still available
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public Boolean isPowerPillStillAvailable(int powerPillIndex) {
         if (po) {
             int pillLocation = currentMaze.powerPillIndices[powerPillIndex];
@@ -1108,6 +1144,7 @@ public final class Game {
      * @param nodeIndex The Index of the node.
      * @return a number corresponding to the pill index (or -1 if node has no pill)
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getPillIndex(int nodeIndex) {
         return currentMaze.graph[nodeIndex].pillIndex;
     }
@@ -1119,6 +1156,7 @@ public final class Game {
      * @param nodeIndex The Index of the node.
      * @return a number corresponding to the power pill index (or -1 if node has no pill)
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getPowerPillIndex(int nodeIndex) {
         return currentMaze.graph[nodeIndex].powerPillIndex;
     }
@@ -1128,6 +1166,7 @@ public final class Game {
      *
      * @return the junction indices
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int[] getJunctionIndices() {
         return currentMaze.junctionIndices;
     }
@@ -1137,6 +1176,7 @@ public final class Game {
      *
      * @return the pill indices
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int[] getPillIndices() {
         return currentMaze.pillIndices;
     }
@@ -1146,6 +1186,7 @@ public final class Game {
      *
      * @return the power pill indices
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int[] getPowerPillIndices() {
         return currentMaze.powerPillIndices;
     }
@@ -1155,6 +1196,7 @@ public final class Game {
      *
      * @return the pacman current node index
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getPacmanCurrentNodeIndex() {
         if (po && !isNodeObservable(pacman.currentNodeIndex)) {
             return -1;
@@ -1167,6 +1209,7 @@ public final class Game {
      *
      * @return the pacman last move made
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public MOVE getPacmanLastMoveMade() {
         if (po && !isNodeObservable(pacman.currentNodeIndex)) {
             return null;
@@ -1179,6 +1222,7 @@ public final class Game {
      *
      * @return the number of lives remaining
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getPacmanNumberOfLivesRemaining() {
         return pacman.numberOfLivesRemaining;
     }
@@ -1189,6 +1233,7 @@ public final class Game {
      * @param ghostType the ghost type
      * @return the ghost current node index
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getGhostCurrentNodeIndex(GHOST ghostType) {
         if (po) {
             int index = ghosts.get(ghostType).currentNodeIndex;
@@ -1203,6 +1248,7 @@ public final class Game {
      * @param ghostType the ghost type
      * @return the ghost last move made
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public MOVE getGhostLastMoveMade(GHOST ghostType) {
         if (po) {
             Ghost ghost = ghosts.get(ghostType);
@@ -1217,6 +1263,7 @@ public final class Game {
      * @param ghostType the ghost type
      * @return the ghost edible time
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getGhostEdibleTime(GHOST ghostType) {
         if (po) {
             Ghost ghost = ghosts.get(ghostType);
@@ -1231,6 +1278,7 @@ public final class Game {
      * @param ghostType the ghost type
      * @return true, if is ghost edible
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public Boolean isGhostEdible(GHOST ghostType) {
         if (po) {
             Ghost ghost = ghosts.get(ghostType);
@@ -1244,6 +1292,7 @@ public final class Game {
      *
      * @return the score
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getScore() {
         return score;
     }
@@ -1253,6 +1302,7 @@ public final class Game {
      *
      * @return the current level time
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getCurrentLevelTime() {
         return currentLevelTime;
     }
@@ -1262,6 +1312,7 @@ public final class Game {
      *
      * @return the total time
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getTotalTime() {
         return totalTime;
     }
@@ -1271,6 +1322,7 @@ public final class Game {
      *
      * @return the number of pills
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getNumberOfPills() {
         return currentMaze.pillIndices.length;
     }
@@ -1280,6 +1332,7 @@ public final class Game {
      *
      * @return the number of power pills
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getNumberOfPowerPills() {
         return currentMaze.powerPillIndices.length;
     }
@@ -1289,6 +1342,7 @@ public final class Game {
      *
      * @return the number of active pills
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getNumberOfActivePills() {
         return pills.cardinality();
     }
@@ -1298,6 +1352,7 @@ public final class Game {
      *
      * @return the number of active power pills
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getNumberOfActivePowerPills() {
         return powerPills.cardinality();
     }
@@ -1308,6 +1363,7 @@ public final class Game {
      * @param ghostType the ghost type
      * @return the ghost lair time
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getGhostLairTime(GHOST ghostType) {
         if (po) {
             Ghost ghost = ghosts.get(ghostType);
@@ -1321,6 +1377,7 @@ public final class Game {
      *
      * @return the active pills indices
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int[] getActivePillsIndices() {
         int[] indices = new int[pills.cardinality()];
 
@@ -1346,6 +1403,7 @@ public final class Game {
      *
      * @return the active power pills indices
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int[] getActivePowerPillsIndices() {
         int[] indices = new int[powerPills.cardinality()];
 
@@ -1373,6 +1431,7 @@ public final class Game {
      * @param ghostType the ghost type
      * @return true, if successful
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public Boolean doesGhostRequireAction(GHOST ghostType) {
         //inlcude neutral here for the unique case where the ghost just left the lair
         if (!po || isNodeObservable(ghosts.get(ghostType).currentNodeIndex)) {
@@ -1389,6 +1448,7 @@ public final class Game {
      * @param nodeIndex the node index
      * @return true, if is junction
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public boolean isJunction(int nodeIndex) {
         return currentMaze.graph[nodeIndex].numNeighbouringNodes > 2;
     }
@@ -1399,6 +1459,7 @@ public final class Game {
      * @param nodeIndex The current node index
      * @return The set of possible moves
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public MOVE[] getPossibleMoves(int nodeIndex) {
         return currentMaze.graph[nodeIndex].allPossibleMoves.get(MOVE.NEUTRAL);
     }
@@ -1410,6 +1471,7 @@ public final class Game {
      * @param lastModeMade The last mode made (possible moves will exclude the reverse)
      * @return The set of possible moves
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public MOVE[] getPossibleMoves(int nodeIndex, MOVE lastModeMade) {
         return currentMaze.graph[nodeIndex].allPossibleMoves.get(lastModeMade);
     }
@@ -1420,6 +1482,7 @@ public final class Game {
      * @param nodeIndex The current node index
      * @return The set of neighbouring nodes
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int[] getNeighbouringNodes(int nodeIndex) {
         return currentMaze.graph[nodeIndex].allNeighbouringNodes.get(MOVE.NEUTRAL);
     }
@@ -1432,6 +1495,7 @@ public final class Game {
      * @param lastModeMade The last mode made
      * @return The set of neighbouring nodes except the one that is opposite of the last move made
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int[] getNeighbouringNodes(int nodeIndex, MOVE lastModeMade) {
         return currentMaze.graph[nodeIndex].allNeighbouringNodes.get(lastModeMade);
     }
@@ -1444,6 +1508,7 @@ public final class Game {
      * @param moveToBeMade The move to be made
      * @return The node index of the node the move takes one to
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getNeighbour(int nodeIndex, MOVE moveToBeMade) {
         Integer neighbour = currentMaze.graph[nodeIndex].neighbourhood.get(moveToBeMade);
 
@@ -1458,6 +1523,7 @@ public final class Game {
      * @param neighbourNodeIndex The direct neighbour (node index) of the current node.
      * @return the move to make to reach direct neighbour
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public MOVE getMoveToMakeToReachDirectNeighbour(int currentNodeIndex, int neighbourNodeIndex) {
         for (MOVE move : MOVE.values()) {
             if (currentMaze.graph[currentNodeIndex].neighbourhood.containsKey(move)
@@ -1480,6 +1546,7 @@ public final class Game {
      * @param toNodeIndex   the to node index
      * @return the shortest path distance
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getShortestPathDistance(int fromNodeIndex, int toNodeIndex) {
         if (fromNodeIndex == toNodeIndex) {
             return 0;
@@ -1497,6 +1564,7 @@ public final class Game {
      * @param toNodeIndex   the to node index
      * @return the euclidean distance
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public double getEuclideanDistance(int fromNodeIndex, int toNodeIndex) {
         return Math.sqrt(Math.pow(currentMaze.graph[fromNodeIndex].x - currentMaze.graph[toNodeIndex].x, 2) + Math.pow(currentMaze.graph[fromNodeIndex].y - currentMaze.graph[toNodeIndex].y, 2));
     }
@@ -1508,6 +1576,7 @@ public final class Game {
      * @param toNodeIndex   the to node index
      * @return the manhattan distance
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getManhattanDistance(int fromNodeIndex, int toNodeIndex) {
         return (Math.abs(currentMaze.graph[fromNodeIndex].x - currentMaze.graph[toNodeIndex].x) + Math.abs(currentMaze.graph[fromNodeIndex].y - currentMaze.graph[toNodeIndex].y));
     }
@@ -1520,6 +1589,7 @@ public final class Game {
      * @param distanceMeasure the distance measure
      * @return the distance
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public double getDistance(int fromNodeIndex, int toNodeIndex, DM distanceMeasure) {
         switch (distanceMeasure) {
             case PATH:
@@ -1542,6 +1612,7 @@ public final class Game {
      * @param distanceMeasure the distance measure to be used
      * @return the distance between two nodes.
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public double getDistance(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade, DM distanceMeasure) {
         switch (distanceMeasure) {
             case PATH:
@@ -1563,6 +1634,7 @@ public final class Game {
      * @param distanceMeasure   the distance measure
      * @return the closest node index from node index
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getClosestNodeIndexFromNodeIndex(int fromNodeIndex, int[] targetNodeIndices, DM distanceMeasure) {
         double minDistance = Integer.MAX_VALUE;
         int target = -1;
@@ -1589,6 +1661,7 @@ public final class Game {
      * @param distanceMeasure   the distance measure
      * @return the farthest node index from node index
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getFarthestNodeIndexFromNodeIndex(int fromNodeIndex, int[] targetNodeIndices, DM distanceMeasure) {
         double maxDistance = Integer.MIN_VALUE;
         int target = -1;
@@ -1615,6 +1688,7 @@ public final class Game {
      * @param distanceMeasure the distance measure
      * @return the next move towards target
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public MOVE getNextMoveTowardsTarget(int fromNodeIndex, int toNodeIndex, DM distanceMeasure) {
         MOVE move = null;
 
@@ -1640,6 +1714,7 @@ public final class Game {
      * @param distanceMeasure the distance measure
      * @return the next move away from target
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public MOVE getNextMoveAwayFromTarget(int fromNodeIndex, int toNodeIndex, DM distanceMeasure) {
         MOVE move = null;
 
@@ -1666,6 +1741,7 @@ public final class Game {
      * @param distanceMeasure The distance measure required (Manhattan, Euclidean or Straight line)
      * @return The approximate next move towards target (chosen greedily)
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public MOVE getApproximateNextMoveTowardsTarget(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade, DM distanceMeasure) {
         MOVE move = null;
 
@@ -1692,6 +1768,7 @@ public final class Game {
      * @param distanceMeasure The distance measure required (Manhattan, Euclidean or Straight line)
      * @return The approximate next move towards target (chosen greedily)
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public MOVE getApproximateNextMoveAwayFromTarget(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade, DM distanceMeasure) {
         MOVE move = null;
 
@@ -1718,6 +1795,7 @@ public final class Game {
      * @param distanceMeasure the distance measure to be used
      * @return the next move towards target
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public MOVE getNextMoveTowardsTarget(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade, DM distanceMeasure) {
         MOVE move = null;
 
@@ -1744,6 +1822,7 @@ public final class Game {
      * @param distanceMeasure the distance measure to be used
      * @return the next move away from target
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public MOVE getNextMoveAwayFromTarget(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade, DM distanceMeasure) {
         MOVE move = null;
 
@@ -1771,6 +1850,7 @@ public final class Game {
      * @deprecated use getShortestPath() instead.
      */
     @Deprecated
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int[] getAStarPath(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade) {
         return getShortestPath(fromNodeIndex, toNodeIndex, lastMoveMade);
     }
@@ -1782,6 +1862,7 @@ public final class Game {
      * @param toNodeIndex   The target node index
      * @return the shortest path from start to target
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int[] getShortestPath(int fromNodeIndex, int toNodeIndex) {
         return caches[mazeIndex].getPathFromA2B(fromNodeIndex, toNodeIndex);
     }
@@ -1798,6 +1879,7 @@ public final class Game {
      * @deprecated use getShortestPath() instead.
      */
     @Deprecated
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int[] getApproximateShortestPath(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade) {
         return getShortestPath(fromNodeIndex, toNodeIndex, lastMoveMade);
     }
@@ -1812,6 +1894,7 @@ public final class Game {
      * @param lastMoveMade  The last move made
      * @return the shortest path from start to target
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int[] getShortestPath(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade) {
         if (currentMaze.graph[fromNodeIndex].neighbourhood.size() == 0)//lair
         {
@@ -1832,6 +1915,7 @@ public final class Game {
      * @deprecated use getShortestPathDistance() instead.
      */
     @Deprecated
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getApproximateShortestPathDistance(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade) {
         return getShortestPathDistance(fromNodeIndex, toNodeIndex, lastMoveMade);
     }
@@ -1845,6 +1929,7 @@ public final class Game {
      * @param lastMoveMade  The last move made
      * @return the exact distance of the path
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public int getShortestPathDistance(int fromNodeIndex, int toNodeIndex, MOVE lastMoveMade) {
         if (currentMaze.graph[fromNodeIndex].neighbourhood.size() == 0)//lair
         {
@@ -1863,6 +1948,7 @@ public final class Game {
      *
      * @return True if messaging is available, false otherwise
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public boolean hasMessaging() {
         return messenger != null && agent < GHOST.values().length;
     }
@@ -1872,6 +1958,7 @@ public final class Game {
      *
      * @return The messenger
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public Messenger getMessenger() {
         return (hasMessaging() ? messenger : null);
     }
@@ -1881,6 +1968,7 @@ public final class Game {
      *
      * @return The GameInfo object for use in making the Game
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public GameInfo getBlankGameInfo() {
         return new GameInfo(pills.length());
     }
@@ -1888,8 +1976,9 @@ public final class Game {
     /**
      * Gets a GameInfo object that is populated with present data that you can see
      *
-     * @return
+     * @return The GameInfo object for use in making the Game
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public GameInfo getPopulatedGameInfo() {
         GameInfo info = getBlankGameInfo();
 
@@ -1933,6 +2022,7 @@ public final class Game {
      * @param info The data you wish the game to be supplied with
      * @return The resultant game
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public Game getGameFromInfo(GameInfo info) {
         Game game = copy(false);
         // Destroy the messenger reference - can't allow communication in the playouts
@@ -1956,18 +2046,22 @@ public final class Game {
      *
      * @return The boolean answer to the question
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public boolean isGamePo() {
         return po;
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void setGhostsPresent(boolean ghostsPresent) {
         this.ghostsPresent = ghostsPresent;
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void setPillsPresent(boolean pillsPresent) {
         this.pillsPresent = pillsPresent;
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public void setPowerPillsPresent(boolean powerPillsPresent) {
         this.powerPillsPresent = powerPillsPresent;
     }
