@@ -326,7 +326,7 @@ public class Executor {
     }
 
     private Game getPacmanCopy(Game game) {
-        return game.copy((pacmanPO) ? Game.PACMAN : Game.COPY);
+        return game.copy((pacmanPO) ? Game.PACMAN : Game.CLONE);
     }
 
     private GameView setupGameView(Controller<MOVE> pacManController, Game game) {
