@@ -346,7 +346,7 @@ public final class GameView extends JComponent {
     }
 
     private void drawPacManVisibility() {
-        Game pacmanGame = game.copy(new PacMan(0, game.getPacmanLastMoveMade(), game.getPacmanNumberOfLivesRemaining(), false));
+        Game pacmanGame = game.copy(Game.PACMAN);
         int pacmanLocation = game.getPacmanCurrentNodeIndex();
         drawVisibility(pacmanLocation, pacmanGame);
     }

@@ -480,13 +480,6 @@ public final class Game {
         return game;
     }
 
-    public Game copy(PacMan pacman) {
-        Game game = copy();
-        game.po = true;
-        game.agent = PACMAN;
-        return game;
-    }
-
     public Game copy(int agent) {
         Game game = copy();
         if (agent == COPY) {

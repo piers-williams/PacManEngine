@@ -20,7 +20,7 @@ public class ForwardModelTest {
 
         Game game = new Game(System.currentTimeMillis(), new BasicMessenger(0, 1, 1));
 
-        game.copy(new PacMan(game.getPacmanCurrentNodeIndex(), MOVE.DOWN, 2, true));
+        game.copy(Game.PACMAN);
 
         GameInfo info = game.getBlankGameInfo();
         // Just forward the game itself

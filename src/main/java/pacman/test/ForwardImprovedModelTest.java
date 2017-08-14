@@ -18,7 +18,7 @@ public class ForwardImprovedModelTest {
 
         Game game = new Game(System.currentTimeMillis(), new BasicMessenger(0, 1, 1));
 
-        game.copy(new PacMan(game.getPacmanCurrentNodeIndex(), Constants.MOVE.DOWN, 2, true));
+        game.copy(Game.PACMAN);
 
         GameInfo info = game.getPopulatedGameInfo();
         // Just forward the game itself
