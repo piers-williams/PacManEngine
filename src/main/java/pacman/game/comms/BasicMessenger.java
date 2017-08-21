@@ -42,17 +42,14 @@ public class BasicMessenger implements Messenger {
         // Ditch messages due to be delivered this tick before moving on
         if (messages.containsKey(currentTick)) {
             messages.remove(currentTick);
-            //            System.out.println("Removed list: " + currentTick);
         }
         currentTick++;
-        //        System.out.println("Messenger updated");
     }
 
     @Override
     public void addMessage(Message message) {
         int tickToDeliver = currentTick + delayConstant + (delayMultiplier * message.getType().getDelay());
         if (!messages.containsKey(tickToDeliver)) {
-            //            System.out.println("Adding new list" + tickToDeliver);
             messages.put(tickToDeliver, new ArrayList<Message>());
         }
         messages.get(tickToDeliver).add(message);
@@ -62,18 +59,13 @@ public class BasicMessenger implements Messenger {
     public ArrayList<Message> getMessages(Constants.GHOST querier) {
         ArrayList<Message> results = new ArrayList<>();
         if (!messages.containsKey(currentTick)) {
-            //            System.out.println("Wasn't anything here: " + currentTick);
             return results;
         }
-        //        System.out.println("Size: " + messages.get(currentTick));
         for (Message message : messages.get(currentTick)) {
-            //            System.out.println("Message!");
             if (!message.getSender().equals(querier)) {
                 if (message.getRecipient() == null) {
-                    //                    System.out.println("Broadcast received I didn't send");
                     results.add(message);
                 } else if (message.getRecipient().equals(querier)) {
-                    //                    System.out.println("Sent straight to me");
                     results.add(message);
                 }
 
