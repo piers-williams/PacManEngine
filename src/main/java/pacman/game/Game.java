@@ -1,5 +1,6 @@
 package pacman.game;
 
+import com.sun.istack.internal.Nullable;
 import pacman.game.Constants.*;
 import pacman.game.comms.Messenger;
 import pacman.game.info.GameInfo;
@@ -1125,6 +1126,7 @@ public final class Game {
      * @return true, if is pill still available
      */
     @SuppressWarnings({"WeakerAccess", "unused"})
+    @Nullable
     public Boolean isPillStillAvailable(int pillIndex) {
         if (po) {
             int pillLocation = currentMaze.pillIndices[pillIndex];
@@ -1143,6 +1145,7 @@ public final class Game {
      * @return true, if is power pill still available
      */
     @SuppressWarnings({"WeakerAccess", "unused"})
+    @Nullable
     public Boolean isPowerPillStillAvailable(int powerPillIndex) {
         if (po) {
             int pillLocation = currentMaze.powerPillIndices[powerPillIndex];
@@ -1448,6 +1451,7 @@ public final class Game {
      * @return true, if successful
      */
     @SuppressWarnings({"WeakerAccess", "unused"})
+    @Nullable
     public Boolean doesGhostRequireAction(GHOST ghostType) {
         //inlcude neutral here for the unique case where the ghost just left the lair
         if (!po || isNodeObservable(ghosts.get(ghostType).currentNodeIndex)) {
@@ -1540,6 +1544,7 @@ public final class Game {
      * @return the move to make to reach direct neighbour
      */
     @SuppressWarnings({"WeakerAccess", "unused"})
+    @Nullable
     public MOVE getMoveToMakeToReachDirectNeighbour(int currentNodeIndex, int neighbourNodeIndex) {
         for (MOVE move : MOVE.values()) {
             if (currentMaze.graph[currentNodeIndex].neighbourhood.containsKey(move)
@@ -1975,6 +1980,7 @@ public final class Game {
      * @return The messenger
      */
     @SuppressWarnings({"WeakerAccess", "unused"})
+    @Nullable
     public Messenger getMessenger() {
         return (hasMessaging() ? messenger : null);
     }
