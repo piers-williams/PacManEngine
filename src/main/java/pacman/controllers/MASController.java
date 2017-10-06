@@ -58,6 +58,8 @@ public class MASController extends Controller<EnumMap<GHOST, MOVE>> {
      * @return The copy created
      */
     public final MASController copy(boolean po) {
-        return new MASController(po, controllers);
+        MASController copy = new MASController(po, controllers);
+        copy.setName(this.getName());
+        return copy;
     }
 }
