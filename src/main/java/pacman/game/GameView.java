@@ -561,6 +561,8 @@ public final class GameView extends JComponent {
             }else{
                 this.setLocation(desiredLocation);
             }
+            comp.requestFocusInWindow();
+            this.requestFocus();
             this.setVisible(true);
             this.setResizable(false);
             setDefaultCloseOperation(exitOnClose ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
