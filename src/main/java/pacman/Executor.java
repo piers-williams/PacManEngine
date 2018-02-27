@@ -353,9 +353,8 @@ public class Executor {
      *
      * @param pacManController The Pac-Man controller
      * @param ghostController  The Ghosts controller
-     * @param visual           Indicates whether or not to use visuals
      */
-    public void runGameTimed(Controller<MOVE> pacManController, MASController ghostController, boolean visual) {
+    public void runGameTimed(Controller<MOVE> pacManController, MASController ghostController) {
         Game game = setupGame();
 
         GameView gv = (visuals) ? setupGameView(pacManController, game) : null;
@@ -380,7 +379,7 @@ public class Executor {
 
             game.advanceGame(pacManController.getMove(), ghostControllerCopy.getMove());
 
-            if (visual) {
+            if (visuals) {
                 gv.repaint();
             }
         }
